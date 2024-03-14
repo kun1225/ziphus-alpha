@@ -7,7 +7,7 @@ import AccountTokenInterface from "@/application/port/in/account-token-interface
 
 const accountRegisterUseCaseConstructor: AccountRegisterUseCaseConstructor =
   (loadAccount, saveAccount) =>
-  async ({ googleId, email, name, password }) => {
+  async ({ googleId = null, email, name, password }) => {
     const existingAccount = await loadAccount({ email });
     if (existingAccount) {
       throw new Error("Account already exists");

@@ -17,17 +17,8 @@ const cardGetWithAllUseCaseConstructor: CardImmediateModifyContentUseCaseConstru
       throw new Error("Permission denied");
     }
 
-    const {
-      cardId,
-      accountId,
-      startLine,
-      startColumn,
-      startTarget,
-      endLine,
-      endColumn,
-      endTarget,
-      insertText,
-    } = contentModifyEvent;
+    const { cardId, startLine, startColumn, endLine, endColumn, insertText } =
+      contentModifyEvent;
     // 分割內容成行
     const lines = card.content.split("\n");
 

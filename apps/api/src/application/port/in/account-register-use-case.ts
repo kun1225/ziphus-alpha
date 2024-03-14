@@ -13,7 +13,7 @@ export interface AccountRegisterUseCaseConstructor {
  */
 export interface AccountRegisterUseCase {
   (props: {
-    googleId: string | null;
+    googleId?: string | null | undefined;
     email: string;
     name: string;
     password: string;
