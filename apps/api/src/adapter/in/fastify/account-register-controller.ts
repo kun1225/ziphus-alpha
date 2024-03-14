@@ -29,7 +29,11 @@ const accountRegisterController: FastifyControllerInterface<
         name: string;
         password: string;
       };
-      return await accountRegisterUseCase({ email, name, password });
+      try {
+        return await accountRegisterUseCase({ email, name, password });
+      } catch (error) {
+        reply.code(400).send(error);
+      }
     },
   });
 };
