@@ -1,5 +1,6 @@
 export interface ContentModifyEvent {
   accountId: string;
+  cardId: string;
   // 從第幾行開始
   startLine: number;
   // 從第幾列開始

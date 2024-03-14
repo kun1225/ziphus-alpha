@@ -7,8 +7,8 @@ import { createExampleAccount, createExampleCard } from "./create-example-data";
 import { ContentModifyEvent } from "@/application/port/in/content-modify-event";
 import { CardPermission } from "@/application/domain/model/card";
 
-describe("CardCreateUseCase", () => {
-  let cardCreateUseCase: ReturnType<CardImmediateModifyContentUseCaseConstructor>;
+describe("CardImmediateModifyContentUseCase", () => {
+  let cardImmediateModifyContentUseCase: ReturnType<CardImmediateModifyContentUseCaseConstructor>;
   let loadCardMock: jest.Mock<ReturnType<LoadCardPort>>;
   let saveCardMock: jest.Mock<ReturnType<SaveCardPort>>;
   let emitSocketMock: jest.Mock<ReturnType<EmitSocketPort>>;
@@ -17,11 +17,12 @@ describe("CardCreateUseCase", () => {
     loadCardMock = jest.fn();
     saveCardMock = jest.fn();
     emitSocketMock = jest.fn();
-    cardCreateUseCase = cardImmediateModifyContentUseCaseConstructor(
-      loadCardMock,
-      saveCardMock,
-      emitSocketMock
-    );
+    cardImmediateModifyContentUseCase =
+      cardImmediateModifyContentUseCaseConstructor(
+        loadCardMock,
+        saveCardMock,
+        emitSocketMock
+      );
   });
 
   it(`
@@ -44,6 +45,7 @@ describe("CardCreateUseCase", () => {
     // 抓取第二行的 Like ，並取代為 love
     const mockContentModifyEvent: ContentModifyEvent = {
       accountId: exampleAccount.id,
+      cardId: exampleCard.id,
       startLine: 1,
       startColumn: -1,
       startTarget: "",
@@ -53,16 +55,18 @@ describe("CardCreateUseCase", () => {
       insertText: "Love",
     };
 
-    await cardCreateUseCase(mockContentModifyEvent);
+    await cardImmediateModifyContentUseCase(mockContentModifyEvent);
 
-    expect(loadCardMock).toHaveBeenCalledWith(exampleCard.id);
-    expect(saveCardMock).toHaveBeenCalledWith({
-      ...exampleCard,
-      content:
-        "Hello, I am a Ray\n" +
-        "Love cats and dogs\n" +
-        "I am a software engineer",
-    });
+    expect(loadCardMock).toHaveBeenCalledWith({ id: exampleCard.id });
+    expect(saveCardMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ...exampleCard,
+        content:
+          "Hello, I am a Ray\n" +
+          "Love cats and dogs\n" +
+          "I am a software engineer",
+      })
+    );
     expect(emitSocketMock).toHaveBeenCalledWith({
       event: "card-immediate-modify-content",
       data: mockContentModifyEvent,
@@ -81,7 +85,7 @@ describe("CardCreateUseCase", () => {
       content:
         "Hello, I am a Ray\n" +
         "Like cats and dogs\n" +
-        "I am a software engineer" +
+        "I am a software engineer\n" +
         "Do you like me?",
     };
     loadCardMock.mockResolvedValue(exampleCard);
@@ -90,26 +94,26 @@ describe("CardCreateUseCase", () => {
 
     const mockContentModifyEvent: ContentModifyEvent = {
       accountId: exampleAccount.id,
+      cardId: exampleCard.id,
       startLine: 1,
       startColumn: -1,
       startTarget: "",
       endLine: 2,
       endColumn: 15,
       endTarget: " ",
-      insertText:
-        "Love Cat\nDo you like Cat?\nAnd I also as a software engineer",
+      insertText: "Love Cat\nDo you like Cat?\nAnd I also as a software",
     };
 
-    await cardCreateUseCase(mockContentModifyEvent);
+    await cardImmediateModifyContentUseCase(mockContentModifyEvent);
 
-    expect(loadCardMock).toHaveBeenCalledWith(exampleCard.id);
+    expect(loadCardMock).toHaveBeenCalledWith({ id: exampleCard.id });
     expect(saveCardMock).toHaveBeenCalledWith({
       ...exampleCard,
       content:
         "Hello, I am a Ray\n" +
         "Love Cat\n" +
         "Do you like Cat?\n" +
-        "And I also as a software engineer" +
+        "And I also as a software engineer\n" +
         "Do you like me?",
     });
     expect(emitSocketMock).toHaveBeenCalledWith({
@@ -130,7 +134,7 @@ describe("CardCreateUseCase", () => {
       content:
         "Hello, I am a Ray\n" +
         "Like cats and dogs\n" +
-        "I am a software engineer" +
+        "I am a software engineer\n" +
         "Do you like me?",
     };
     loadCardMock.mockResolvedValue(exampleCard);
@@ -139,6 +143,7 @@ describe("CardCreateUseCase", () => {
 
     const mockContentModifyEvent: ContentModifyEvent = {
       accountId: exampleAccount.id,
+      cardId: exampleCard.id,
       startLine: 1,
       startColumn: 4,
       startTarget: " ",
@@ -148,13 +153,13 @@ describe("CardCreateUseCase", () => {
       insertText: "hard",
     };
 
-    await cardCreateUseCase(mockContentModifyEvent);
+    await cardImmediateModifyContentUseCase(mockContentModifyEvent);
 
-    expect(loadCardMock).toHaveBeenCalledWith(exampleCard.id);
+    expect(loadCardMock).toHaveBeenCalledWith({ id: exampleCard.id });
     expect(saveCardMock).toHaveBeenCalledWith({
       ...exampleCard,
       content:
-        "Hello, I am a Ray\n" + "Like hardware engineer" + "Do you like me?",
+        "Hello, I am a Ray\n" + "Like hardware engineer\n" + "Do you like me?",
     });
     expect(emitSocketMock).toHaveBeenCalledWith({
       event: "card-immediate-modify-content",
@@ -184,6 +189,7 @@ describe("CardCreateUseCase", () => {
 
     const mockContentModifyEvent: ContentModifyEvent = {
       accountId: "other-user-id",
+      cardId: exampleCard.id,
       startLine: 1,
       startColumn: 4,
       startTarget: " ",
@@ -193,7 +199,9 @@ describe("CardCreateUseCase", () => {
       insertText: "hard",
     };
 
-    expect(cardCreateUseCase(mockContentModifyEvent)).rejects.toThrow();
+    expect(
+      cardImmediateModifyContentUseCase(mockContentModifyEvent)
+    ).rejects.toThrow();
   });
 
   it(`
@@ -208,8 +216,7 @@ describe("CardCreateUseCase", () => {
       content:
         "Hello, I am a Ray\n" +
         "Like cats and dogs\n" +
-        "I am a software engineer" +
-        "Do you like me?",
+        "I am a software engineerDo you like me?",
     };
     loadCardMock.mockResolvedValue(exampleCard);
     saveCardMock.mockResolvedValue(undefined);
@@ -217,6 +224,7 @@ describe("CardCreateUseCase", () => {
 
     const mockContentModifyEvent: ContentModifyEvent = {
       accountId: "other-user-id",
+      cardId: exampleCard.id,
       startLine: 1,
       startColumn: 4,
       startTarget: " ",
@@ -226,9 +234,9 @@ describe("CardCreateUseCase", () => {
       insertText: "hard",
     };
 
-    await cardCreateUseCase(mockContentModifyEvent);
+    await cardImmediateModifyContentUseCase(mockContentModifyEvent);
 
-    expect(loadCardMock).toHaveBeenCalledWith(exampleCard.id);
+    expect(loadCardMock).toHaveBeenCalledWith({ id: exampleCard.id });
     expect(saveCardMock).toHaveBeenCalledWith({
       ...exampleCard,
       content:
