@@ -2,10 +2,7 @@ import { type LoadAccountPort } from "../out/load-account-port";
 import { type SaveAccountPort } from "../out/save-account-port";
 
 export interface AccountLoginWithEmailUseCaseConstructor {
-  (
-    loadAccount: LoadAccountPort,
-    saveAccount: SaveAccountPort
-  ): AccountLoginWithEmailUseCase;
+  (loadAccount: LoadAccountPort): AccountLoginWithEmailUseCase;
 }
 
 /**

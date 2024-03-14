@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 
 const accountLoginWithEmailUseCaseConstructor: AccountLoginWithEmailUseCaseConstructor =
 
-    (loadAccount, saveAccount) =>
+    (loadAccount) =>
     async ({ email, password }) => {
       const existingAccount = await loadAccount({ email });
       if (!existingAccount) {

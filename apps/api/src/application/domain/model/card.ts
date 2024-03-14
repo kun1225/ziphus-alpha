@@ -39,6 +39,7 @@ class Card {
     readonly id: string,
     readonly belongAccountId: string,
     readonly permission: CardPermission,
+    readonly title: string,
     readonly content: string,
     readonly width: number,
     readonly height: number,

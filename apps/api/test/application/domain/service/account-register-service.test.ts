@@ -1,9 +1,9 @@
-import Account from "@/application/domain/model/account";
 import accountRegisterUseCaseConstructor from "@/application/domain/service/account-register-service";
 import { type AccountRegisterUseCaseConstructor } from "@/application/port/in/account-register-use-case";
 import { LoadAccountPort } from "@/application/port/out/load-account-port";
 import { SaveAccountPort } from "@/application/port/out/save-account-port";
-import { randomUUID } from "crypto";
+import { decodeToken } from "@/common/jwt-token";
+import { examplePassword, createExampleAccount } from "./create-example-data";
 
 describe("AccountRegisterUseCase", () => {
   let accountRegisterUseCase: ReturnType<AccountRegisterUseCaseConstructor>;
@@ -19,48 +19,59 @@ describe("AccountRegisterUseCase", () => {
     );
   });
 
-  it("當已有相同帳號時，應該拋出錯誤", async () => {
-    const existingAccount = new Account(
-      randomUUID(),
-      null,
-      "test@example.com",
-      "Test User",
-      "hashedPassword",
-      new Date().toISOString(),
-      new Date().toISOString(),
-      null
-    );
+  it(`
+    Given an existing account
+    When register with the same email
+    Then it should throw an error
+  `, async () => {
+    const existingAccount = await createExampleAccount();
     loadAccountMock.mockResolvedValueOnce(existingAccount);
 
     await expect(
       accountRegisterUseCase({
-        googleId: null,
-        email: "test@example.com",
-        name: "Test User",
-        password: "password",
+        googleId: existingAccount.googleId,
+        email: existingAccount.email,
+        name: existingAccount.name,
+        password: examplePassword,
       })
     ).rejects.toThrow("Account already exists");
   });
 
-  it("正常登入時，應該建立新帳號並回傳登入 token", async () => {
+  it(`
+    Given a new account
+    When register with the new email
+    Then it should return a login token
+  `, async () => {
     loadAccountMock.mockResolvedValueOnce(null);
     saveAccountMock.mockResolvedValueOnce(undefined);
 
+    const exampleAccount = await createExampleAccount();
+
     const loginToken = await accountRegisterUseCase({
-      googleId: null,
-      email: "test@example.com",
-      name: "Test User",
-      password: "password",
+      googleId: exampleAccount.googleId,
+      email: exampleAccount.email,
+      name: exampleAccount.name,
+      password: examplePassword,
     });
 
     expect(loadAccountMock).toHaveBeenCalledWith({ email: "test@example.com" });
     expect(saveAccountMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        googleId: null,
-        email: "test@example.com",
-        name: "Test User",
+        googleId: exampleAccount.googleId,
+        email: exampleAccount.email,
+        name: exampleAccount.name,
       })
     );
+
+    const decodedToken = decodeToken(loginToken);
     expect(loginToken).toBeDefined();
+    expect(decodedToken).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        accountId: expect.any(String),
+        name: exampleAccount.name,
+        email: exampleAccount.email,
+      })
+    );
   });
 });
