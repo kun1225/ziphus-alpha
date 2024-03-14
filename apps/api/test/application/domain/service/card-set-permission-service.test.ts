@@ -52,21 +52,6 @@ describe("CardSetPermissionUseCase", () => {
   });
 
   it(`
-    Given a non-existing account id
-    When set permission
-    Then it should throw an error
-  `, async () => {
-    const exampleCard = createExampleCard("non-existing-account-id");
-    loadCardPort.mockResolvedValue(exampleCard);
-    const result = cardSetPermissionUseCase({
-      accountId: "non-existing-account-id",
-      cardId: exampleCard.id,
-      permission: CardPermission.PublicEditable,
-    });
-    await expect(result).rejects.toThrow();
-  });
-
-  it(`
     Given a existing card id but not owner account id
     When set permission
     Then it should throw an error

@@ -2,8 +2,26 @@ import { type CardSetPermissionUseCaseConstructor } from "@/application/port/in/
 
 const cardGetWithAllUseCaseConstructor: CardSetPermissionUseCaseConstructor =
   (loadCard, saveCard) =>
-  async ({ cardId, permission }) => {
-    throw new Error("Not implemented");
+  async ({ accountId, cardId, permission }) => {
+    const card = await loadCard({
+      id: cardId,
+    });
+    if (!card) {
+      throw new Error("Card not found");
+    }
+
+    if (card.belongAccountId !== accountId) {
+      throw new Error("Card not found");
+    }
+
+    const updatedCard = {
+      ...card,
+      permission,
+    };
+
+    await saveCard(updatedCard);
+
+    return true;
   };
 
 export default cardGetWithAllUseCaseConstructor;

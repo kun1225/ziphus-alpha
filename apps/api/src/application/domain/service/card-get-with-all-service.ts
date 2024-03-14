@@ -1,9 +1,14 @@
 import { type CardGetWithAllUseCaseConstructor } from "@/application/port/in/card-get-with-all-use-case";
 
 const cardGetWithAllUseCaseConstructor: CardGetWithAllUseCaseConstructor =
-  (loadCard) =>
+  (loadCardList) =>
   async ({ accountId }) => {
-    throw new Error("Not implemented");
+    const cards =
+      (await loadCardList({
+        belongAccountId: accountId,
+      })) || [];
+
+    return cards;
   };
 
 export default cardGetWithAllUseCaseConstructor;

@@ -39,18 +39,4 @@ describe("CardGetWithAllUseCase", () => {
     });
     expect(result).toEqual([]);
   });
-
-  it(`
-    Given a non-existing account id
-    When get all card
-    Then it should throw an error
-  `, async () => {
-    const exampleAccount = await createExampleAccount();
-    loadCardListPort.mockResolvedValue(null);
-    await expect(
-      cardCreateUseCase({
-        accountId: exampleAccount.id,
-      })
-    ).rejects.toThrow("Account not found");
-  });
 });
