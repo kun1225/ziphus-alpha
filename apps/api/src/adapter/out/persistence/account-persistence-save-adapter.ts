@@ -1,11 +1,11 @@
+import fs from "node:fs";
 import type Account from "@/application/domain/model/account";
 import type { SaveAccountPort } from "@/application/port/out/save-account-port";
-import fs from "fs";
 
 const AccountPersistenceSaveAdapter: SaveAccountPort = async (
   account: Account
 ) => {
-  const dataPath = `./data/accounts.json`;
+  const dataPath = "./data/accounts.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   const accounts = JSON.parse(data);

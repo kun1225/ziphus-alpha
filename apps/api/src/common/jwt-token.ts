@@ -1,4 +1,5 @@
-import jwt, { JwtPayload } from "jsonwebtoken";
+import type { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const privateKey = process.env.JWT_SECRET || "k,o,u,r,4,p,r,c,f,s";
 

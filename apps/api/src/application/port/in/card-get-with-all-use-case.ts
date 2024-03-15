@@ -1,10 +1,6 @@
-import Card from "@/application/domain/model/card";
+import type Card from "@/application/domain/model/card";
 import { type LoadCardListPort } from "../out/load-card-list-port";
 
-export interface CardGetWithAllUseCaseConstructor {
-  (loadCardList: LoadCardListPort): CardGetWithAllUseCase;
-}
+export type CardGetWithAllUseCaseConstructor = (loadCardList: LoadCardListPort) => CardGetWithAllUseCase;
 
-export interface CardGetWithAllUseCase {
-  (props: { accountId: string }): Promise<Card[]>;
-}
+export type CardGetWithAllUseCase = (props: { accountId: string }) => Promise<Card[]>;

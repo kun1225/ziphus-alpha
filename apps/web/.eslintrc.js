@@ -1,7 +1,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  extends: ["@repo/eslint-config/next.js"],
+  extends: ["standard", "@repo/eslint-config/next.js"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
@@ -25,6 +25,17 @@ module.exports = {
       },
     ],
     quotes: [2, "single"],
+    "comma-dangle": [
+      "error",
+      {
+        arrays: "always-multiline",
+        objects: "always-multiline",
+        imports: "always-multiline",
+        exports: "always-multiline",
+        functions: "only-multiline",
+      },
+    ],
+    semi: ["error", "always"],
   },
   overrides: [
     {

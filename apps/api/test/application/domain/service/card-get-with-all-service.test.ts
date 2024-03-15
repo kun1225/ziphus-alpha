@@ -1,6 +1,6 @@
 import cardGetWithAllUseCaseConstructor from "@/application/domain/service/card-get-with-all-service";
 import { type CardGetWithAllUseCaseConstructor } from "@/application/port/in/card-get-with-all-use-case";
-import { LoadCardListPort } from "@/application/port/out/load-card-list-port";
+import type { LoadCardListPort } from "@/application/port/out/load-card-list-port";
 import { createExampleAccount, createExampleCard } from "./create-example-data";
 
 describe("CardGetWithAllUseCase", () => {

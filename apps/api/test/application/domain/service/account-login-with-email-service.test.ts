@@ -1,10 +1,10 @@
 import Account from "@/application/domain/model/account";
 import accountLoginWithEmailUseCaseConstructor from "@/application/domain/service/account-login-with-email-service";
 import { type AccountLoginWithEmailUseCaseConstructor } from "@/application/port/in/account-login-with-email-use-case";
-import { LoadAccountPort } from "@/application/port/out/load-account-port";
+import type { LoadAccountPort } from "@/application/port/out/load-account-port";
 import hash from "@/common/hash";
-import { examplePassword, createExampleAccount } from "./create-example-data";
 import { decodeToken } from "@/common/jwt-token";
+import { examplePassword, createExampleAccount } from "./create-example-data";
 
 describe("AccountLoginWithEmailUseCase", () => {
   let accountLoginWithEmailUseCase: ReturnType<AccountLoginWithEmailUseCaseConstructor>;

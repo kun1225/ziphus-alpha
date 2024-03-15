@@ -1,10 +1,6 @@
-import Account from "@/application/domain/model/account";
+import type Account from "@/application/domain/model/account";
 import { type LoadAccountPort } from "../out/load-account-port";
 
-export interface AccountGetInfoUseCaseConstructor {
-  (loadAccount: LoadAccountPort): AccountGetInfoUseCase;
-}
+export type AccountGetInfoUseCaseConstructor = (loadAccount: LoadAccountPort) => AccountGetInfoUseCase;
 
-export interface AccountGetInfoUseCase {
-  (props: { accountId: string }): Promise<Account>;
-}
+export type AccountGetInfoUseCase = (props: { accountId: string }) => Promise<Account>;

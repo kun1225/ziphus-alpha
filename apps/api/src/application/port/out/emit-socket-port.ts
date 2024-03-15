@@ -1,3 +1,1 @@
-export interface EmitSocketPort {
-  (props: { event: string; data: any; namespace?: string }): void;
-}
+export type EmitSocketPort = (props: { event: string; data: any; namespace?: string }) => void;

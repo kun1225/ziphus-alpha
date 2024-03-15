@@ -1,9 +1,9 @@
-import { type AccountRegisterUseCaseConstructor } from "@/application/port/in/account-register-use-case";
-import Account from "../model/account";
+import { randomUUID } from "node:crypto";
 import { signToken } from "@/common/jwt-token";
-import { randomUUID } from "crypto";
+import { type AccountRegisterUseCaseConstructor } from "@/application/port/in/account-register-use-case";
 import hash from "@/common/hash";
-import AccountTokenInterface from "@/application/port/in/account-token-interface";
+import type AccountTokenInterface from "@/application/port/in/account-token-interface";
+import Account from "../model/account";
 
 const accountRegisterUseCaseConstructor: AccountRegisterUseCaseConstructor =
   (loadAccount, saveAccount) =>

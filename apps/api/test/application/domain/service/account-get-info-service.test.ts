@@ -1,6 +1,6 @@
 import accountGetInfoUseCaseConstructor from "@/application/domain/service/account-get-info-service";
 import { type AccountGetInfoUseCaseConstructor } from "@/application/port/in/account-get-info-use-case";
-import { LoadAccountPort } from "@/application/port/out/load-account-port";
+import type { LoadAccountPort } from "@/application/port/out/load-account-port";
 import { createExampleAccount } from "./create-example-data";
 
 describe("AccountGetInfoUseCase", () => {

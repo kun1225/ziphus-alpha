@@ -1,8 +1,8 @@
 import { CardPermission } from "@/application/domain/model/card";
 import cardCreateUseCaseConstructor from "@/application/domain/service/card-create-service";
 import { type CardCreateUseCaseConstructor } from "@/application/port/in/card-create-use-case";
-import { LoadAccountPort } from "@/application/port/out/load-account-port";
-import { SaveCardPort } from "@/application/port/out/save-card-port";
+import type { LoadAccountPort } from "@/application/port/out/load-account-port";
+import type { SaveCardPort } from "@/application/port/out/save-card-port";
 import { createExampleAccount } from "./create-example-data";
 
 describe("CardCreateUseCase", () => {

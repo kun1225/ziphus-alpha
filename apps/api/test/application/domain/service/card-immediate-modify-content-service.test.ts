@@ -1,11 +1,11 @@
 import cardImmediateModifyContentUseCaseConstructor from "@/application/domain/service/card-immediate-modify-content-service";
 import { type CardImmediateModifyContentUseCaseConstructor } from "@/application/port/in/card-immediate-modify-content-use-case";
-import { LoadCardPort } from "@/application/port/out/load-card-port";
-import { SaveCardPort } from "@/application/port/out/save-card-port";
-import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
-import { createExampleAccount, createExampleCard } from "./create-example-data";
-import { ContentModifyEvent } from "@/application/port/in/content-modify-event";
+import type { LoadCardPort } from "@/application/port/out/load-card-port";
+import type { SaveCardPort } from "@/application/port/out/save-card-port";
+import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import type { ContentModifyEvent } from "@/application/port/in/content-modify-event";
 import { CardPermission } from "@/application/domain/model/card";
+import { createExampleAccount, createExampleCard } from "./create-example-data";
 
 describe("CardImmediateModifyContentUseCase", () => {
   let cardImmediateModifyContentUseCase: ReturnType<CardImmediateModifyContentUseCaseConstructor>;

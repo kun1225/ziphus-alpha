@@ -1,8 +1,8 @@
+import { randomUUID } from "node:crypto";
 import { type AccountLoginWithEmailUseCaseConstructor } from "@/application/port/in/account-login-with-email-use-case";
 import { signToken } from "@/common/jwt-token";
 import hash from "@/common/hash";
-import AccountTokenInterface from "@/application/port/in/account-token-interface";
-import { randomUUID } from "crypto";
+import type AccountTokenInterface from "@/application/port/in/account-token-interface";
 
 const accountLoginWithEmailUseCaseConstructor: AccountLoginWithEmailUseCaseConstructor =
 

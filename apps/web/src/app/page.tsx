@@ -1,8 +1,10 @@
+import Header from "@/components/header";
 
 export default function Page(): JSX.Element {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <div className="min-w-screen h-full min-h-screen w-full bg-black">
+      <Header />
+      <main></main>
+    </div>
   );
 }

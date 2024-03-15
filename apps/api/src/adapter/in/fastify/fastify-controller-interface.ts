@@ -1,18 +1,16 @@
-import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { Server, IncomingMessage, ServerResponse } from "http";
+import type { Server, IncomingMessage, ServerResponse } from "node:http";
+import type { FastifyBaseLogger, FastifyInstance } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 
-interface FastifyControllerInterface<T> {
-  (
+type FastifyControllerInterface<T> = (
     fastify: FastifyInstance<
-      Server<typeof IncomingMessage, typeof ServerResponse>,
+      Server,
       IncomingMessage,
-      ServerResponse<IncomingMessage>,
+      ServerResponse,
       FastifyBaseLogger,
       ZodTypeProvider
     >,
     ...useCases: T[]
-  ): void;
-}
+  ) => void;
 
 export default FastifyControllerInterface;

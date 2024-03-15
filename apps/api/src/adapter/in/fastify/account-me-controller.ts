@@ -1,12 +1,11 @@
-import { AccountGetInfoUseCase } from "@/application/port/in/account-get-info-use-case";
-import FastifyControllerInterface from "./fastify-controller-interface";
-import { decodeToken } from "@/common/jwt-token";
-import AccountTokenInterface from "@/application/port/in/account-token-interface";
 import {
   authorizationHeaderSchema,
   AccountMeResponseDTOSchema,
-  createApiResponseDTOSchema,
 } from "@repo/shared-types";
+import type { AccountGetInfoUseCase } from "@/application/port/in/account-get-info-use-case";
+import { decodeToken } from "@/common/jwt-token";
+import type AccountTokenInterface from "@/application/port/in/account-token-interface";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
   fastify,
@@ -18,29 +17,26 @@ const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
     schema: {
       headers: authorizationHeaderSchema,
       response: {
-        200: createApiResponseDTOSchema(AccountMeResponseDTOSchema),
+        200: AccountMeResponseDTOSchema,
       },
     },
     handler: async (request, reply) => {
       try {
         const { authorization } = request.headers;
         if (!authorization) {
-          throw new Error("unauthorized");
+          throw new Error("Unauthorized");
         }
         const { accountId } = decodeToken<AccountTokenInterface>(authorization);
 
         const account = await accountGetInfoUseCase({ accountId });
 
         return {
-          data: {
-            ...account,
-            hashedPassword: undefined,
-          },
+          ...account,
+          hashedPassword: undefined,
         };
       } catch (error) {
-        reply.code(400).send({
-          error: (error as any).message,
-        });
+        reply.code(400);
+        throw error;
       }
     },
   });

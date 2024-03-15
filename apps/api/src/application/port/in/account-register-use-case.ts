@@ -1,21 +1,17 @@
 import { type LoadAccountPort } from "../out/load-account-port";
 import { type SaveAccountPort } from "../out/save-account-port";
 
-export interface AccountRegisterUseCaseConstructor {
-  (
+export type AccountRegisterUseCaseConstructor = (
     loadAccount: LoadAccountPort,
     saveAccount: SaveAccountPort
-  ): AccountRegisterUseCase;
-}
+  ) => AccountRegisterUseCase;
 
 /**
  * @returns {Promise<string>} - Login token
  */
-export interface AccountRegisterUseCase {
-  (props: {
+export type AccountRegisterUseCase = (props: {
     googleId?: string | null | undefined;
     email: string;
     name: string;
     password: string;
-  }): Promise<string>;
-}
+  }) => Promise<string>;

@@ -1,10 +1,9 @@
-import { AccountRegisterUseCase } from "@/application/port/in/account-register-use-case";
-import FastifyControllerInterface from "./fastify-controller-interface";
 import {
-  createApiResponseDTOSchema,
   AccountRegisterRequestDTOSchema,
   AccountRegisterResponseDTOSchema,
 } from "@repo/shared-types";
+import type { AccountRegisterUseCase } from "@/application/port/in/account-register-use-case";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const accountRegisterController: FastifyControllerInterface<
   AccountRegisterUseCase
@@ -15,7 +14,7 @@ const accountRegisterController: FastifyControllerInterface<
     schema: {
       body: AccountRegisterRequestDTOSchema,
       response: {
-        200: createApiResponseDTOSchema(AccountRegisterResponseDTOSchema),
+        200: AccountRegisterResponseDTOSchema,
       },
     },
     handler: async (request, reply) => {
@@ -27,14 +26,11 @@ const accountRegisterController: FastifyControllerInterface<
           password,
         });
         return {
-          data: {
-            authorization,
-          },
+          authorization,
         };
       } catch (error) {
-        reply.code(400).send({
-          error: (error as any).message,
-        });
+        reply.code(400);
+        throw error;
       }
     },
   });

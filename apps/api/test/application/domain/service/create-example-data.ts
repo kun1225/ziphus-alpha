@@ -1,11 +1,11 @@
+import { randomUUID } from "node:crypto";
 import Account from "@/application/domain/model/account";
 import Card, { CardPermission } from "@/application/domain/model/card";
 import hash from "@/common/hash";
-import { randomUUID } from "crypto";
 
 export const examplePassword = "test-password";
 
-export async function createExampleAccount() {
+export async function createExampleAccount(): Promise<Account> {
   const hashedExamplePassword = await hash(examplePassword);
 
   return new Account(
@@ -20,7 +20,7 @@ export async function createExampleAccount() {
   );
 }
 
-export function createExampleCard(accountId: string) {
+export function createExampleCard(accountId: string): Card {
   return new Card(
     randomUUID(),
     accountId,

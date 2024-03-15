@@ -1,10 +1,11 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
+import type {
+  ZodTypeProvider} from "fastify-type-provider-zod";
 import {
   serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
+  validatorCompiler
 } from "fastify-type-provider-zod";
-import accountRegisterUseCaseConstructor from "./application/domain/service/account-register-service";
+import cors from '@fastify/cors'
 import { type LoadAccountPort } from "@/application/port/out/load-account-port";
 import { type SaveAccountPort } from "@/application/port/out/save-account-port";
 import AccountPersistenceSaveAdapter from "@/adapter/out/persistence/account-persistence-save-adapter";
@@ -14,9 +15,11 @@ import accountLoginWithEmailUseCaseConstructor from "@/application/domain/servic
 import accountLoginWithEmailController from "@/adapter/in/fastify/account-login-with-email-controller";
 import accountGetInfoUseCaseConstructor from "@/application/domain/service/account-get-info-service";
 import accountMeController from "@/adapter/in/fastify/account-me-controller";
+import accountRegisterUseCaseConstructor from "./application/domain/service/account-register-service";
 
 // 初始化 fastify
 const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
+fastify.register(cors, { origin: '*' })
 fastify.setValidatorCompiler(validatorCompiler);
 fastify.setSerializerCompiler(serializerCompiler);
 

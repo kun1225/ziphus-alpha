@@ -1,7 +1,7 @@
 import accountRegisterUseCaseConstructor from "@/application/domain/service/account-register-service";
 import { type AccountRegisterUseCaseConstructor } from "@/application/port/in/account-register-use-case";
-import { LoadAccountPort } from "@/application/port/out/load-account-port";
-import { SaveAccountPort } from "@/application/port/out/save-account-port";
+import type { LoadAccountPort } from "@/application/port/out/load-account-port";
+import type { SaveAccountPort } from "@/application/port/out/save-account-port";
 import { decodeToken } from "@/common/jwt-token";
 import { examplePassword, createExampleAccount } from "./create-example-data";
 

@@ -1,6 +1,6 @@
+import { randomUUID } from "node:crypto";
 import { type CardCreateUseCaseConstructor } from "@/application/port/in/card-create-use-case";
 import Card, { CardPermission } from "../model/card";
-import { randomUUID } from "crypto";
 
 const DEFAULT_CARD_PERMISSION = CardPermission.Private;
 const DEFAULT_CARD_WIDTH = 1280;

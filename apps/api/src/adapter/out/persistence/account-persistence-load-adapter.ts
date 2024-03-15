@@ -1,8 +1,8 @@
+import fs from "node:fs";
 import type { LoadAccountPort } from "@/application/port/out/load-account-port";
-import fs from "fs";
 
 const AccountPersistenceLoadAdapter: LoadAccountPort = async (where) => {
-  const dataPath = `./data/accounts.json`;
+  const dataPath = "./data/accounts.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   const accounts = JSON.parse(data);

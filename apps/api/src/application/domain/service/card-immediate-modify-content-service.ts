@@ -38,20 +38,20 @@ const cardGetWithAllUseCaseConstructor: CardImmediateModifyContentUseCaseConstru
       } else if (index === modifyLines.length - 1) {
         // 修改範圍結束行
         return line.slice(endColumn);
-      } else {
+      } 
         // 修改範圍中間行
         return "";
-      }
+      
     });
 
     // 更新卡片內容
     const startLines = lines.slice(0, startLine);
     const endLines = lines.slice(endLine + 1);
     const updatedContent =
-      startLines.join("\n") +
-      "\n" +
-      modifiedLines.filter((line) => line !== "").join("") +
-      (endLines.length > 0 ? "\n" + endLines.join("\n") : "");
+      `${startLines.join("\n") 
+      }\n${ 
+      modifiedLines.filter((line) => line !== "").join("") 
+      }${endLines.length > 0 ? `\n${  endLines.join("\n")}` : ""}`;
 
     // 儲存更新後的卡片
     await saveCard({ ...card, content: updatedContent });

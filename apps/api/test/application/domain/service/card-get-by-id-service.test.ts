@@ -1,8 +1,8 @@
 import cardGetByIdUseCaseConstructor from "@/application/domain/service/card-get-by-id-service";
 import { type CardGetByIdUseCaseConstructor } from "@/application/port/in/card-get-by-id-use-case";
-import { LoadCardPort } from "@/application/port/out/load-card-port";
-import { createExampleAccount, createExampleCard } from "./create-example-data";
+import type { LoadCardPort } from "@/application/port/out/load-card-port";
 import { CardPermission } from "@/application/domain/model/card";
+import { createExampleAccount, createExampleCard } from "./create-example-data";
 
 describe("CardGetByIdUseCase", () => {
   let cardCreateUseCase: ReturnType<CardGetByIdUseCaseConstructor>;
