@@ -1,4 +1,8 @@
 import Fastify from "fastify";
+import {
+  serializerCompiler,
+  validatorCompiler,
+} from "fastify-type-provider-zod";
 import accountRegisterUseCaseConstructor from "./application/domain/service/account-register-service";
 import { type LoadAccountPort } from "@/application/port/out/load-account-port";
 import { type SaveAccountPort } from "@/application/port/out/save-account-port";
@@ -11,9 +15,10 @@ import accountGetInfoUseCaseConstructor from "@/application/domain/service/accou
 import accountMeController from "./adapter/in/fastify/account-me-controller";
 
 // 初始化 fastify
-const fastify = Fastify({
-  logger: true,
-});
+const fastify = Fastify();
+// Add schema validator and serializer
+fastify.setValidatorCompiler(validatorCompiler);
+fastify.setSerializerCompiler(serializerCompiler);
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;

@@ -1,38 +1,41 @@
 import { AccountRegisterUseCase } from "@/application/port/in/account-register-use-case";
 import FastifyControllerInterface from "./fastify-controller-interface";
+import { ZodTypeProvider } from "fastify-type-provider-zod";
+import {
+  createApiResponseDTOSchema,
+  AccountRegisterRequestDTOSchema,
+  AccountRegisterResponseDTOSchema,
+} from "shared-types";
 
 const accountRegisterController: FastifyControllerInterface<
   AccountRegisterUseCase
 > = (fastify, accountRegisterUseCase) => {
-  fastify.route({
+  fastify.withTypeProvider<ZodTypeProvider>().route({
     method: "POST",
     url: "/account/register",
     schema: {
-      body: {
-        type: "object",
-        required: ["email", "name", "password"],
-        properties: {
-          email: { type: "string" },
-          name: { type: "string" },
-          password: { type: "string" },
-        },
-      },
+      body: AccountRegisterRequestDTOSchema,
       response: {
-        200: {
-          type: "string",
-        },
+        200: createApiResponseDTOSchema(AccountRegisterResponseDTOSchema),
       },
     },
     handler: async (request, reply) => {
-      const { email, name, password } = request.body as {
-        email: string;
-        name: string;
-        password: string;
-      };
+      const { email, name, password } = request.body;
       try {
-        return await accountRegisterUseCase({ email, name, password });
+        const authorization = await accountRegisterUseCase({
+          email,
+          name,
+          password,
+        });
+        return {
+          data: {
+            authorization,
+          },
+        };
       } catch (error) {
-        reply.code(400).send(error);
+        reply.code(400).send({
+          error: (error as any).message,
+        });
       }
     },
   });
