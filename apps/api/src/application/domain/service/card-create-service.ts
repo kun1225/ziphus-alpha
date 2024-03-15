@@ -23,6 +23,7 @@ const cardCreateUseCaseConstructor: CardCreateUseCaseConstructor =
       DEFAULT_CARD_WIDTH,
       DEFAULT_CARD_HEIGHT,
       [],
+      [],
       new Date().toISOString(),
       new Date().toISOString(),
       null

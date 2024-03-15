@@ -30,6 +30,7 @@ export function createExampleCard(accountId: string): Card {
     1280,
     1280,
     [],
+    [],
     new Date().toISOString(),
     new Date().toISOString(),
     null

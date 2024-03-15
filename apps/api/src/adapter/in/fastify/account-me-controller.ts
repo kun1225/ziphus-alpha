@@ -3,9 +3,8 @@ import {
   AccountMeResponseDTOSchema,
 } from "@repo/shared-types";
 import type { AccountGetInfoUseCase } from "@/application/port/in/account-get-info-use-case";
-import { decodeToken } from "@/common/jwt-token";
-import type AccountTokenInterface from "@/application/port/in/account-token-interface";
 import type FastifyControllerInterface from "./fastify-controller-interface";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 
 const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
   fastify,
@@ -22,13 +21,14 @@ const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
     },
     handler: async (request, reply) => {
       try {
-        const { authorization } = request.headers;
-        if (!authorization) {
+        const accountToken = getAccountTokenInterfaceFromAuth(request.headers);
+        if (!accountToken) {
+          reply.code(401);
           throw new Error("Unauthorized");
         }
-        const { accountId } = decodeToken<AccountTokenInterface>(authorization);
-
-        const account = await accountGetInfoUseCase({ accountId });
+        const account = await accountGetInfoUseCase({
+          accountId: accountToken.accountId,
+        });
 
         return {
           ...account,

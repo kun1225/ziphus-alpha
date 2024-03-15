@@ -44,6 +44,7 @@ class Card {
     readonly width: number,
     readonly height: number,
     readonly illustrations: Illustration[],
+    readonly drawings: Stroke[],
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null
