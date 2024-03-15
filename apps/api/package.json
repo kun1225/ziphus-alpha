@@ -17,7 +17,7 @@
     "fastify-type-provider-zod": "^1.1.9",
     "fastify-zod": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
-    "shared-types": "workspace:*",
+    "@repo/shared-types": "workspace:*",
     "zod": "^3.22.4"
   },
   "devDependencies": {
