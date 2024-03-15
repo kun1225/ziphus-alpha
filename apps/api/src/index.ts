@@ -1,7 +1,8 @@
-import Fastify from "fastify";
+import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import {
   serializerCompiler,
   validatorCompiler,
+  ZodTypeProvider,
 } from "fastify-type-provider-zod";
 import accountRegisterUseCaseConstructor from "./application/domain/service/account-register-service";
 import { type LoadAccountPort } from "@/application/port/out/load-account-port";
@@ -12,11 +13,10 @@ import accountRegisterController from "@/adapter/in/fastify/account-register-con
 import accountLoginWithEmailUseCaseConstructor from "@/application/domain/service/account-login-with-email-service";
 import accountLoginWithEmailController from "@/adapter/in/fastify/account-login-with-email-controller";
 import accountGetInfoUseCaseConstructor from "@/application/domain/service/account-get-info-service";
-import accountMeController from "./adapter/in/fastify/account-me-controller";
+import accountMeController from "@/adapter/in/fastify/account-me-controller";
 
 // 初始化 fastify
-const fastify = Fastify();
-// Add schema validator and serializer
+const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
 fastify.setValidatorCompiler(validatorCompiler);
 fastify.setSerializerCompiler(serializerCompiler);
 

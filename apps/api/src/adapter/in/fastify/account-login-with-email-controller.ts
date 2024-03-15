@@ -1,5 +1,10 @@
 import { AccountLoginWithEmailUseCase } from "@/application/port/in/account-login-with-email-use-case";
 import FastifyControllerInterface from "./fastify-controller-interface";
+import {
+  AccountLoginWithEmailRequestDTOSchema,
+  AccountLoginWithEmailResponseDTOSchema,
+  createApiResponseDTOSchema,
+} from "@repo/shared-types";
 
 const accountLoginWithEmailController: FastifyControllerInterface<
   AccountLoginWithEmailUseCase
@@ -8,29 +13,27 @@ const accountLoginWithEmailController: FastifyControllerInterface<
     method: "POST",
     url: "/account/login-with-email",
     schema: {
-      body: {
-        type: "object",
-        required: ["email", "password"],
-        properties: {
-          email: { type: "string" },
-          password: { type: "string" },
-        },
-      },
+      body: AccountLoginWithEmailRequestDTOSchema,
       response: {
-        200: {
-          type: "string",
-        },
+        200: createApiResponseDTOSchema(AccountLoginWithEmailResponseDTOSchema),
       },
     },
     handler: async (request, reply) => {
-      const { email, password } = request.body as {
-        email: string;
-        password: string;
-      };
+      const { email, password } = request.body;
       try {
-        return await accountLoginWithEmailUseCase({ email, password });
+        const authorization = await accountLoginWithEmailUseCase({
+          email,
+          password,
+        });
+        return {
+          data: {
+            authorization,
+          },
+        };
       } catch (error) {
-        reply.code(401).send(error);
+        reply.code(401).send({
+          error: (error as any).message,
+        });
       }
     },
   });

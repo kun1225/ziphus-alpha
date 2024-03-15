@@ -1,16 +1,15 @@
 import { AccountRegisterUseCase } from "@/application/port/in/account-register-use-case";
 import FastifyControllerInterface from "./fastify-controller-interface";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 import {
   createApiResponseDTOSchema,
   AccountRegisterRequestDTOSchema,
   AccountRegisterResponseDTOSchema,
-} from "shared-types";
+} from "@repo/shared-types";
 
 const accountRegisterController: FastifyControllerInterface<
   AccountRegisterUseCase
 > = (fastify, accountRegisterUseCase) => {
-  fastify.withTypeProvider<ZodTypeProvider>().route({
+  fastify.route({
     method: "POST",
     url: "/account/register",
     schema: {
