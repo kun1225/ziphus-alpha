@@ -28,6 +28,8 @@ import accountLoginWithEmailController from "@/adapter/in/fastify/account-login-
 import accountMeController from "@/adapter/in/fastify/account-me-controller";
 import cardCreateController from "@/adapter/in/fastify/card-create-controller";
 import cardGetWithAllController from "@/adapter/in/fastify/card-get-with-all-controller";
+import cardGetByIdController from "./adapter/in/fastify/card-get-by-id-controller";
+import cardGetByIdUseCaseConstructor from "./application/domain/service/card-get-by-id-service";
 
 // 初始化 fastify
 const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
@@ -55,6 +57,7 @@ const accountLoginWithEmailUseCase =
 const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
 const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
 const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
+const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
 
 // 註冊 controller
 accountRegisterController(fastify, accountRegisterUseCase);
@@ -62,6 +65,7 @@ accountLoginWithEmailController(fastify, accountLoginWithEmailUseCase);
 accountMeController(fastify, accountGetInfoUseCase);
 cardCreateController(fastify, cardCreateUseCase);
 cardGetWithAllController(fastify, cardGetWithAllUseCase);
+cardGetByIdController(fastify, cardGetByIdUseCase);
 
 fastify.listen({ port: 8080 }).then((address) => {
   console.log(`Server listening on ${address}`);

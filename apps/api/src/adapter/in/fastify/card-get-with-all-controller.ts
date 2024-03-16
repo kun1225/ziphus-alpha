@@ -28,18 +28,17 @@ const cardGetWithAllController: FastifyControllerInterface<
 
       try {
         const cards =
-          (
-            await cardGetWithAllUseCase({
-              accountId: accountToken.accountId,
-            })
-          ).map((card) => {
-            return {
-              ...card,
-              permission: CardPermissionDTO[card.permission],
-            };
-          }) ?? [];
+          (await cardGetWithAllUseCase({
+            accountId: accountToken.accountId,
+          })) ?? [];
+        const cardsDto = cards.map((card) => {
+          return {
+            ...card,
+            permission: CardPermissionDTO[card.permission],
+          };
+        });
         return {
-          cards,
+          cards: cardsDto,
         };
       } catch (error) {
         reply.code(400);
