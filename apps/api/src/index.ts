@@ -1,10 +1,4 @@
-import Fastify from "fastify";
-import type { ZodTypeProvider } from "fastify-type-provider-zod";
-import {
-  serializerCompiler,
-  validatorCompiler,
-} from "fastify-type-provider-zod";
-import cors from "@fastify/cors";
+import fastifyFactory from "@/adapter/in/fastify/fastify-factory";
 import { type LoadAccountPort } from "@/application/port/out/load-account-port";
 import { type SaveAccountPort } from "@/application/port/out/save-account-port";
 import { type LoadCardListPort } from "@/application/port/out/load-card-list-port";
@@ -32,13 +26,7 @@ import cardGetByIdController from "./adapter/in/fastify/card-get-by-id-controlle
 import cardGetByIdUseCaseConstructor from "./application/domain/service/card-get-by-id-service";
 
 // 初始化 fastify
-const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
-fastify.register(cors, {
-  origin: ["*"],
-  credentials: true,
-});
-fastify.setValidatorCompiler(validatorCompiler);
-fastify.setSerializerCompiler(serializerCompiler);
+const fastify = fastifyFactory(8080);
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
@@ -66,7 +54,3 @@ accountMeController(fastify, accountGetInfoUseCase);
 cardCreateController(fastify, cardCreateUseCase);
 cardGetWithAllController(fastify, cardGetWithAllUseCase);
 cardGetByIdController(fastify, cardGetByIdUseCase);
-
-fastify.listen({ port: 8080 }).then((address) => {
-  console.log(`Server listening on ${address}`);
-});
