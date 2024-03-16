@@ -1,7 +1,7 @@
 import { type CardImmediateModifyContentUseCaseConstructor } from "@/application/port/in/card-immediate-modify-content-use-case";
 import { CardPermission } from "../model/card";
 
-const cardGetWithAllUseCaseConstructor: CardImmediateModifyContentUseCaseConstructor =
+const cardImmediateModifyContentCaseConstructor: CardImmediateModifyContentUseCaseConstructor =
   (loadCard, saveCard, emitSocket) => async (contentModifyEvent) => {
     const card = await loadCard({
       id: contentModifyEvent.cardId,
@@ -66,4 +66,4 @@ const cardGetWithAllUseCaseConstructor: CardImmediateModifyContentUseCaseConstru
     return true;
   };
 
-export default cardGetWithAllUseCaseConstructor;
+export default cardImmediateModifyContentCaseConstructor;
