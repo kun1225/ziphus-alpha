@@ -28,6 +28,8 @@ import cardGetByIdUseCaseConstructor from "@/application/domain/service/card-get
 import SocketIoFactory from "@/adapter/in/socket/socket-io-factory";
 import CardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
 import cardImmediateModifyContentCaseConstructor from "./application/domain/service/card-immediate-modify-content-service";
+// just for test
+import { Document, YSocketIO } from "y-socket.io/dist/server";
 
 // 初始化 fastify
 const fastify = fastifyFactory(8080);
@@ -88,4 +90,13 @@ fastify.ready((err) => {
       socket.leave(`card-${data.cardId}`);
     });
   });
+});
+
+// just for test
+const ysocketio = new YSocketIO(io, {});
+ysocketio.initialize();
+
+ysocketio.on("document-update", (doc: Document, update: Uint8Array) => {
+  // query the document of content
+  console.log("document-update", doc.getXmlFragment("document-store").toJSON());
 });
