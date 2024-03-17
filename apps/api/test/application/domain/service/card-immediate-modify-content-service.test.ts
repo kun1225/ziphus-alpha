@@ -68,9 +68,9 @@ describe("CardImmediateModifyContentUseCase", () => {
       })
     );
     expect(emitSocketMock).toHaveBeenCalledWith({
-      event: "card-immediate-modify-content",
+      event: "card:modify-content",
       data: mockContentModifyEvent,
-      namespace: `/card/${exampleCard.id}`,
+      room: `card-${exampleCard.id}`,
     });
   });
 
@@ -117,9 +117,9 @@ describe("CardImmediateModifyContentUseCase", () => {
         "Do you like me?",
     });
     expect(emitSocketMock).toHaveBeenCalledWith({
-      event: "card-immediate-modify-content",
+      event: "card:modify-content",
       data: mockContentModifyEvent,
-      namespace: `/card/${exampleCard.id}`,
+      room: `card-${exampleCard.id}`,
     });
   });
 
@@ -162,9 +162,9 @@ describe("CardImmediateModifyContentUseCase", () => {
         "Hello, I am a Ray\n" + "Like hardware engineer\n" + "Do you like me?",
     });
     expect(emitSocketMock).toHaveBeenCalledWith({
-      event: "card-immediate-modify-content",
+      event: "card:modify-content",
       data: mockContentModifyEvent,
-      namespace: `/card/${exampleCard.id}`,
+      room: `card-${exampleCard.id}`,
     });
   });
 
@@ -243,9 +243,9 @@ describe("CardImmediateModifyContentUseCase", () => {
         "Hello, I am a Ray\n" + "Like hardware engineer" + "Do you like me?",
     });
     expect(emitSocketMock).toHaveBeenCalledWith({
-      event: "card-immediate-modify-content",
+      event: "card:modify-content",
       data: mockContentModifyEvent,
-      namespace: `/card/${exampleCard.id}`,
+      room: `card-${exampleCard.id}`,
     });
   });
 });

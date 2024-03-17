@@ -1,13 +1,10 @@
 import { z } from "zod";
 
 export const CardContentModifyEventDTOSchema = z.object({
+  socketId: z.string(),
   cardId: z.string(),
-  startLine: z.number(),
-  startColumn: z.number(),
-  startTarget: z.string(),
-  endLine: z.number(),
-  endColumn: z.number(),
-  endTarget: z.string(),
+  startPosition: z.number(),
+  endPosition: z.number(),
   insertText: z.string(),
 });
 

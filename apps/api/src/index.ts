@@ -52,11 +52,12 @@ const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
 const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
 const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
 const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
-const cardImmediateModifyContentUseCase = cardImmediateModifyContentCaseConstructor(
-  loadCard,
-  saveCard,
-  emitSocketAdapter
-)
+const cardImmediateModifyContentUseCase =
+  cardImmediateModifyContentCaseConstructor(
+    loadCard,
+    saveCard,
+    emitSocketAdapter
+  );
 
 // 註冊 controller
 accountRegisterController(fastify, accountRegisterUseCase);
@@ -68,10 +69,23 @@ cardGetByIdController(fastify, cardGetByIdUseCase);
 
 fastify.ready((err) => {
   if (err) throw err;
-  io.on('connection', (socket) => {
-    CardImmediateModifyContentController(socket, io, cardImmediateModifyContentUseCase);
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
+  io.on("connection", (socket) => {
+    CardImmediateModifyContentController(
+      socket,
+      io,
+      cardImmediateModifyContentUseCase
+    );
+    socket.on("disconnect", () => {
+      console.log("user disconnected");
     });
-  })
+
+    // 以下是加速開發用的程式碼需在未來重購
+    socket.on("card-join", (data: { cardId: string }) => {
+      socket.join(`card-${data.cardId}`);
+    });
+
+    socket.on("card-leave", (data: { cardId: string }) => {
+      socket.leave(`card-${data.cardId}`);
+    });
+  });
 });
