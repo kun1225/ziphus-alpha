@@ -29,12 +29,13 @@ import SocketIoFactory from "@/adapter/in/socket/socket-io-factory";
 import CardModifyContentController from "@/adapter/in/yjs/card-modify-content-controller";
 import cardModifyContentCaseConstructor from "@/application/domain/service/card-modify-content-service";
 import { YSocketIO } from "y-socket.io/dist/server";
-import cardStartEditSingleCardController from "./adapter/in/yjs/card-start-edit-single-card-controller";
 
 // 初始化基礎設施
 const fastify = fastifyFactory(8080);
 const io = SocketIoFactory(fastify);
-const ysocketio = new YSocketIO(io, {});
+const ysocketio = new YSocketIO(io, {
+  levelPersistenceDir: "./yjs-data",
+});
 ysocketio.initialize();
 
 // 初始化持久層
@@ -69,7 +70,6 @@ cardCreateController(fastify, cardCreateUseCase);
 cardGetWithAllController(fastify, cardGetWithAllUseCase);
 cardGetByIdController(fastify, cardGetByIdUseCase);
 CardModifyContentController(ysocketio, cardModifyContentUseCase);
-cardStartEditSingleCardController(ysocketio, cardGetByIdUseCase);
 
 fastify.ready((err) => {
   if (err) throw err;

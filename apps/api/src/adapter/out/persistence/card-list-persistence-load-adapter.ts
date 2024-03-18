@@ -2,7 +2,7 @@ import fs from "node:fs";
 import type { LoadCardListPort } from "@/application/port/out/load-card-list-port";
 
 const CardListPersistenceLoadAdapter: LoadCardListPort = async (where) => {
-  const dataPath = "./data/Cards.json";
+  const dataPath = "./persistence/Cards.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   const cards = JSON.parse(data) ?? [];

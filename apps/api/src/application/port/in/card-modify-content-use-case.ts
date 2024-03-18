@@ -8,6 +8,6 @@ export type CardModifyContentUseCaseConstructor = (
 
 export type CardModifyContentUseCase = (props: {
   cardId: string;
-  content: Uint8Array;
+  content: string;
   // accountId?: string;
 }) => Promise<boolean>;

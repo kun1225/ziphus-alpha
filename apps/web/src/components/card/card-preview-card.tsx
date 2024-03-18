@@ -99,11 +99,10 @@ function CardPreviewCard({ card }: CardPreviewCardProps) {
               ? card.title.slice(0, 14) + "..."
               : card.title}
           </h1>
-          <p className="mt-2 text-[#919191]">
-            {card.content.length > 60
-              ? card.content.slice(0, 20) + "..."
-              : card.content}
-          </p>
+          <p
+            className="mt-2 overflow-hidden text-[#919191]"
+            dangerouslySetInnerHTML={{ __html: card.content }}
+          ></p>
         </div>
       </CardPreviewCardContainer>
     </Link>

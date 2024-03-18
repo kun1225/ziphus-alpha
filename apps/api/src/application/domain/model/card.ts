@@ -40,7 +40,7 @@ class Card {
     readonly belongAccountId: string,
     readonly permission: CardPermission,
     readonly title: string,
-    readonly content: Uint8Array,
+    readonly content: string,
     readonly width: number,
     readonly height: number,
     readonly illustrations: Illustration[],

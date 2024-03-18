@@ -6,16 +6,15 @@ import * as Y from "yjs";
 
 const CardModifyContentController: IoControllerInterface<
   CardModifyContentUseCase
-> = (ySocketIO, cardImmediateModifyContentUseCase) => {
+> = (ySocketIO, cardModifyContentUseCase) => {
   ySocketIO.on("document-update", (doc: Document, update: Uint8Array) => {
     const room = doc.name;
     const cardId = extractCardId(room);
     if (!cardId) return;
 
-    const content = Y.encodeStateAsUpdate(doc);
-    console.log("content", new TextDecoder().decode(content));
-    console.log("content", content.length);
-    cardImmediateModifyContentUseCase({
+    const content = doc.getXmlFragment("card-content").toString();
+
+    cardModifyContentUseCase({
       cardId,
       content,
     });

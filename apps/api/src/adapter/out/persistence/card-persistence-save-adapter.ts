@@ -3,7 +3,7 @@ import type Card from "@/application/domain/model/card";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
 
 const CardPersistenceSaveAdapter: SaveCardPort = async (card: Card) => {
-  const dataPath = "./data/cards.json";
+  const dataPath = "./persistence/cards.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   let cards = JSON.parse(data) ?? [];

@@ -5,7 +5,7 @@ import type { SaveAccountPort } from "@/application/port/out/save-account-port";
 const AccountPersistenceSaveAdapter: SaveAccountPort = async (
   account: Account
 ) => {
-  const dataPath = "./data/accounts.json";
+  const dataPath = "./persistence/accounts.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   const accounts = JSON.parse(data);

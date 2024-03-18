@@ -34,7 +34,6 @@ const cardCreateController: FastifyControllerInterface<CardCreateUseCase> = (
         const cardDto = {
           ...card,
           permission: CardPermissionDTO[card.permission],
-          content: card.content.toString(),
         };
 
         return {
