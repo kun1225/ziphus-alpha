@@ -35,6 +35,7 @@ const cardGetWithAllController: FastifyControllerInterface<
           return {
             ...card,
             permission: CardPermissionDTO[card.permission],
+            content: card.content.toString(),
           };
         });
         return {

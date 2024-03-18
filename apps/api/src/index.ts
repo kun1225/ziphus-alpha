@@ -29,7 +29,7 @@ import SocketIoFactory from "@/adapter/in/socket/socket-io-factory";
 import CardModifyContentController from "@/adapter/in/yjs/card-modify-content-controller";
 import cardModifyContentCaseConstructor from "@/application/domain/service/card-modify-content-service";
 import { YSocketIO } from "y-socket.io/dist/server";
-import cardStartEditSingleCardController from "./adapter/in/fasitfy-yjs/card-start-edit-single-card-controller";
+import cardStartEditSingleCardController from "./adapter/in/yjs/card-start-edit-single-card-controller";
 
 // 初始化基礎設施
 const fastify = fastifyFactory(8080);
@@ -56,11 +56,10 @@ const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
 const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
 const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
 const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
-const cardModifyContentUseCase =
-  cardModifyContentCaseConstructor(
-    loadCard,
-    saveCard,
-  );
+const cardModifyContentUseCase = cardModifyContentCaseConstructor(
+  loadCard,
+  saveCard
+);
 
 // 註冊 controller
 accountRegisterController(fastify, accountRegisterUseCase);
@@ -70,7 +69,7 @@ cardCreateController(fastify, cardCreateUseCase);
 cardGetWithAllController(fastify, cardGetWithAllUseCase);
 cardGetByIdController(fastify, cardGetByIdUseCase);
 CardModifyContentController(ysocketio, cardModifyContentUseCase);
-cardStartEditSingleCardController(fastify, ysocketio, cardGetByIdUseCase)
+cardStartEditSingleCardController(ysocketio, cardGetByIdUseCase);
 
 fastify.ready((err) => {
   if (err) throw err;
@@ -80,5 +79,3 @@ fastify.ready((err) => {
     });
   });
 });
-
-

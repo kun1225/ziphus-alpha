@@ -35,6 +35,7 @@ const cardGetByIdController: FastifyControllerInterface<CardGetByIdUseCase> = (
           ? {
               ...card,
               permission: CardPermissionDTO[card.permission],
+              content: card.content.toString(),
             }
           : null;
         return {

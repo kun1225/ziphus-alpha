@@ -19,7 +19,7 @@ const cardCreateUseCaseConstructor: CardCreateUseCaseConstructor =
       accountId,
       DEFAULT_CARD_PERMISSION,
       "",
-      "",
+      new Uint8Array(),
       DEFAULT_CARD_WIDTH,
       DEFAULT_CARD_HEIGHT,
       [],
