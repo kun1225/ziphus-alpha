@@ -1,5 +1,5 @@
-2024/03/18-18:50:37.055 5a90 Recovering log #3
-2024/03/18-18:50:37.055 5a90 Level-0 table #5: started
-2024/03/18-18:50:37.067 5a90 Level-0 table #5: 1470 bytes OK
-2024/03/18-18:50:37.091 5a90 Delete type=0 #3
-2024/03/18-18:50:37.091 5a90 Delete type=3 #2
+2024/03/18-19:15:58.757 360c Recovering log #9
+2024/03/18-19:15:58.757 360c Level-0 table #11: started
+2024/03/18-19:15:58.782 360c Level-0 table #11: 201 bytes OK
+2024/03/18-19:15:58.799 360c Delete type=0 #9
+2024/03/18-19:15:58.800 360c Delete type=3 #7

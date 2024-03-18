@@ -17,7 +17,7 @@ function convertToArrayBuffer(arrayLike: {
 }
 
 const CardPersistenceLoadAdapter: LoadCardPort = async (where) => {
-  const dataPath = "./persistence/Cards.json";
+  const dataPath = "./persistence/cards.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   const cards = JSON.parse(data);
