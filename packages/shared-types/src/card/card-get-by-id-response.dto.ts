@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { cardDto } from "./card.dto";
+import { cardDtoSchema } from "./card.dto";
 
 export const CardGetByIdResponseDTOSchema = z.object({
-  card: cardDto.nullable(),
+  card: cardDtoSchema.nullable(),
 });
 
 export type CardGetByIdResponseDTO = z.infer<

@@ -1,6 +1,7 @@
 import {
   authorizationHeaderSchema,
   CardCreateResponseDTOSchema,
+  CardPermissionDTO,
 } from "@repo/shared-types";
 import type { CardCreateUseCase } from "@/application/port/in/card-create-use-case";
 import type FastifyControllerInterface from "./fastify-controller-interface";
@@ -30,8 +31,13 @@ const cardCreateController: FastifyControllerInterface<CardCreateUseCase> = (
         const card = await cardCreateUseCase({
           accountId: accountToken.accountId,
         });
+        const cardDto = {
+          ...card,
+          permission: CardPermissionDTO[card.permission],
+        };
+
         return {
-          card,
+          card: cardDto,
         };
       } catch (error) {
         reply.code(400);

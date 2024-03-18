@@ -26,14 +26,16 @@ import cardGetWithAllController from "@/adapter/in/fastify/card-get-with-all-con
 import cardGetByIdController from "@/adapter/in/fastify/card-get-by-id-controller";
 import cardGetByIdUseCaseConstructor from "@/application/domain/service/card-get-by-id-service";
 import SocketIoFactory from "@/adapter/in/socket/socket-io-factory";
-import CardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
-import cardImmediateModifyContentCaseConstructor from "./application/domain/service/card-immediate-modify-content-service";
-// just for test
-import { Document, YSocketIO } from "y-socket.io/dist/server";
+import CardModifyContentController from "@/adapter/in/yjs/card-modify-content-controller";
+import cardModifyContentCaseConstructor from "@/application/domain/service/card-modify-content-service";
+import { YSocketIO } from "y-socket.io/dist/server";
+import cardStartEditSingleCardController from "./adapter/in/fasitfy-yjs/card-start-edit-single-card-controller";
 
-// 初始化 fastify
+// 初始化基礎設施
 const fastify = fastifyFactory(8080);
 const io = SocketIoFactory(fastify);
+const ysocketio = new YSocketIO(io, {});
+ysocketio.initialize();
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
@@ -54,11 +56,10 @@ const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
 const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
 const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
 const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
-const cardImmediateModifyContentUseCase =
-  cardImmediateModifyContentCaseConstructor(
+const cardModifyContentUseCase =
+  cardModifyContentCaseConstructor(
     loadCard,
     saveCard,
-    emitSocketAdapter
   );
 
 // 註冊 controller
@@ -68,35 +69,16 @@ accountMeController(fastify, accountGetInfoUseCase);
 cardCreateController(fastify, cardCreateUseCase);
 cardGetWithAllController(fastify, cardGetWithAllUseCase);
 cardGetByIdController(fastify, cardGetByIdUseCase);
+CardModifyContentController(ysocketio, cardModifyContentUseCase);
+cardStartEditSingleCardController(fastify, ysocketio, cardGetByIdUseCase)
 
 fastify.ready((err) => {
   if (err) throw err;
   io.on("connection", (socket) => {
-    CardImmediateModifyContentController(
-      socket,
-      io,
-      cardImmediateModifyContentUseCase
-    );
     socket.on("disconnect", () => {
       console.log("user disconnected");
-    });
-
-    // 以下是加速開發用的程式碼需在未來重購
-    socket.on("card-join", (data: { cardId: string }) => {
-      socket.join(`card-${data.cardId}`);
-    });
-
-    socket.on("card-leave", (data: { cardId: string }) => {
-      socket.leave(`card-${data.cardId}`);
     });
   });
 });
 
-// just for test
-const ysocketio = new YSocketIO(io, {});
-ysocketio.initialize();
 
-ysocketio.on("document-update", (doc: Document, update: Uint8Array) => {
-  // query the document of content
-  console.log("document-update", doc.getXmlFragment("document-store").toJSON());
-});

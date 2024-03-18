@@ -12,7 +12,7 @@ export const CardPermissionDTOSchema = z.enum([
   CardPermissionDTO.PublicEditable,
 ]);
 
-export const cardDto = z.object({
+export const cardDtoSchema = z.object({
   id: z.string(),
   belongAccountId: z.string(),
   permission: CardPermissionDTOSchema,
@@ -50,3 +50,5 @@ export const cardDto = z.object({
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),
 });
+
+export type CardDto = z.infer<typeof cardDtoSchema>;

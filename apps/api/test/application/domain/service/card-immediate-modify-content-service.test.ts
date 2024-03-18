@@ -1,5 +1,5 @@
-import cardImmediateModifyContentUseCaseConstructor from "@/application/domain/service/card-immediate-modify-content-service";
-import { type CardImmediateModifyContentUseCaseConstructor } from "@/application/port/in/card-immediate-modify-content-use-case";
+import cardImmediateModifyContentUseCaseConstructor from "@/application/domain/service/card-modify-content-service";
+import { type CardImmediateModifyContentUseCaseConstructor } from "@/application/port/in/card-modify-content-use-case";
 import type { LoadCardPort } from "@/application/port/out/load-card-port";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
 import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";

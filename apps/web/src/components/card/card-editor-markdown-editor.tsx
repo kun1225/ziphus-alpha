@@ -1,30 +1,36 @@
-"use client";
-import "@blocknote/core/fonts/inter.css";
+'use client';
+import '@blocknote/core/fonts/inter.css';
 import {
   BlockNoteView,
   darkDefaultTheme,
   useCreateBlockNote,
-} from "@blocknote/react";
-import "@blocknote/react/style.css";
-import { useEffect, useState } from "react";
-import * as Y from "yjs";
-import { SocketIOProvider } from "y-socket.io";
+} from '@blocknote/react';
+import '@blocknote/react/style.css';
+import { useEffect, useState } from 'react';
+import * as Y from 'yjs';
+import { SocketIOProvider } from 'y-socket.io';
 
-const doc = new Y.Doc();
+interface CardEditorMarkdownEditorProps {
+  cardId: string;
+}
+function CardEditorMarkdownEditor({ cardId }: CardEditorMarkdownEditorProps) {
+  const [status, setStatus] = useState<string>('disconnected');
+  const [userName, setUserName] = useState<string>('My Username');
+  const [doc] = useState(new Y.Doc());
+  const [provider] = useState(
+    new SocketIOProvider(
+      'ws://localhost:8080',
+      `card-${cardId}`,
+      doc,
+      {
+        autoConnect: true,
+        auth: {
+          test: 'test',
+        },
+      },
 
-const provider = new SocketIOProvider(
-  "ws://localhost:8080",
-  "testing-doc",
-  doc,
-  {
-    autoConnect: true,
-  },
-);
-
-interface CardEditorMarkdownEditorProps {}
-function CardEditorMarkdownEditor({}: CardEditorMarkdownEditorProps) {
-  const [status, setStatus] = useState<string>("disconnected");
-  const [userName, setUserName] = useState<string>("My Username");
+    )
+  );
 
   const editor = useCreateBlockNote({
     // ...
@@ -32,22 +38,22 @@ function CardEditorMarkdownEditor({}: CardEditorMarkdownEditorProps) {
       // The Yjs Provider responsible for transporting updates:
       provider,
       // Where to store BlockNote data in the Y.Doc:
-      fragment: doc.getXmlFragment("document-store"),
+      fragment: doc.getXmlFragment('card-content'),
       // Information (name and color) for this user:
       user: {
         name: userName,
-        color: "#0066ff",
+        color: '#0066ff',
       },
     },
     // ...
   });
 
   useEffect(() => {
-    provider.on("sync", (isSync: boolean) =>
-      console.log("websocket sync", isSync),
+    provider.on('sync', (isSync: boolean) =>
+      console.log('websocket sync', isSync),
     );
-    provider.on("status", ({ status: _status }: { status: string }) => {
-      if (!!_status) setStatus(_status);
+    provider.on('status', ({ status: _status }: { status: string }) => {
+      if (_status) setStatus(_status);
     });
 
     return () => {
@@ -65,13 +71,13 @@ function CardEditorMarkdownEditor({}: CardEditorMarkdownEditorProps) {
           setUserName(e.target.value);
           editor.updateCollaborationUserInfo({
             name: e.target.value,
-            color: "#0066ff",
+            color: '#0066ff',
           });
         }}
       />
 
       <p>State: {status}</p>
-      {!(status === "connected") ? (
+      {!(status === 'connected') ? (
         <>
           <button onClick={() => provider.connect()}>Connect</button>
         </>
