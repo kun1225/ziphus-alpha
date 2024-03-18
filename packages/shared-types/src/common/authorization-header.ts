@@ -1,7 +1,14 @@
 import { z } from "zod";
 
-export const authorizationHeaderSchema = z.object({
+export const AuthorizationHeaderSchema = z.object({
   authorization: z.string(),
 });
 
-export type Authorization = z.infer<typeof authorizationHeaderSchema>;
+export const OptionalAuthorizationHeaderSchema = z.object({
+  authorization: z.string(),
+});
+
+export type Authorization = z.infer<typeof AuthorizationHeaderSchema>;
+export type OptionalAuthorization = z.infer<
+  typeof OptionalAuthorizationHeaderSchema
+>;

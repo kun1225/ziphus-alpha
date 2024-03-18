@@ -1,5 +1,5 @@
 import {
-  authorizationHeaderSchema,
+  AuthorizationHeaderSchema,
   AccountMeResponseDTOSchema,
 } from "@repo/shared-types";
 import type { AccountGetInfoUseCase } from "@/application/port/in/account-get-info-use-case";
@@ -14,7 +14,9 @@ const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
     method: "GET",
     url: "/account/me",
     schema: {
-      headers: authorizationHeaderSchema,
+      summary: "取得本人帳號",
+      tags: ["Account"],
+      headers: AuthorizationHeaderSchema,
       response: {
         200: AccountMeResponseDTOSchema,
       },
@@ -36,6 +38,7 @@ const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
         };
       } catch (error) {
         reply.code(400);
+        console.error(error);
         throw error;
       }
     },

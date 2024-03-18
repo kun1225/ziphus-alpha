@@ -1,4 +1,5 @@
 import fastifyFactory from "@/adapter/in/fastify/fastify-factory";
+import YSocketIOFactory from "@/adapter/in/yjs/y-socket-io-factory";
 import { type LoadAccountPort } from "@/application/port/out/load-account-port";
 import { type SaveAccountPort } from "@/application/port/out/save-account-port";
 import { type LoadCardListPort } from "@/application/port/out/load-card-list-port";
@@ -17,6 +18,7 @@ import accountGetInfoUseCaseConstructor from "@/application/domain/service/accou
 import accountRegisterUseCaseConstructor from "@/application/domain/service/account-register-service";
 import cardCreateUseCaseConstructor from "@/application/domain/service/card-create-service";
 import cardGetWithAllUseCaseConstructor from "@/application/domain/service/card-get-with-all-service";
+import cardModifyContentCaseConstructor from "@/application/domain/service/card-modify-content-service";
 
 import accountRegisterController from "@/adapter/in/fastify/account-register-controller";
 import accountLoginWithEmailController from "@/adapter/in/fastify/account-login-with-email-controller";
@@ -27,16 +29,11 @@ import cardGetByIdController from "@/adapter/in/fastify/card-get-by-id-controlle
 import cardGetByIdUseCaseConstructor from "@/application/domain/service/card-get-by-id-service";
 import SocketIoFactory from "@/adapter/in/socket/socket-io-factory";
 import CardModifyContentController from "@/adapter/in/yjs/card-modify-content-controller";
-import cardModifyContentCaseConstructor from "@/application/domain/service/card-modify-content-service";
-import { YSocketIO } from "y-socket.io/dist/server";
 
 // 初始化基礎設施
 const fastify = fastifyFactory(8080);
 const io = SocketIoFactory(fastify);
-const ysocketio = new YSocketIO(io, {
-  levelPersistenceDir: "./yjs-data",
-});
-ysocketio.initialize();
+const ySocketIo = YSocketIOFactory(io);
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
@@ -63,13 +60,15 @@ const cardModifyContentUseCase = cardModifyContentCaseConstructor(
 );
 
 // 註冊 controller
-accountRegisterController(fastify, accountRegisterUseCase);
-accountLoginWithEmailController(fastify, accountLoginWithEmailUseCase);
-accountMeController(fastify, accountGetInfoUseCase);
-cardCreateController(fastify, cardCreateUseCase);
-cardGetWithAllController(fastify, cardGetWithAllUseCase);
-cardGetByIdController(fastify, cardGetByIdUseCase);
-CardModifyContentController(ysocketio, cardModifyContentUseCase);
+fastify.after(() => {
+  accountRegisterController(fastify, accountRegisterUseCase);
+  accountLoginWithEmailController(fastify, accountLoginWithEmailUseCase);
+  accountMeController(fastify, accountGetInfoUseCase);
+  cardCreateController(fastify, cardCreateUseCase);
+  cardGetWithAllController(fastify, cardGetWithAllUseCase);
+  cardGetByIdController(fastify, cardGetByIdUseCase);
+});
+CardModifyContentController(ySocketIo, cardModifyContentUseCase);
 
 fastify.ready((err) => {
   if (err) throw err;
@@ -78,4 +77,5 @@ fastify.ready((err) => {
       console.log("user disconnected");
     });
   });
+  fastify.swagger();
 });

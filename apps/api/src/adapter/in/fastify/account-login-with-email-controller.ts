@@ -12,6 +12,8 @@ const accountLoginWithEmailController: FastifyControllerInterface<
     method: "POST",
     url: "/account/login-with-email",
     schema: {
+      summary: "使用 Email 與密碼登入帳號",
+      tags: ["Account"],
       body: AccountLoginWithEmailRequestDTOSchema,
       response: {
         200: AccountLoginWithEmailResponseDTOSchema,
@@ -29,6 +31,7 @@ const accountLoginWithEmailController: FastifyControllerInterface<
         };
       } catch (error) {
         reply.code(400);
+        console.error(error);
         throw error;
       }
     },

@@ -1,13 +1,9 @@
-import axios from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import { CardGetByIdResponseDTO } from "@repo/shared-types";
 import { useQuery } from "@tanstack/react-query";
 
 async function fetchCardById(cardId: string) {
-  return await axios.get<CardGetByIdResponseDTO>("/card/get-by-id", {
-    params: {
-      id: cardId,
-    },
-  });
+  return await axiosInstance.get<CardGetByIdResponseDTO>(`/card/${cardId}`);
 }
 
 function useQueryCardById(cardId: string) {

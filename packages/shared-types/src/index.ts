@@ -9,5 +9,3 @@ export * from "./card/card-create-response.dto";
 export * from "./card/card-get-with-all-response.dto";
 export * from "./card/card-get-by-id-response.dto";
 export * from "./card/card-get-by-id-request.dto";
-export * from './card/card-start-edit-single-card-request.dto';
-export * from './card/card-start-edit-single-card-response.dto';

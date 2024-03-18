@@ -6,22 +6,23 @@ import {
 } from "@repo/shared-types";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import axios from "@/utils/axios";
 import { toast } from "sonner";
 import { setCookie } from "cookies-next";
 import Link from "next/link";
 import axiosInstance from "@/utils/axios";
+import { useRouter } from "next/navigation";
 
 async function fetchAccountLoginWithEmail(
   data: AccountLoginWithEmailRequestDTO,
 ) {
-  return await axios.post<AccountLoginWithEmailResponseDTO>(
+  return await axiosInstance.post<AccountLoginWithEmailResponseDTO>(
     "/account/login-with-email",
     data,
   );
 }
 
 function AccountLoginForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -35,6 +36,7 @@ function AccountLoginForm() {
       setCookie("authorization", authorization);
       toast.success("Login success");
       axiosInstance.defaults.headers.authorization = authorization;
+      router.push("/cards");
     },
     onError: (error: any) => {
       if (error.response.data.message) {

@@ -13,7 +13,6 @@ const CardModifyContentController: IoControllerInterface<
     if (!cardId) return;
 
     const content = doc.getXmlFragment("card-content").toString();
-
     cardModifyContentUseCase({
       cardId,
       content,

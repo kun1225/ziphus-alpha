@@ -1,6 +1,9 @@
 "use client";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";
+import useMe from "@/hooks/use-me";
+import useQueryCardById from "@/hooks/card/use-query-card-by-id";
+import { Input } from "@/components/material-tailwind";
 
 const CardEditorMarkdownEditor = dynamic(
   () => import("@/components/card/card-editor-markdown-editor"),
@@ -12,12 +15,17 @@ const CardEditorMarkdownEditor = dynamic(
 
 function CardEditor() {
   const { id } = useParams();
+  const { card, isLoading, error } = useQueryCardById(id as string);
+  const { account } = useMe();
 
-  if (!id) return null;
+  if (!card || !account) return null;
 
   return (
     <div className="w-full">
-      <CardEditorMarkdownEditor cardId={id as string} />
+      <CardEditorMarkdownEditor
+        cardId={id as string}
+        accountName={account.name}
+      />
     </div>
   );
 }

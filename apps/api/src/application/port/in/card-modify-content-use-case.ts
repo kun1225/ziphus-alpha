@@ -7,6 +7,7 @@ export type CardModifyContentUseCaseConstructor = (
 ) => CardModifyContentUseCase;
 
 export type CardModifyContentUseCase = (props: {
+  accountId: string;
   cardId: string;
   content: string;
   // accountId?: string;

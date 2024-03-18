@@ -12,6 +12,8 @@ const accountRegisterController: FastifyControllerInterface<
     method: "POST",
     url: "/account/register",
     schema: {
+      summary: "註冊新帳號",
+      tags: ["Account"],
       body: AccountRegisterRequestDTOSchema,
       response: {
         200: AccountRegisterResponseDTOSchema,
@@ -30,6 +32,7 @@ const accountRegisterController: FastifyControllerInterface<
         };
       } catch (error) {
         reply.code(400);
+        console.error(error);
         throw error;
       }
     },

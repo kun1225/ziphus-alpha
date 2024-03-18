@@ -2,11 +2,13 @@
 import { useQuery } from "@tanstack/react-query";
 import CardPreviewCard from "./card-preview-card";
 import { CardGetWithAllResponseDTO } from "@repo/shared-types";
-import axios from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import { getCookie } from "cookies-next";
 
 async function fetchCardWithAll() {
-  return await axios.get<CardGetWithAllResponseDTO>("/card/get-with-all");
+  return await axiosInstance.get<CardGetWithAllResponseDTO>(
+    "/cards",
+  );
 }
 
 function CardPreviewList() {

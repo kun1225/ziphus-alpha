@@ -87,18 +87,22 @@ function CardPreviewCard({ card }: CardPreviewCardProps) {
       : card.permission === CardPermissionDTO.PublicReadOnly
         ? "公開筆記（唯讀）"
         : "公開筆記（可編輯）";
+
+  const title =
+    card.title.length === 0
+      ? "No Name"
+      : card.title.length > 24
+        ? card.title.slice(0, 24) + "..."
+        : card.title;
+  
   return (
     <Link href={`/card/${card.id}`} passHref>
       <CardPreviewCardContainer className="rounded-lg">
-        <div className="relative min-h-64 min-w-96 cursor-pointer overflow-hidden bg-[#5a5a5a33] p-6 backdrop-blur-3xl">
+        <div className="relative min-h-64 min-w-96 max-w-md cursor-pointer overflow-hidden bg-[#5a5a5a33] p-6 backdrop-blur-3xl">
           <h2 className="text-lg font-semibold text-[#5C5C5C]">
             {permissionText} →
           </h2>
-          <h1 className="text-2xl font-bold text-[#A1A1A1]">
-            {card.title.length > 14
-              ? card.title.slice(0, 14) + "..."
-              : card.title}
-          </h1>
+          <h1 className="text-2xl font-bold text-[#A1A1A1]">{title}</h1>
           <p
             className="mt-2 overflow-hidden text-[#919191]"
             dangerouslySetInnerHTML={{ __html: card.content }}

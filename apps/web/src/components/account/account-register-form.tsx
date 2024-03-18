@@ -6,19 +6,21 @@ import {
 } from "@repo/shared-types";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import axios from "@/utils/axios";
+import axiosInstance from "@/utils/axios";
 import { toast } from "sonner";
 import { setCookie } from "cookies-next";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 async function fetchAccountRegister(data: AccountRegisterRequestDTO) {
-  return await axios.post<AccountRegisterResponseDTO>(
+  return await axiosInstance.post<AccountRegisterResponseDTO>(
     "/account/register",
     data,
   );
 }
 
 function AccountRegisterForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -31,6 +33,8 @@ function AccountRegisterForm() {
       const authorization = response.data.authorization;
       setCookie("authorization", authorization);
       toast.success("Login success");
+      axiosInstance.defaults.headers.authorization = authorization;
+      router.push("/cards");
     },
     onError: (error: any) => {
       if (error.response.data.message) {

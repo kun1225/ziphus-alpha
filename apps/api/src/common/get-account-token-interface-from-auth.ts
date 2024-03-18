@@ -11,6 +11,7 @@ function getAccountTokenInterfaceFromAuth({
       decodeToken<AccountTokenInterface>(authorization);
     return accountTokenInterface;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }

@@ -1,5 +1,5 @@
 import {
-  authorizationHeaderSchema,
+  AuthorizationHeaderSchema,
   CardCreateResponseDTOSchema,
   CardPermissionDTO,
 } from "@repo/shared-types";
@@ -13,9 +13,11 @@ const cardCreateController: FastifyControllerInterface<CardCreateUseCase> = (
 ) => {
   fastify.route({
     method: "POST",
-    url: "/card/create",
+    url: "/card",
     schema: {
-      headers: authorizationHeaderSchema,
+      summary: "建立新卡片",
+      tags: ["Card"],
+      headers: AuthorizationHeaderSchema,
       response: {
         200: CardCreateResponseDTOSchema,
       },
@@ -41,6 +43,7 @@ const cardCreateController: FastifyControllerInterface<CardCreateUseCase> = (
         };
       } catch (error) {
         reply.code(400);
+        console.error(error);
         throw error;
       }
     },

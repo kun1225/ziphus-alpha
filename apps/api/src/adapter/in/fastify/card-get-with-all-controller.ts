@@ -1,5 +1,5 @@
 import {
-  authorizationHeaderSchema,
+  AuthorizationHeaderSchema,
   CardGetWithAllResponseDTO,
   CardGetWithAllResponseDTOSchema,
   CardPermissionDTO,
@@ -12,9 +12,11 @@ const cardGetWithAllController: FastifyControllerInterface<
 > = (fastify, cardGetWithAllUseCase) => {
   fastify.route({
     method: "GET",
-    url: "/card/get-with-all",
+    url: "/cards",
     schema: {
-      headers: authorizationHeaderSchema,
+      summary: "取得該帳號所有卡片",
+      tags: ["Card"],
+      headers: AuthorizationHeaderSchema,
       response: {
         200: CardGetWithAllResponseDTOSchema,
       },
@@ -42,6 +44,7 @@ const cardGetWithAllController: FastifyControllerInterface<
         };
       } catch (error) {
         reply.code(400);
+        console.error(error);
         throw error;
       }
     },
