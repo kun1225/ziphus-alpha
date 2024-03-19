@@ -21,8 +21,8 @@ function fastifyFactory(port: number = 8080) {
   fastify.register(fastifySwagger, {
     openapi: {
       info: {
-        title: "SampleApi",
-        description: "Sample backend service",
+        title: "Ziphus API",
+        description: "Ziphus API Documentation",
         version: "1.0.0",
       },
       servers: [],

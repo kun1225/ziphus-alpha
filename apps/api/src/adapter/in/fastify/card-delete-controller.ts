@@ -1,40 +1,40 @@
 import {
-  OptionalAuthorizationHeaderSchema,
-  CardModifyTitleRequestDTOSchema,
+  AuthorizationHeaderSchema,
 } from "@repo/shared-types";
-import type { CardModifyTitleUseCase } from "@/application/port/in/card-modify-title-use-case";
+import type { CardDeleteUseCase } from "@/application/port/in/card-delete-use-case";
 import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import { z } from "zod";
 
-const cardModifyTitleController: FastifyControllerInterface<
-  CardModifyTitleUseCase
-> = (fastify, cardModifyTitleUseCase) => {
+const cardDeleteController: FastifyControllerInterface<
+  CardDeleteUseCase
+> = (fastify, cardDeleteUseCase) => {
   fastify.route({
-    method: "PUT",
-    url: "/card/:id/title",
+    method: "DELETE",
+    url: "/card/:id",
     schema: {
-      summary: "嘗試修改卡片標題",
+      summary: "刪除卡片",
       tags: ["Card"],
-      headers: OptionalAuthorizationHeaderSchema,
+      headers: AuthorizationHeaderSchema,
       params: z.object({
         id: z.string(),
       }),
-      body: CardModifyTitleRequestDTOSchema,
       response: {
         200: z.boolean(),
       },
     },
     handler: async (request, reply) => {
       const accountToken = getAccountTokenInterfaceFromAuth(request.headers);
+      if (!accountToken) {
+        reply.code(401);
+        throw new Error("Unauthorized");
+      }
       const cardId = request.params.id;
-      const title = request.body.title;
 
       try {
-        return await cardModifyTitleUseCase({
-          accountId: accountToken?.accountId,
+        return await cardDeleteUseCase({
+          accountId: accountToken.accountId,
           cardId,
-          title,
         });
       } catch (error) {
         reply.code(400);
@@ -45,4 +45,4 @@ const cardModifyTitleController: FastifyControllerInterface<
   });
 };
 
-export default cardModifyTitleController;
+export default cardDeleteController;

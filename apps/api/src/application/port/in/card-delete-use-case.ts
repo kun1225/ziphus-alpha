@@ -1,13 +1,12 @@
 import { type LoadCardPort } from "../out/load-card-port";
-import { type SaveCardPort } from "../out/save-card-port";
+import { type DeleteCardPort } from "../out/delete-card-port";
 
-export type CardModifyPermissionUseCaseConstructor = (
+export type CardDeleteUseCaseConstructor = (
   loadCard: LoadCardPort,
-  saveCard: SaveCardPort
-) => CardModifyPermissionUseCase;
+  deleteCard: DeleteCardPort
+) => CardDeleteUseCase;
 
-export type CardModifyPermissionUseCase = (props: {
+export type CardDeleteUseCase = (props: {
   accountId: string;
   cardId: string;
-  permission: string;
 }) => Promise<boolean>;

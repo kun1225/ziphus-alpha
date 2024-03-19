@@ -5,7 +5,7 @@ export const AuthorizationHeaderSchema = z.object({
 });
 
 export const OptionalAuthorizationHeaderSchema = z.object({
-  authorization: z.string(),
+  authorization: z.string().nullable(),
 });
 
 export type Authorization = z.infer<typeof AuthorizationHeaderSchema>;

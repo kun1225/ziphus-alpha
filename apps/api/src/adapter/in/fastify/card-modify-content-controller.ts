@@ -14,7 +14,7 @@ const cardModifyContentController: FastifyControllerInterface<
     method: "PUT",
     url: "/card/:id/content",
     schema: {
-      summary: "修改卡片內容",
+      summary: "嘗試修改卡片內容",
       tags: ["Card"],
       headers: OptionalAuthorizationHeaderSchema,
       params: z.object({
