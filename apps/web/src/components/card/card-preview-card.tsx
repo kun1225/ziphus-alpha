@@ -90,15 +90,15 @@ function CardPreviewCard({ card }: CardPreviewCardProps) {
 
   const title =
     card.title.length === 0
-      ? "No Name"
+      ? "Untitled"
       : card.title.length > 24
         ? card.title.slice(0, 24) + "..."
         : card.title;
-  
+
   return (
     <Link href={`/card/${card.id}`} passHref>
       <CardPreviewCardContainer className="rounded-lg">
-        <div className="relative min-h-64 min-w-96 max-w-md cursor-pointer overflow-hidden bg-[#5a5a5a33] p-6 backdrop-blur-3xl">
+        <div className="relative h-64 w-[420px] max-w-md cursor-pointer overflow-hidden bg-[#5a5a5a33] p-6 backdrop-blur-3xl">
           <h2 className="text-lg font-semibold text-[#5C5C5C]">
             {permissionText} →
           </h2>

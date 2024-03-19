@@ -1,23 +1,9 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
 import CardPreviewCard from "./card-preview-card";
-import { CardGetWithAllResponseDTO } from "@repo/shared-types";
-import axiosInstance from "@/utils/axios";
-import { getCookie } from "cookies-next";
-
-async function fetchCardWithAll() {
-  return await axiosInstance.get<CardGetWithAllResponseDTO>(
-    "/cards",
-  );
-}
+import useQueryCardList from "@/hooks/card/useQueryCardList";
 
 function CardPreviewList() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["card", "get-with-all"],
-    queryFn: fetchCardWithAll,
-  });
-  const cards = data?.data.cards ?? [];
-
+  const { cards } = useQueryCardList();
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {cards.map((card) => (

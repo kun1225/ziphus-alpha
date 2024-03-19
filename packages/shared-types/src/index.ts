@@ -11,3 +11,5 @@ export * from "./card/card-get-by-id-response.dto";
 export * from "./card/card-modify-content-request.dto";
 export * from "./card/card-modify-title-request.dto";
 export * from "./card/card-modify-permission-request.dto";
+export * from "./card/card-immediate-modify-content-request.dto";
+export * from "./card/card-immediate-modify-content-response.dto";

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import * as Y from "yjs";
 import { SocketIOProvider } from "y-socket.io";
 import { getCookie } from "cookies-next";
+import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -30,6 +31,7 @@ function CardEditorMarkdownEditor({
       },
     }),
   );
+  const tryUpdateCardContent = useUpdateCardContent(cardId);
 
   const editor = useCreateBlockNote({
     collaboration: {
@@ -52,18 +54,29 @@ function CardEditorMarkdownEditor({
 
     return () => {
       provider.disconnect();
+      provider.destroy();
     };
   }, []);
 
+  const onChange = async () => {
+    const html = await editor.blocksToHTMLLossy(editor.document);
+    tryUpdateCardContent(html);
+  };
+
   return (
-    <div className="text-white">
-      <p>State: {status}</p>
+    <div className=" text-white">
       {!(status === "connected") ? (
         <>
           <button onClick={() => provider.connect()}>Connect</button>
         </>
       ) : (
-        !!doc && <BlockNoteView theme={darkDefaultTheme} editor={editor} />
+        !!doc && (
+          <BlockNoteView
+            theme={darkDefaultTheme}
+            editor={editor}
+            onChange={onChange}
+          />
+        )
       )}
     </div>
   );

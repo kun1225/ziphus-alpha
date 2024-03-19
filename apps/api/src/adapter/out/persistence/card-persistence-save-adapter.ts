@@ -7,13 +7,17 @@ const CardPersistenceSaveAdapter: SaveCardPort = async (card: Card) => {
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
   let cards = JSON.parse(data) ?? [];
+  const newCard = {
+    ...card,
+    updatedAt: new Date().toISOString(),
+  };
   // 新增資料
   if (!cards.find((c: any) => c.id === card.id)) {
-    cards.push(card);
+    cards.push(newCard);
   } else {
     cards = cards.map((c: any) => {
       if (c.id === card.id) {
-        return card;
+        return newCard;
       }
       return c;
     });

@@ -38,6 +38,7 @@ import cardModifyContentController from "@/adapter/in/fastify/card-modify-conten
 import cardModifyTitleController from "@/adapter/in/fastify/card-modify-title-controller";
 import cardModifyPermissionController from "@/adapter/in/fastify/card-modify-permission-controller";
 import cardDeleteController from "@/adapter/in/fastify/card-delete-controller";
+import cardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
 import YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 
 // 初始化持久層
@@ -100,6 +101,10 @@ fastify.after(() => {
 fastify.ready((err) => {
   if (err) throw err;
   io.on("connection", (socket) => {
+    cardImmediateModifyContentController(socket, [
+      cardGetByIdUseCase,
+      cardModifyContentUseCase,
+    ]);
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });

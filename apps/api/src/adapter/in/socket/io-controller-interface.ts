@@ -1,9 +1,5 @@
-import { Server, Socket } from 'socket.io';
+import { Socket } from "socket.io";
 
-type IoControllerInterface<T> = (
-  socket: Socket,
-  io: Server,
-    ...useCases: T[]
-  ) => void;
+type IoControllerInterface<T> = (socket: Socket, ...useCases: T[]) => void;
 
 export default IoControllerInterface;
