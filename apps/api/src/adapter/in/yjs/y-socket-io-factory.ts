@@ -1,17 +1,17 @@
 import { Server } from "socket.io";
 import { YSocketIO } from "y-socket.io/dist/server";
+import YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 
-
-function YSocketIOFactory(io: Server) {
-  const ysocketio = new YSocketIO(io, {
+function YSocketIOFactory(
+  io: Server,
+  authenticate: ReturnType<typeof YAuthenticateHandshakeConstructor>
+) {
+  const ySocketIo = new YSocketIO(io, {
     levelPersistenceDir: "./yjs-data",
-    authenticate(handshake) {
-      console.log("authenticate", handshake.auth.authorization);
-      return true;
-    },
+    authenticate,
   });
-  ysocketio.initialize();
-  return ysocketio;
+  ySocketIo.initialize();
+  return ySocketIo;
 }
 
 export default YSocketIOFactory;

@@ -1,7 +1,6 @@
 import {
   OptionalAuthorizationHeaderSchema,
   CardGetByIdResponseDTOSchema,
-  CardGetByIdRequestDTOSchema,
   CardPermissionDTO,
 } from "@repo/shared-types";
 import type { CardGetByIdUseCase } from "@/application/port/in/card-get-by-id-use-case";
@@ -19,7 +18,9 @@ const cardGetByIdController: FastifyControllerInterface<CardGetByIdUseCase> = (
     schema: {
       summary: "嘗試取得該 ID 卡片",
       tags: ["Card"],
-      params: CardGetByIdRequestDTOSchema,
+      params: z.object({
+        id: z.string(),
+      }),
       headers: OptionalAuthorizationHeaderSchema,
       response: {
         200: CardGetByIdResponseDTOSchema,
