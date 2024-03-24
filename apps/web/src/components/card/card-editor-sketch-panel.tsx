@@ -1,123 +1,97 @@
 "use client";
+import useDrawAction from "@/hooks/canvas/useDrawAction";
+import useResizeListener from "@/hooks/canvas/useResizeListener";
 import { useRef, useEffect, useState } from "react";
+import * as Y from "yjs";
+import Stroke from "@/models/stroke";
+import useRemoteStrokeSync from "@/hooks/canvas/useRemoteStrokeSync";
+import useRenderStroke from "@/hooks/canvas/useRenderStroke";
 
 interface CardEditorDrawingPanelProps {
   isSketching: boolean;
   cardId: string;
   accountName: string;
+  doc: Y.Doc;
 }
 
 function CardEditorSketchPanel({
   isSketching,
   cardId,
   accountName,
+  doc,
 }: CardEditorDrawingPanelProps) {
+  const [yStrokes] = useState(doc.getArray("card-drawing"));
+  const originalRenderStrokesRef = useRef<Stroke[]>([]);
+  const remoteRenderStrokesRef = useRemoteStrokeSync({
+    remoteYArray: yStrokes,
+    originalStrokesRef: originalRenderStrokesRef,
+  });
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ctx, setctx] = useState<CanvasRenderingContext2D | null>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [lastPosition, setLastPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
+  const ctx = canvasRef.current?.getContext("2d") || null;
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        setctx(ctx);
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-      }
-    }
-  }, []);
+  const { handleStartDraw, handleMoveDraw, handleEndDraw } = useDrawAction({
+    remoteYArray: yStrokes,
+    originalStrokesRef: originalRenderStrokesRef,
+    canvasRef,
+  });
+  useResizeListener(canvasRef);
 
-  useEffect(() => {
-    const handleResize = () => {
-      const canvas = canvasRef.current;
-      if (canvas && ctx) {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        ctx.scale(dpr, dpr);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [ctx]);
-
-  const getClientCoordinates = (
-    nativeEvent: React.MouseEvent | React.TouchEvent,
-  ) => {
-    const canvas = canvasRef.current!;
-    const rect = canvas.getBoundingClientRect();
-    let x = 0;
-    let y = 0;
-    if ("clientX" in nativeEvent) {
-      x = nativeEvent.clientX;
-      y = nativeEvent.clientY;
-    } else {
-      const touch = nativeEvent.touches[0];
-      x = touch?.clientX || 0;
-      y = touch?.clientY || 0;
-    }
-    x -= rect.left;
-    y -= rect.top;
-    return { x, y };
-  };
-
-  const startDrawing = (nativeEvent: React.MouseEvent | React.TouchEvent) => {
-    const { x, y } = getClientCoordinates(nativeEvent);
-    setIsDrawing(true);
-    setLastPosition({ x: x || 0, y: y || 0 });
-  };
-
-  const endDrawing = () => {
-    setIsDrawing(false);
-    setLastPosition(null);
-  };
-
-  const draw = (nativeEvent: React.MouseEvent | React.TouchEvent) => {
-    if (!isDrawing || !ctx) return;
-
-    const { x, y } = getClientCoordinates(nativeEvent);
-    if (lastPosition) {
-      ctx.strokeStyle = "#fff";
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.moveTo(lastPosition.x, lastPosition.y);
-      ctx.lineTo(x || 0, y || 0);
-      ctx.stroke();
-      setLastPosition({ x: x || 0, y: y || 0 });
-    }
-  };
+  useRenderStroke({
+    originalRenderStrokesRef,
+    remoteRenderStrokesRef,
+    canvasRef,
+    ctx,
+  });
 
   return (
-    <canvas
-      id="sketch"
-      className="absolute left-0 top-0 z-10 h-full w-full bg-white/0"
-      style={{ pointerEvents: isSketching ? "auto" : "none" }}
-      ref={canvasRef}
-      onMouseDown={startDrawing}
-      onMouseUp={endDrawing}
-      onMouseMove={draw}
-      onTouchStart={(e) => {
-        e.preventDefault();
-        startDrawing(e);
-      }}
-      onTouchEnd={endDrawing}
-      onTouchMove={(e) => {
-        e.preventDefault();
-        draw(e);
-      }}
-    ></canvas>
+    <>
+      <button
+        className="absolute right-2 top-2 z-20 h-8 w-20 rounded-md bg-white/10 text-white"
+        onClick={() => {
+          yStrokes.delete(0, yStrokes.length);
+          originalRenderStrokesRef.current = [];
+        }}
+      >
+        Clear
+      </button>
+      <canvas
+        id="sketch"
+        className="absolute left-0 top-0 z-10 h-full w-full"
+        style={{ pointerEvents: isSketching ? "auto" : "none" }}
+        ref={canvasRef}
+        onMouseDown={(event) => {
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect) return;
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          handleStartDraw(x, y);
+        }}
+        onMouseMove={(event) => {
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect) return;
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          handleMoveDraw(x, y);
+        }}
+        onMouseUp={handleEndDraw}
+        onTouchStart={(event) => {
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect || !event.touches[0]) return;
+          const x = event.touches[0].clientX - rect.left;
+          const y = event.touches[0].clientY - rect.top;
+          handleStartDraw(x, y);
+        }}
+        onTouchMove={(event) => {
+          const rect = canvasRef.current?.getBoundingClientRect();
+          if (!rect || !event.touches[0]) return;
+          const x = event.touches[0].clientX - rect.left;
+          const y = event.touches[0].clientY - rect.top;
+          handleMoveDraw(x, y);
+        }}
+        onTouchEnd={handleEndDraw}
+      ></canvas>
+    </>
   );
 }
 

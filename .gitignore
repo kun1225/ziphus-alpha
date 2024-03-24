@@ -36,6 +36,6 @@ yarn-error.log*
 .DS_Store
 *.pem
 
-/yjs-data
-/persistence
-
+# Editor directories and files
+apps/api/persistence
+apps/api/yjs-data

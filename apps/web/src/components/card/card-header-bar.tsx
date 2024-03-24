@@ -5,7 +5,7 @@ import CardHeaderBarRetitleInput from "./card-header-bar-retitle-input";
 
 function CardHeaderBar() {
   return (
-    <div style={{ gridArea: "head" }} className=" bg-[#0E0E0E]">
+    <div className="h-8 bg-[#0E0E0E]">
       <Breadcrumbs
         separator={
           <span className="h-4 w-4 text-white">

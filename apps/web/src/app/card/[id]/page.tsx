@@ -9,20 +9,14 @@ const CardEditor = dynamic(() => import("@/components/card/card-editor"), {
 
 export default function Page(): JSX.Element {
   return (
-    <div
-      className="min-w-screen grid h-full min-h-screen w-full overflow-hidden bg-[#0E0E0E]"
-      style={{
-        gridTemplate: `
-        "side head " 2rem
-        "side main" 1fr 
-       / 16rem 1fr`,
-      }}
-    >
-      <CardHeaderBar />
+    <div className="min-w-screen flex h-full min-h-screen w-full overflow-hidden bg-[#0E0E0E]">
       <CardSidebar />
-      <main style={{ gridArea: "main" }} className=" container mx-auto p-4">
-        <CardEditor />
-      </main>
+      <div className="flex flex-col flex-1">
+        <CardHeaderBar />
+        <main className="container mx-auto flex-1 p-4">
+          <CardEditor />
+        </main>
+      </div>
     </div>
   );
 }
