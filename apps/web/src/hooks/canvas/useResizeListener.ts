@@ -1,6 +1,6 @@
 // hooks/useResizeListener.ts
-import resizeCanvas from "@/utils/resize-canvas";
 import { useEffect } from "react";
+import resizeCanvas from "@/utils/canvas/resize-canvas";
 
 const useResizeListener = (canvasRef: React.RefObject<HTMLCanvasElement>) => {
   useEffect(() => {

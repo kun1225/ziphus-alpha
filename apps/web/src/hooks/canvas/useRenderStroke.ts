@@ -1,7 +1,7 @@
 import Stroke from "@/models/stroke";
 import { useEffect, useRef } from "react";
-import { drawLine } from "@/utils/draw-line";
-import resizeCanvas from "@/utils/resize-canvas";
+import { drawLine } from "@/utils/canvas/draw-line";
+import resizeCanvas from "@/utils/canvas/resize-canvas";
 
 interface UseRenderStrokeProps {
   originalRenderStrokesRef: React.MutableRefObject<Stroke[]>;

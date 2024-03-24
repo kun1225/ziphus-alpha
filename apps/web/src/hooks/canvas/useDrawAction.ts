@@ -3,18 +3,21 @@ import Line from "@/models/line";
 import Stroke from "@/models/stroke";
 import * as Y from "yjs";
 import { v4 } from "uuid";
+import { PencilInfo } from "@/components/card/card-editor";
 
-const MIN_SYNC_TIME = 500;
+const MIN_SYNC_TIME = 1000;
 
 interface UseActionProps {
   remoteYArray: Y.Array<any>;
   originalStrokesRef: React.MutableRefObject<Stroke[]>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  pencilInfo: PencilInfo;
 }
 const useDrawAction = ({
   remoteYArray,
   originalStrokesRef,
   canvasRef,
+  pencilInfo,
 }: UseActionProps) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const lastSyncMoveYArrayTimeRef = useRef<number>(0);
@@ -26,7 +29,15 @@ const useDrawAction = ({
     // 創建 Y Map 筆跡
     const strokeId = v4();
     currentStrokeRef.current = new Stroke(strokeId, [
-      new Line(strokeId, "#fff", 2, x, y, x, y),
+      new Line(
+        strokeId,
+        pencilInfo.pencilColor,
+        pencilInfo.pencilSize,
+        x,
+        y,
+        x,
+        y,
+      ),
     ]);
     currentYStrokeRef.current = new Y.Map();
     currentYStrokeRef.current.set("id", currentStrokeRef.current.id);
@@ -44,8 +55,8 @@ const useDrawAction = ({
     if (!isDrawing || !currentStrokeRef.current || !canvasRef.current) return;
 
     //　創建路徑
-    const color = "#fff";
-    const width = 2;
+    const color = pencilInfo.pencilColor;
+    const width = pencilInfo.pencilSize;
     const lastLine =
       currentStrokeRef.current.lines[currentStrokeRef.current.lines.length - 1];
     const startX = lastLine ? lastLine.endX : x;
