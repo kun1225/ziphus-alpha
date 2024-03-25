@@ -1,8 +1,8 @@
-import { cn } from "@/utils/cn";
-import { PencilInfo } from "./card-editor";
+import { cn } from '@/utils/cn';
+import { PencilInfo } from './card-editor';
 
-const pencilWidths = [2, 4, 6];
-const pencilColors = ["black", "red", "blue", "green", "yellow"];
+const pencilWidths = [4, 8, 12];
+const pencilColors = ['black', 'red', 'blue', 'green', 'yellow'];
 
 interface CardEditorHeadToolbarPencilProps {
   pencilInfo: PencilInfo;
@@ -18,15 +18,15 @@ function CardEditorHeadToolbarPencil({
         <button
           key={width}
           className={cn(
-            "h-6 rounded-full border",
+            'h-6 rounded-full border',
             pencilInfo.pencilSize === width
-              ? "border-gray-200"
-              : "border-transparent",
+              ? 'border-gray-200'
+              : 'border-transparent',
           )}
           style={{
-            width: `${width}rem`,
+            width: `${width}px`,
             backgroundColor:
-              pencilInfo.pencilSize === width ? pencilInfo.pencilColor : "gray",
+              pencilInfo.pencilSize === width ? pencilInfo.pencilColor : 'gray',
           }}
           onClick={() =>
             setPencilInfo({
@@ -39,11 +39,10 @@ function CardEditorHeadToolbarPencil({
       {pencilColors.map((color) => (
         <button
           key={color}
-          className={`h-6 w-6 rounded-full border border-gray-200 ${
-            pencilInfo.pencilColor === color
-              ? "border-gray-900"
-              : "border-transparent"
-          }`}
+          className={`h-6 w-6 rounded-full border border-gray-200 ${pencilInfo.pencilColor === color
+            ? 'border-gray-900'
+            : 'border-transparent'
+            }`}
           style={{
             backgroundColor: color,
           }}

@@ -1,13 +1,20 @@
-"use client";
-import useDrawAction from "@/hooks/canvas/useDrawAction";
-import useResizeListener from "@/hooks/canvas/useResizeListener";
-import { useRef, useEffect, useState } from "react";
-import * as Y from "yjs";
-import Stroke from "@/models/stroke";
-import useRemoteStrokeSync from "@/hooks/canvas/useRemoteStrokeSync";
-import useRenderStroke from "@/hooks/canvas/useRenderStroke";
-import { EraserInfo, PencilInfo, SketchMode } from "./card-editor";
-import useEraseAction from "@/hooks/canvas/useEraseAction";
+'use client';
+import useDrawAction from '@/hooks/card-sketch/useDrawAction';
+import { useEffect, useState } from 'react';
+import * as Y from 'yjs';
+import Stroke from '@/models/stroke';
+import useRemoteStrokeSync from '@/hooks/card-sketch/useRemoteStrokeSync';
+import { EraserInfo, PencilInfo, SketchMode } from './card-editor';
+import {
+  Shape,
+  ShapeType,
+  SketchCanvas,
+  SketchCanvasProvider,
+  useSketchCanvasProvider,
+  Line,
+} from '@repo/sketch-canvas';
+import useEraseAction from '@/hooks/card-sketch/useEraseAction';
+
 
 interface CardEditorDrawingPanelProps {
   isSketching: boolean;
@@ -17,6 +24,7 @@ interface CardEditorDrawingPanelProps {
   sketchMode: SketchMode;
   pencilInfo: PencilInfo;
   eraserInfo: EraserInfo;
+  sketchCanvasProvider: SketchCanvasProvider;
 }
 
 function CardEditorSketchPanel({
@@ -27,37 +35,52 @@ function CardEditorSketchPanel({
   sketchMode,
   pencilInfo,
   eraserInfo,
+  sketchCanvasProvider,
 }: CardEditorDrawingPanelProps) {
-  const [yStrokes] = useState(doc.getArray("card-drawing"));
-  const originalRenderStrokesRef = useRef<Stroke[]>([]);
-  const remoteRenderStrokesRef = useRemoteStrokeSync({
+  const [yStrokes] = useState(doc.getArray('card-drawing'));
+  const [originalRenderStrokes, setOriginalRenderStrokes] = useState<Stroke[]>([]);
+  const remoteRenderStrokes = useRemoteStrokeSync({
     remoteYArray: yStrokes,
-    originalStrokesRef: originalRenderStrokesRef,
+    originalStrokes: originalRenderStrokes,
   });
-
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const ctx = canvasRef.current?.getContext("2d") || null;
+  const provider = useSketchCanvasProvider();
 
   const { handleStartDraw, handleMoveDraw, handleEndDraw } = useDrawAction({
     remoteYArray: yStrokes,
-    originalStrokesRef: originalRenderStrokesRef,
-    canvasRef,
+    originalStrokes: originalRenderStrokes,
+    setOriginalStrokes: setOriginalRenderStrokes,
     pencilInfo,
+    sketchCanvasProvider,
   });
-  const { handleStartErase, handleMoveErase, handleEndErase } = useEraseAction({
-    remoteYArray: yStrokes,
-    originalStrokesRef: originalRenderStrokesRef,
-    canvasRef,
-    eraserInfo,
-  });
-  useResizeListener(canvasRef);
 
-  useRenderStroke({
-    originalRenderStrokesRef,
-    remoteRenderStrokesRef,
-    canvasRef,
-    ctx,
+  const { eraser, handleEndErase, handleMoveErase, handleStartErase } = useEraseAction({
+    remoteYArray: yStrokes,
+    originalStrokes: originalRenderStrokes,
+    setOriginalStrokes: setOriginalRenderStrokes,
+    eraserInfo,
+    sketchCanvasProvider,
   });
+
+  useEffect(() => {
+    const lines: Line[] =
+      [...originalRenderStrokes, ...remoteRenderStrokes].map(stroke => stroke.lines)
+        .flat()
+        .map((line, index) => ({
+          id: `${line.strokeId}:${index}`,
+          type: ShapeType.Line,
+          startX: line.startX,
+          startY: line.startY,
+          endX: line.endX,
+          endY: line.endY,
+          strokeStyle: line.color,
+          lineWidth: line.width,
+        } as Line));
+
+    const renderShapes: Shape[] = [...lines, ...(
+      eraser ? [eraser] : []
+    )];
+    provider.setShapes(renderShapes);
+  }, [originalRenderStrokes, eraser]);
 
   return (
     <>
@@ -65,75 +88,38 @@ function CardEditorSketchPanel({
         className="absolute right-2 top-2 z-20 h-8 w-20 rounded-md bg-white/10 text-white"
         onClick={() => {
           yStrokes.delete(0, yStrokes.length);
-          originalRenderStrokesRef.current = [];
+          setOriginalRenderStrokes([]);
         }}
       >
         Clear
       </button>
-      <canvas
+      <SketchCanvas
         id="sketch"
+        provider={provider}
         className="absolute left-0 top-0 z-10 h-full w-full"
-        style={{ pointerEvents: isSketching ? "auto" : "none" }}
-        ref={canvasRef}
-        onMouseDown={(event) => {
-          const rect = canvasRef.current?.getBoundingClientRect();
-          if (!rect) return;
-          const x = event.clientX - rect.left;
-          const y = event.clientY - rect.top;
-          if (sketchMode === "pencil") {
+        style={{ pointerEvents: isSketching ? 'auto' : 'none' }}
+        handleStartDraw={(x, y) => {
+          if (sketchMode === 'pencil') {
             handleStartDraw(x, y);
-          } else if (sketchMode === "eraser") {
+          } else {
             handleStartErase(x, y);
           }
         }}
-        onMouseMove={(event) => {
-          const rect = canvasRef.current?.getBoundingClientRect();
-          if (!rect) return;
-          const x = event.clientX - rect.left;
-          const y = event.clientY - rect.top;
-          if (sketchMode === "pencil") {
+        handleMoveDraw={(x, y) => {
+          if (sketchMode === 'pencil') {
             handleMoveDraw(x, y);
-          } else if (sketchMode === "eraser") {
+          } else {
             handleMoveErase(x, y);
           }
         }}
-        onMouseUp={() => {
-          if (sketchMode === "pencil") {
+        handleEndDraw={() => {
+          if (sketchMode === 'pencil') {
             handleEndDraw();
-          } else if (sketchMode === "eraser") {
+          } else {
             handleEndErase();
           }
         }}
-        onTouchStart={(event) => {
-          const rect = canvasRef.current?.getBoundingClientRect();
-          if (!rect || !event.touches[0]) return;
-          const x = event.touches[0].clientX - rect.left;
-          const y = event.touches[0].clientY - rect.top;
-          if (sketchMode === "pencil") {
-            handleStartDraw(x, y);
-          } else if (sketchMode === "eraser") {
-            handleStartErase(x, y);
-          }
-        }}
-        onTouchMove={(event) => {
-          const rect = canvasRef.current?.getBoundingClientRect();
-          if (!rect || !event.touches[0]) return;
-          const x = event.touches[0].clientX - rect.left;
-          const y = event.touches[0].clientY - rect.top;
-          if (sketchMode === "pencil") {
-            handleMoveDraw(x, y);
-          } else if (sketchMode === "eraser") {
-            handleMoveErase(x, y);
-          }
-        }}
-        onTouchEnd={() => {
-          if (sketchMode === "pencil") {
-            handleEndDraw();
-          } else if (sketchMode === "eraser") {
-            handleEndErase();
-          }
-        }}
-      ></canvas>
+      />
     </>
   );
 }

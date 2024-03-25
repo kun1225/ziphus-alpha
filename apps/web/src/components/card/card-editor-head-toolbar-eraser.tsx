@@ -1,7 +1,7 @@
-import { cn } from "@/utils/cn";
-import { EraserInfo } from "./card-editor";
+import { cn } from '@/utils/cn';
+import { EraserInfo } from './card-editor';
 
-const eraserWidths = [4, 8, 16];
+const eraserWidths = [4, 16, 32, 64];
 
 interface CardEditorHeadToolbarEraserProps {
   eraserInfo: EraserInfo;
@@ -17,14 +17,14 @@ function CardEditorHeadToolbarEraser({
         <button
           key={width}
           className={cn(
-            "h-6 rounded-full border",
+            'h-6 rounded-full border',
             eraserInfo.eraserSize === width
-              ? "border-gray-200"
-              : "border-transparent",
+              ? 'border-gray-200'
+              : 'border-transparent',
           )}
           style={{
-            width: `${width}rem`,
-            backgroundColor: eraserInfo.eraserSize === width ? "gray" : "white",
+            width: `${width}px`,
+            backgroundColor: eraserInfo.eraserSize === width ? 'gray' : 'white',
           }}
           onClick={() =>
             setEraserInfo({

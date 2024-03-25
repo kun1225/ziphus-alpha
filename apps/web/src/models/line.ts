@@ -7,5 +7,5 @@ export default class Line {
     readonly startY: number,
     readonly endX: number,
     readonly endY: number,
-  ) {}
+  ) { }
 }

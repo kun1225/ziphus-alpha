@@ -18,13 +18,14 @@ function ReactQueryProvider({ children }: PropsWithChildren) {
       new QueryClient({
         queryCache: new QueryCache({
           onError: (error) => {
-            if (error.message === 'Unauthorized') {
+            const errorData = JSON.parse(JSON.stringify(error));
+            console.error(errorData);
+            if (errorData.message === 'Unauthorized' || errorData.status === 401) {
               toast.error('請先登入');
               router.push('/login');
               return;
             }
-
-            console.error(error.message);
+            console.error(errorData.status);
             toast.error('檢測到一個錯誤，請檢查控制台');
           },
         }),
