@@ -1,8 +1,8 @@
-import CardHeaderBar from "@/components/card/card-header-bar";
-import Sidebar from "@/components/sidebar";
-import dynamic from "next/dynamic";
+import CardHeaderBar from '@/components/card/card-header-bar';
+import Sidebar from '@/components/sidebar';
+import dynamic from 'next/dynamic';
 
-const CardEditor = dynamic(() => import("@/components/card/card-editor"), {
+const CardEditor = dynamic(() => import('@/components/card/card-editor'), {
   loading: () => <p>Loading...</p>,
   ssr: false,
 });

@@ -1,8 +1,6 @@
-import axiosInstance from "@/utils/axios";
-import { SpaceCardCreateResponseDTO } from "@repo/shared-types";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import axiosInstance from '@/utils/axios';
+import { SpaceCardCreateResponseDTO } from '@repo/shared-types';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 async function fetchCreateSpaceCard(
   spaceId: string,
@@ -18,9 +16,8 @@ async function fetchCreateSpaceCard(
   );
 }
 
-function useCreateSpaceCard() {
+function useCreateSpaceCard(): any {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const mutate = useMutation({
     mutationFn: (data: {
       spaceId: string;
@@ -30,12 +27,11 @@ function useCreateSpaceCard() {
     }) => fetchCreateSpaceCard(data.spaceId, data),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["space", data.data.spaceCard.targetSpaceId],
+        queryKey: ['space', data.data.spaceCard.targetSpaceId],
       });
       queryClient.invalidateQueries({
-        queryKey: ["spaces"],
+        queryKey: ['spaces'],
       });
-      toast.success("Space Card created successfully");
     },
   });
   return mutate;

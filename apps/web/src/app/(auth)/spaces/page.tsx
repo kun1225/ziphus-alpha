@@ -1,6 +1,6 @@
-import Header from "@/components/header";
-import { SpaceCreateButton } from "@/components/space/space-create-button";
-import SpacePreviewList from "@/components/space/space-preview-list";
+import Header from '@/components/header';
+import { SpaceCreateButton } from '@/components/space/space-create-button';
+import SpacePreviewList from '@/components/space/space-preview-list';
 
 export default function Page(): JSX.Element {
   return (

@@ -1,14 +1,14 @@
-"use client";
-import useCardEditor from "@/hooks/card/useCardEditor";
-import useMe from "@/hooks/useMe";
-import { SpaceCardDTO } from "@repo/shared-types";
-import { View } from "./space-editor";
-import { useEffect, useRef, useState } from "react";
-import CardEditorSketchPanel from "../card/card-editor-sketch-panel";
-import CardEditorMarkdownEditor from "../card/card-editor-markdown-editor";
-import CardEditorHeadToolbar from "../card/card-editor-head-toolbar";
-import * as Y from "yjs";
-import { SocketIOProvider } from "y-socket.io";
+'use client';
+import useCardEditor from '@/hooks/card/useCardEditor';
+import useMe from '@/hooks/useMe';
+import { SpaceCardDTO } from '@repo/shared-types';
+import { View } from './space-editor';
+import { useEffect, useRef, useState } from 'react';
+import CardEditorSketchPanel from '../card/card-editor-sketch-panel';
+import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
+import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
+import * as Y from 'yjs';
+import { SocketIOProvider } from 'y-socket.io';
 
 interface SpaceCardEditorProps {
   initialSpaceCard: SpaceCardDTO;
@@ -55,8 +55,8 @@ function SpaceCardEditor({
         onBlur();
       }
     }
-    document.addEventListener("click", onBlurCard);
-    return () => document.removeEventListener("click", onBlurCard);
+    document.addEventListener('click', onBlurCard);
+    return () => document.removeEventListener('click', onBlurCard);
   }, [onBlur]);
 
   if (!card || !account) return null;

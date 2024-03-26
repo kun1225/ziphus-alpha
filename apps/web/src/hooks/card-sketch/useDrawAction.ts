@@ -3,7 +3,7 @@ import Line from '@/models/line';
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
 import { v4 } from 'uuid';
-import { PencilInfo } from '@/components/card/card-editor';
+import { PencilInfo } from '@/hooks/card/useCardEditor';
 import { SketchCanvasProvider } from '@repo/sketch-canvas';
 
 const MIN_SYNC_TIME = 1000;
@@ -62,7 +62,7 @@ const useDrawAction = ({
     ]!;
     const lastLine = currentStroke.lines[currentStroke.lines.length - 1];
 
-    //　創建路徑
+    // 創建路徑
     const newLine = new Line(
       currentStroke.id,
       pencilInfo.pencilColor,

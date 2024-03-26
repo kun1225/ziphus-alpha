@@ -1,6 +1,6 @@
-"use client";
-import CardPreviewCard from "./card-preview-card";
-import useQueryCardList from "@/hooks/card/useQueryCardList";
+'use client';
+import CardPreviewCard from './card-preview-card';
+import useQueryCardList from '@/hooks/card/useQueryCardList';
 
 function CardPreviewList() {
   const { cards } = useQueryCardList();

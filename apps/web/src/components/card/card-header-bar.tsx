@@ -1,7 +1,7 @@
-import { Breadcrumbs } from "@/components/material-tailwind";
-import Link from "next/link";
-import { MdArrowForwardIos } from "react-icons/md";
-import CardHeaderBarRetitleInput from "./card-header-bar-retitle-input";
+import { Breadcrumbs } from '@/components/material-tailwind';
+import Link from 'next/link';
+import { MdArrowForwardIos } from 'react-icons/md';
+import CardHeaderBarRetitleInput from './card-header-bar-retitle-input';
 
 function CardHeaderBar() {
   return (

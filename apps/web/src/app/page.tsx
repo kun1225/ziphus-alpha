@@ -1,5 +1,5 @@
-import Header from "@/components/header";
-import Link from "next/link";
+import Header from '@/components/header';
+import Link from 'next/link';
 
 export default function Page(): JSX.Element {
   return (

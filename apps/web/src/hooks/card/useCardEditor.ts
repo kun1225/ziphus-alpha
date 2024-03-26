@@ -1,9 +1,8 @@
-import useMe from "@/hooks/useMe";
-import useQueryCardById from "@/hooks/card/useQueryCardById";
-import { useState } from "react";
+import useQueryCardById from '@/hooks/card/useQueryCardById';
+import { useState } from 'react';
 
-export type EditMode = "text" | "sketch";
-export type SketchMode = "pencil" | "eraser";
+export type EditMode = 'text' | 'sketch';
+export type SketchMode = 'pencil' | 'eraser';
 export interface PencilInfo {
   pencilColor: string;
   pencilSize: number;
@@ -14,10 +13,10 @@ export interface EraserInfo {
 
 const useCardEditor = (cardId: string) => {
   const { card, isLoading, error } = useQueryCardById(cardId);
-  const [editMode, setEditMode] = useState<EditMode>("text");
-  const [sketchMode, setSketchMode] = useState<SketchMode>("pencil");
+  const [editMode, setEditMode] = useState<EditMode>('text');
+  const [sketchMode, setSketchMode] = useState<SketchMode>('pencil');
   const [pencilInfo, setPencilInfo] = useState<PencilInfo>({
-    pencilColor: "black",
+    pencilColor: 'black',
     pencilSize: 2,
   });
   const [eraserInfo, setEraserInfo] = useState<EraserInfo>({

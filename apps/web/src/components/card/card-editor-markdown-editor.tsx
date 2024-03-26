@@ -1,14 +1,14 @@
-"use client";
-import "@blocknote/core/fonts/inter.css";
+'use client';
+import '@blocknote/core/fonts/inter.css';
 import {
   BlockNoteView,
   darkDefaultTheme,
   useCreateBlockNote,
-} from "@blocknote/react";
-import "@blocknote/react/style.css";
-import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
-import { SocketIOProvider } from "y-socket.io";
-import * as Y from "yjs";
+} from '@blocknote/react';
+import '@blocknote/react/style.css';
+import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
+import { SocketIOProvider } from 'y-socket.io';
+import * as Y from 'yjs';
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -30,7 +30,7 @@ function CardEditorMarkdownEditor({
       fragment: doc.getXmlFragment(`card-content-${cardId}`),
       user: {
         name: accountName,
-        color: "#0066ff",
+        color: '#0066ff',
       },
     },
   });

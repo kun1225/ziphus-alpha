@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use client';
 import { useRef, useEffect } from 'react';
 import { SketchCanvasProvider } from '../hooks/useSketchCanvasProvider';

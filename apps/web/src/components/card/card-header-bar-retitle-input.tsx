@@ -1,14 +1,14 @@
-"use client";
-import useQueryCardById from "@/hooks/card/useQueryCardById";
-import useUpdateCardTitle from "@/hooks/card/useUpdateCardTitle";
-import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+'use client';
+import useQueryCardById from '@/hooks/card/useQueryCardById';
+import useUpdateCardTitle from '@/hooks/card/useUpdateCardTitle';
+import { useParams } from 'next/navigation';
+import { useRef, useState } from 'react';
 
 function CardHeaderBarRetitleInput() {
   const { id } = useParams();
   const { card } = useQueryCardById(id as string);
   const [showRetitleInput, setShowRetitleInput] = useState(false);
-  const [newTitle, setNewTitle] = useState(card?.title || "");
+  const [newTitle, setNewTitle] = useState(card?.title || '');
   const mutation = useUpdateCardTitle(id as string);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,12 +28,12 @@ function CardHeaderBarRetitleInput() {
           onChange={(e) => setNewTitle(e.target.value)}
           onBlur={handleSave}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               handleSave();
-              setNewTitle(card?.title || "");
-            } else if (e.key === "Escape") {
+              setNewTitle(card?.title || '');
+            } else if (e.key === 'Escape') {
               setShowRetitleInput(false);
-              setNewTitle(card?.title || "");
+              setNewTitle(card?.title || '');
             }
           }}
           className="h-fit w-full border-none bg-[#0E0E0E] text-white"
@@ -46,7 +46,7 @@ function CardHeaderBarRetitleInput() {
           }}
           className="cursor-pointer text-white opacity-80 hover:opacity-100"
         >
-          {card?.title || "Untitled"}
+          {card?.title || 'Untitled'}
         </button>
       )}
     </>

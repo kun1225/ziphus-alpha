@@ -1,4 +1,4 @@
-import { Circle } from '@/models/shapes';
+import { Circle } from '../models/shapes';
 
 const drawCircle = (ctx: CanvasRenderingContext2D, dot: Circle) => {
   ctx.save();

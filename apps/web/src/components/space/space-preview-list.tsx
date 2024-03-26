@@ -1,6 +1,6 @@
-"use client";
-import useQuerySpaceList from "@/hooks/space/useQuerySpaceList";
-import SpacePreviewCard from "./space-preview-card";
+'use client';
+import useQuerySpaceList from '@/hooks/space/useQuerySpaceList';
+import SpacePreviewCard from './space-preview-card';
 
 function SpacePreviewList() {
   const { spaces } = useQuerySpaceList();

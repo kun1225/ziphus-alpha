@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { PencilInfo } from './card-editor';
+import { PencilInfo } from '@/hooks/card/useCardEditor';
 
 const pencilWidths = [4, 8, 12];
 const pencilColors = ['black', 'red', 'blue', 'green', 'yellow'];

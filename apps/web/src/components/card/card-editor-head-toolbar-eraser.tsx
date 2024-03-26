@@ -1,5 +1,5 @@
 import { cn } from '@/utils/cn';
-import { EraserInfo } from './card-editor';
+import { EraserInfo } from '@/hooks/card/useCardEditor';
 
 const eraserWidths = [4, 16, 32, 64];
 

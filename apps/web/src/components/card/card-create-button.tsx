@@ -1,7 +1,7 @@
-"use client";
-import { Button, ButtonProps } from "@/components/material-tailwind";
-import useCreateCard from "@/hooks/card/useCreateCard";
-import { useRouter } from "next/navigation";
+'use client';
+import { Button, ButtonProps } from '@/components/material-tailwind';
+import useCreateCard from '@/hooks/card/useCreateCard';
+import { useRouter } from 'next/navigation';
 
 interface CardCreateButtonProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>;
@@ -25,7 +25,7 @@ export function CardCreateButton({
         })
       }
     >
-      {children || "Create"}
+      {children || 'Create'}
     </Button>
   );
 }

@@ -1,11 +1,11 @@
-"use client";
-import { useParams } from "next/navigation";
-import useMe from "@/hooks/useMe";
-import CardEditorSketchPanel from "./card-editor-sketch-panel";
-import CardEditorMarkdownEditor from "./card-editor-markdown-editor";
-import useYJSProvide from "@/hooks/card/useYJSProvider";
-import CardEditorHeadToolbar from "./card-editor-head-toolbar";
-import useCardEditor from "@/hooks/card/useCardEditor";
+'use client';
+import { useParams } from 'next/navigation';
+import useMe from '@/hooks/useMe';
+import CardEditorSketchPanel from './card-editor-sketch-panel';
+import CardEditorMarkdownEditor from './card-editor-markdown-editor';
+import useYJSProvide from '@/hooks/card/useYJSProvider';
+import CardEditorHeadToolbar from './card-editor-head-toolbar';
+import useCardEditor from '@/hooks/card/useCardEditor';
 
 function CardEditor() {
   const { id } = useParams();
@@ -48,7 +48,7 @@ function CardEditor() {
         }}
       >
         <CardEditorSketchPanel
-          isSketching={editMode === "sketch"}
+          isSketching={editMode === 'sketch'}
           cardId={id as string}
           accountName={account.name}
           doc={doc}

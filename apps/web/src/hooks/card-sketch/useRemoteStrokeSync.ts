@@ -1,6 +1,6 @@
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface UseRemoteStrokeSyncProps {
   remoteYArray: Y.Array<any>;

@@ -24,6 +24,7 @@ module.exports = {
         ],
       },
     ],
+    "no-useless-constructor": "off",
     quotes: [2, "single"],
     "comma-dangle": [
       "error",

@@ -1,6 +1,6 @@
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
-import { EraserInfo } from '@/components/card/card-editor';
+import { EraserInfo } from '@/hooks/card/useCardEditor';
 import { useRef, useState } from 'react';
 import isCircleTouchingWideLine from '@/utils/is-circle-touching-wide-line';
 import { Circle, ShapeType, SketchCanvasProvider } from '@repo/sketch-canvas';

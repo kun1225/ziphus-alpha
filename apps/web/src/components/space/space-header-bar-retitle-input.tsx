@@ -1,14 +1,14 @@
-"use client";
-import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
-import useUpdateSpaceTitle from "@/hooks/space/useUpdateSpaceTitle";
-import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+'use client';
+import useQuerySpaceById from '@/hooks/space/useQuerySpaceById';
+import useUpdateSpaceTitle from '@/hooks/space/useUpdateSpaceTitle';
+import { useParams } from 'next/navigation';
+import { useRef, useState } from 'react';
 
 function SpaceHeaderBarRetitleInput() {
   const { id } = useParams();
   const { space } = useQuerySpaceById(id as string);
   const [showRetitleInput, setShowRetitleInput] = useState(false);
-  const [newTitle, setNewTitle] = useState(space?.title || "");
+  const [newTitle, setNewTitle] = useState(space?.title || '');
   const mutation = useUpdateSpaceTitle(id as string);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -28,12 +28,12 @@ function SpaceHeaderBarRetitleInput() {
           onChange={(e) => setNewTitle(e.target.value)}
           onBlur={handleSave}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               handleSave();
-              setNewTitle(space?.title || "");
-            } else if (e.key === "Escape") {
+              setNewTitle(space?.title || '');
+            } else if (e.key === 'Escape') {
               setShowRetitleInput(false);
-              setNewTitle(space?.title || "");
+              setNewTitle(space?.title || '');
             }
           }}
           className="h-fit w-full border-none bg-[#0E0E0E] text-white"
@@ -46,7 +46,7 @@ function SpaceHeaderBarRetitleInput() {
           }}
           className="cursor-pointer text-white opacity-80 hover:opacity-100"
         >
-          {space?.title || "Untitled"}
+          {space?.title || 'Untitled'}
         </button>
       )}
     </>

@@ -1,11 +1,11 @@
-"use client";
-import { MdTipsAndUpdates } from "react-icons/md";
-import { Button } from "./material-tailwind";
-import SidebarContainer from "./sidebar-container";
-import { useState } from "react";
+'use client';
+import { MdTipsAndUpdates } from 'react-icons/md';
+import { Button } from './material-tailwind';
+import SidebarContainer from './sidebar-container';
+import { useState } from 'react';
 
 function Sidebar() {
-  const [display, setDisplay] = useState<"static" | "float">("static");
+  const [display, setDisplay] = useState<'static' | 'float'>('static');
   return (
     <SidebarContainer display={display}>
       <div className="flex justify-between">
@@ -21,9 +21,9 @@ function Sidebar() {
           variant="text"
           className="flex w-8 justify-start"
           size="sm"
-          onClick={() => setDisplay(display === "static" ? "float" : "static")}
+          onClick={() => setDisplay(display === 'static' ? 'float' : 'static')}
         >
-          {display === "static" ? (
+          {display === 'static' ? (
             <span className="text-white">🔒</span>
           ) : (
             <span className="text-white">🔓</span>

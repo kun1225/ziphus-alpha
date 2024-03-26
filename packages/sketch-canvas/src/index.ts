@@ -4,7 +4,7 @@ import { useSketchCanvasProvider, SketchCanvasProvider } from "./hooks/useSketch
 export {
     SketchCanvas,
     useSketchCanvasProvider,
-    SketchCanvasProvider
+    type SketchCanvasProvider
 };
 
 export * from './models/shapes';

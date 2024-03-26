@@ -1,6 +1,7 @@
-import axiosInstance from "@/utils/axios";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import axiosInstance from '@/utils/axios';
+import { UseMutationResult, useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
 
 async function fetchUpdateSpaceTitle(spaceId: string, title: string) {
   return await axiosInstance.put(`/space/${spaceId}/title`, {
@@ -8,19 +9,19 @@ async function fetchUpdateSpaceTitle(spaceId: string, title: string) {
   });
 }
 
-function useUpdateSpaceTitle(spaceId: string) {
+function useUpdateSpaceTitle(spaceId: string): UseMutationResult<AxiosResponse<void>, unknown, string, unknown> {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (title: string) => fetchUpdateSpaceTitle(spaceId, title),
     onSuccess: (_, title) => {
-      queryClient.setQueryData(["spaces", spaceId], (data: any) => {
+      queryClient.setQueryData(['spaces', spaceId], (data: any) => {
         return {
           ...data,
           title,
         };
       });
-      queryClient.invalidateQueries({ queryKey: ["spaces"] });
+      queryClient.invalidateQueries({ queryKey: ['spaces'] });
     },
     onError: (error) => {
       toast.error(JSON.stringify(error.message));

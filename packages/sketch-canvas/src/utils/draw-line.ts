@@ -1,4 +1,4 @@
-import { Line } from '@/models/shapes';
+import { Line } from '../models/shapes';
 
 const drawLine = (ctx: CanvasRenderingContext2D, line: Line) => {
   ctx.save();

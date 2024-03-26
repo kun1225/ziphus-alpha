@@ -1,6 +1,6 @@
-import { CardCreateButton } from "@/components/card/card-create-button";
-import CardPreviewList from "@/components/card/card-preview-list";
-import Header from "@/components/header";
+import { CardCreateButton } from '@/components/card/card-create-button';
+import CardPreviewList from '@/components/card/card-preview-list';
+import Header from '@/components/header';
 
 export default function Page(): JSX.Element {
   return (

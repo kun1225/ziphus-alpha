@@ -1,7 +1,7 @@
-"use client";
-import { Button, ButtonProps } from "@/components/material-tailwind";
-import useCreateSpace from "@/hooks/space/useCreateSpace";
-import { useRouter } from "next/navigation";
+'use client';
+import { Button, ButtonProps } from '@/components/material-tailwind';
+import useCreateSpace from '@/hooks/space/useCreateSpace';
+import { useRouter } from 'next/navigation';
 
 interface SpaceCreateButtonProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>;
@@ -24,7 +24,7 @@ export function SpaceCreateButton({
         })
       }
     >
-      {children || "Create"}
+      {children || 'Create'}
     </Button>
   );
 }

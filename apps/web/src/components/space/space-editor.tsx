@@ -1,12 +1,12 @@
-"use client";
-import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
-import React, { useEffect, useRef, useState } from "react";
-import SpaceCardEditor from "./space-card-editor";
-import useYJSProvide from "@/hooks/card/useYJSProvider";
-import { useParams } from "next/navigation";
-import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
-import useQueryCardList from "@/hooks/card/useQueryCardList";
-import useCreateCard from "@/hooks/card/useCreateCard";
+'use client';
+import useQuerySpaceById from '@/hooks/space/useQuerySpaceById';
+import React, { useEffect, useRef, useState } from 'react';
+import SpaceCardEditor from './space-card-editor';
+import useYJSProvide from '@/hooks/card/useYJSProvider';
+import { useParams } from 'next/navigation';
+import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
+import useQueryCardList from '@/hooks/card/useQueryCardList';
+import useCreateCard from '@/hooks/card/useCreateCard';
 
 export interface View {
   x: number;
@@ -43,10 +43,10 @@ const useViewScroll = (
       };
     };
 
-    editor.addEventListener("wheel", onWheel, { passive: false });
+    editor.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener("wheel", onWheel);
+      editor.removeEventListener('wheel', onWheel);
     };
   }, []);
 };
@@ -91,12 +91,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener("contextmenu", onContextMenu);
-    editor.addEventListener("mousedown", handleMouseDown);
+    editor.addEventListener('contextmenu', onContextMenu);
+    editor.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      editor.removeEventListener("contextmenu", onContextMenu);
-      editor.removeEventListener("mousedown", handleMouseDown);
+      editor.removeEventListener('contextmenu', onContextMenu);
+      editor.removeEventListener('mousedown', handleMouseDown);
     };
   }, []);
 };
@@ -144,14 +144,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener("mousedown", onMouseDown);
-    editor.addEventListener("mousemove", onMouseMove);
-    editor.addEventListener("mouseup", onMouseUp);
+    editor.addEventListener('mousedown', onMouseDown);
+    editor.addEventListener('mousemove', onMouseMove);
+    editor.addEventListener('mouseup', onMouseUp);
 
     return () => {
-      editor.removeEventListener("mousedown", onMouseDown);
-      editor.removeEventListener("mousemove", onMouseMove);
-      editor.removeEventListener("mouseup", onMouseUp);
+      editor.removeEventListener('mousedown', onMouseDown);
+      editor.removeEventListener('mousemove', onMouseMove);
+      editor.removeEventListener('mouseup', onMouseUp);
     };
   }, []);
 
@@ -207,9 +207,8 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${
-          contextMenu ? "" : "hidden"
-        }`}
+        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${contextMenu ? '' : 'hidden'
+          }`}
         style={{
           left: contextMenu ? contextMenu.x : 0,
           top: contextMenu ? contextMenu.y : 0,
@@ -221,7 +220,7 @@ const ContextMenuComponent = React.forwardRef(
           onClick={() =>
             mutateCreateCard.mutate(undefined, {
               onSuccess: (data) => {
-                console.log("新增卡片成功", data.data);
+                console.log('新增卡片成功', data.data);
                 const view = viewRef.current;
                 mutateCreateSpaceCard.mutate(
                   {
@@ -231,14 +230,14 @@ const ContextMenuComponent = React.forwardRef(
                     y: view.y + (contextMenu?.y || 0) / view.scale,
                   },
                   {
-                    onSuccess: (data) => {
-                      console.log("新增卡片成功", data.data);
+                    onSuccess: (data: any) => {
+                      console.log('新增卡片成功', data.data);
                     },
                   },
                 );
               },
               onError: (error) => {
-                console.error("新增卡片失敗", error);
+                console.error('新增卡片失敗', error);
               },
             })
           }
@@ -274,7 +273,7 @@ export default function SpaceEditor() {
   const isDraggingRef = useViewDrag(
     whiteBoardRef,
     viewRef,
-    !Boolean(focusSpaceCardId),
+    !focusSpaceCardId,
   );
   useViewContextMenu(whiteBoardRef, setContextMenu, contextMenuComponentRef);
   useViewTransformUpdate(parallaxBoardRef, viewRef);

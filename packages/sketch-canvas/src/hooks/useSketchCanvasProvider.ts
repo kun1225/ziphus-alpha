@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useCallback, useState } from 'react';
 import { Shape } from '../models/shapes';
 

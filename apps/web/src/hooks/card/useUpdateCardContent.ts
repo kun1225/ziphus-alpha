@@ -2,13 +2,13 @@ import {
   CardGetIsNeedImmediateModifyContentRequestDTO,
   CardGetIsNeedImmediateModifyContentResponseDTO,
   CardImmediateModifyContentRequestDTO,
-} from "@repo/shared-types";
-import useSocket from "@/hooks/useSocket";
-import { useCallback, useEffect, useRef, useState } from "react";
+} from '@repo/shared-types';
+import useSocket from '@/hooks/useSocket';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function useUpdateCardContent(cardId: string) {
   const { socketEmitWithAuth, socket } = useSocket();
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>('');
   const lastCardContentUpdateTimeRef = useRef<number>(new Date().getTime());
 
   const tryUpdateCardContent = useCallback(
@@ -19,7 +19,7 @@ function useUpdateCardContent(cardId: string) {
       }
 
       // 當卡片內容改變時，發送詢問是否需要立即存檔的請求
-      socketEmitWithAuth("card:get-is-need-modify-content", {
+      socketEmitWithAuth('card:get-is-need-modify-content', {
         cardId,
       } as CardGetIsNeedImmediateModifyContentRequestDTO);
 
@@ -31,10 +31,10 @@ function useUpdateCardContent(cardId: string) {
   useEffect(() => {
     // 當收到回應時，若需要立即存檔，則發送存檔請求
     socket.on(
-      "card:get-is-need-modify-content-response",
+      'card:get-is-need-modify-content-response',
       (data: CardGetIsNeedImmediateModifyContentResponseDTO) => {
         if (data.available) {
-          socketEmitWithAuth("card:modify-content", {
+          socketEmitWithAuth('card:modify-content', {
             cardId,
             content,
           } as CardImmediateModifyContentRequestDTO);
@@ -45,7 +45,7 @@ function useUpdateCardContent(cardId: string) {
     );
 
     return () => {
-      socket.off("card:get-is-need-modify-content-response");
+      socket.off('card:get-is-need-modify-content-response');
     };
   }, [cardId, content]);
 

@@ -1,16 +1,16 @@
-"use client";
-import { Tab, Tabs, TabsHeader } from "../material-tailwind";
+'use client';
+import { Tab, Tabs, TabsHeader } from '../material-tailwind';
 import {
   EditMode,
   SketchMode,
   PencilInfo,
   EraserInfo,
-} from "@/hooks/card/useCardEditor";
-import CardEditorHeadToolbarEraser from "./card-editor-head-toolbar-eraser";
-import CardEditorHeadToolbarPencil from "./card-editor-head-toolbar-pencil";
+} from '@/hooks/card/useCardEditor';
+import CardEditorHeadToolbarEraser from './card-editor-head-toolbar-eraser';
+import CardEditorHeadToolbarPencil from './card-editor-head-toolbar-pencil';
 
-const modes: EditMode[] = ["text", "sketch"];
-const sketchModes: SketchMode[] = ["pencil", "eraser"];
+const modes: EditMode[] = ['text', 'sketch'];
+const sketchModes: SketchMode[] = ['pencil', 'eraser'];
 interface CardEditorHeadToolbarProps {
   editMode: EditMode;
   setEditMode: (mode: EditMode) => void;
@@ -38,7 +38,7 @@ function CardEditorHeadToolbar({
           <TabsHeader
             className="bg-gray-900"
             indicatorProps={{
-              className: "bg-gray-100/10 shadow-none !text-gray-900",
+              className: 'bg-gray-100/10 shadow-none !text-gray-900',
             }}
           >
             {modes.map((value) => (
@@ -47,7 +47,7 @@ function CardEditorHeadToolbar({
                 value={value}
                 onClick={() => setEditMode(value)}
                 className={
-                  editMode === value ? "text-gray-100" : "text-gray-400"
+                  editMode === value ? 'text-gray-100' : 'text-gray-400'
                 }
               >
                 {value}
@@ -55,15 +55,15 @@ function CardEditorHeadToolbar({
             ))}
           </TabsHeader>
         </Tabs>
-        {editMode === "sketch" &&
+        {editMode === 'sketch' &&
           sketchModes.map((value) => (
             <button
               key={value}
               onClick={() => setSketchMode(value)}
               className={`ml-2 rounded-full px-2 py-1 ${
                 sketchMode === value
-                  ? "bg-gray-800 text-gray-400"
-                  : "bg-gray-900 text-gray-100"
+                  ? 'bg-gray-800 text-gray-400'
+                  : 'bg-gray-900 text-gray-100'
               }`}
             >
               {value}
@@ -71,9 +71,9 @@ function CardEditorHeadToolbar({
           ))}
       </div>
 
-      {editMode === "sketch" && (
+      {editMode === 'sketch' && (
         <>
-          {sketchMode === "pencil" ? (
+          {sketchMode === 'pencil' ? (
             <CardEditorHeadToolbarPencil
               pencilInfo={pencilInfo}
               setPencilInfo={setPencilInfo}

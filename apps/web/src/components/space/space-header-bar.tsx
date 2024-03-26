@@ -1,7 +1,7 @@
-import { Breadcrumbs } from "@/components/material-tailwind";
-import Link from "next/link";
-import { MdArrowForwardIos } from "react-icons/md";
-import SpaceHeaderBarRetitleInput from "./space-header-bar-retitle-input";
+import { Breadcrumbs } from '@/components/material-tailwind';
+import Link from 'next/link';
+import { MdArrowForwardIos } from 'react-icons/md';
+import SpaceHeaderBarRetitleInput from './space-header-bar-retitle-input';
 
 function SpaceHeaderBar() {
   return (

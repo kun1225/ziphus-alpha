@@ -16,6 +16,9 @@
     "start": {
       "dependsOn": ["^start"]
     },
-    "test": {}
+    "test": {},
+    "type-check": {
+      "dependsOn": ["^type-check"]
+    }
   }
 }

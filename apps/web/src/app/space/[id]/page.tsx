@@ -1,6 +1,6 @@
-import Sidebar from "@/components/sidebar";
-import SpaceHeaderBar from "@/components/space/space-header-bar";
-import SpaceEditor from "@/components/space/space-editor";
+import Sidebar from '@/components/sidebar';
+import SpaceHeaderBar from '@/components/space/space-header-bar';
+import SpaceEditor from '@/components/space/space-editor';
 
 export default function Page(): JSX.Element {
   return (
