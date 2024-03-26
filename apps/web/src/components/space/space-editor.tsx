@@ -268,6 +268,7 @@ export default function SpaceEditor() {
   const parallaxBoardRef = useRef<HTMLDivElement | null>(null);
   const contextMenuComponentRef = useRef<HTMLDivElement | null>(null);
   const [focusSpaceCardId, setFocusSpaceCardId] = useState<string | null>(null);
+  const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<string[]>([]);
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
   const isDraggingRef = useViewDrag(
@@ -282,18 +283,24 @@ export default function SpaceEditor() {
     <div
       ref={whiteBoardRef}
       className="relative h-full w-full overflow-hidden bg-black"
+      onClick={() => {
+        setFocusSpaceCardId(null);
+        setSelectedSpaceCardIdList([]);
+      }}
     >
       {/* 內容 */}
-      <div className=" origin-top-left" ref={parallaxBoardRef}>
+      <div className=" origin-top-left" ref={parallaxBoardRef} >
         {space?.spaceCards.map((spaceCard) => (
           <SpaceCardEditor
             key={spaceCard.id}
             initialSpaceCard={spaceCard}
             socketIOProvider={provider}
             doc={doc}
-            focusSpaceCardId={focusSpaceCardId}
-            onFocus={() => setFocusSpaceCardId(spaceCard.id)}
-            onBlur={() => setFocusSpaceCardId(null)}
+            isFocus={focusSpaceCardId === spaceCard.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              setFocusSpaceCardId(spaceCard.id);
+            }}
           />
         ))}
       </div>

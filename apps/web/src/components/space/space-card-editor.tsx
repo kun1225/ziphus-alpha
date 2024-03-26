@@ -9,23 +9,21 @@ import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
 import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
 import * as Y from 'yjs';
 import { SocketIOProvider } from 'y-socket.io';
+import { cn } from '@/utils/cn';
 
-interface SpaceCardEditorProps {
+interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   initialSpaceCard: SpaceCardDTO;
   doc: Y.Doc;
   socketIOProvider: SocketIOProvider;
-  focusSpaceCardId: string | null;
-  onFocus: () => void;
-  onBlur: () => void;
+  isFocus: boolean;
 }
 
 function SpaceCardEditor({
   initialSpaceCard,
   doc,
   socketIOProvider,
-  focusSpaceCardId,
-  onFocus,
-  onBlur,
+  isFocus,
+  ...props
 }: SpaceCardEditorProps) {
   const { account } = useMe();
   const spaceCardRef = useRef<HTMLDivElement>(null);
@@ -46,35 +44,24 @@ function SpaceCardEditor({
     setEraserInfo,
   } = useCardEditor(initialSpaceCard.targetCardId);
 
-  useEffect(() => {
-    function onBlurCard(event: MouseEvent) {
-      if (
-        spaceCardRef.current &&
-        !spaceCardRef.current.contains(event.target as Node)
-      ) {
-        onBlur();
-      }
-    }
-    document.addEventListener('click', onBlurCard);
-    return () => document.removeEventListener('click', onBlurCard);
-  }, [onBlur]);
-
   if (!card || !account) return null;
 
   return (
     <div
-      className=" absolute h-fit w-fit border border-gray-200 bg-gray-900 shadow-md"
+      className={
+        cn('absolute h-fit w-fit border-gray-200 bg-gray-900 shadow-md',
+          isFocus ? 'border-4' : 'border cursor-pointer')
+      }
       style={{
         transform: `translate(${spaceCard?.x}px, ${spaceCard?.y}px)`,
+
       }}
-      onClick={() => {
-        if (focusSpaceCardId !== spaceCard?.id) {
-          onFocus();
-        }
-      }}
+      {...props}
       ref={spaceCardRef}
     >
-      <div className="flex flex-col gap-2">
+      <div className={cn('flex flex-col gap-2',
+        isFocus ? 'pointer-events-auto' : 'pointer-events-none',
+      )}>
         <CardEditorHeadToolbar
           editMode={editMode}
           setEditMode={setEditMode}
@@ -108,7 +95,7 @@ function SpaceCardEditor({
           />
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 
