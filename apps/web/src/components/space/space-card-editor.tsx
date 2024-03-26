@@ -161,7 +161,7 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        "absolute h-fit w-fit border-gray-200 bg-gray-900 shadow-md",
+        "absolute h-fit w-fit rounded-lg border-gray-200 bg-gray-900 shadow-md",
         isFocus ? "border-4" : "cursor-pointer border",
       )}
       {...props}
@@ -177,16 +177,6 @@ function SpaceCardEditor({
           isFocus ? "pointer-events-auto" : "pointer-events-none",
         )}
       >
-        <CardEditorHeadToolbar
-          editMode={editMode}
-          setEditMode={setEditMode}
-          sketchMode={sketchMode}
-          setSketchMode={setSketchMode}
-          pencilInfo={pencilInfo}
-          setPencilInfo={setPencilInfo}
-          eraserInfo={eraserInfo}
-          setEraserInfo={setEraserInfo}
-        />
         <div
           className="relative w-[1280px] overflow-hidden"
           style={{
