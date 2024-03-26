@@ -43,17 +43,38 @@ const useViewScroll = (
     if (!editor) return;
 
     const onWheel = (event: WheelEvent) => {
-      const view = viewRef.current!;
       event.preventDefault();
+      const rect = editor.getBoundingClientRect();
+      const view = viewRef.current!;
+      const mouseX = event.clientX - rect.left;
+      const mouseY = event.clientY - rect.top;
 
-      const scale = Math.max(
-        0.1,
-        Math.min(10, view.scale - event.deltaY * 0.0005),
+      const newScale = Math.max(
+        0.01,
+        Math.min(2, view.scale - event.deltaY * 0.0005),
       );
+
+      // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量
+      const { x: centerX, y: centerY } =
+        transformMouseClientPositionToViewPosition(view, mouseX, mouseY);
+      const { x: newCenterX, y: newCenterY } =
+        transformMouseClientPositionToViewPosition(
+          {
+            x: view.x,
+            y: view.y,
+            scale: newScale,
+          },
+          mouseX,
+          mouseY,
+        );
+      const deltaX = (newCenterX - centerX) * newScale;
+      const deltaY = (newCenterY - centerY) * newScale;
+
+      // 更新視圖的位置和縮放值
       viewRef.current = {
-        x: view.x,
-        y: view.y,
-        scale,
+        x: view.x + deltaX,
+        y: view.y + deltaY,
+        scale: newScale,
       };
     };
 
@@ -115,7 +136,7 @@ const useViewContextMenu = (
   }, []);
 };
 
-// 右鍵按住拖曳
+// 右鍵按住拖曳視野
 const useViewDrag = (
   editorRef: React.RefObject<HTMLDivElement>,
   viewRef: React.MutableRefObject<View>,
@@ -207,8 +228,6 @@ const useViewTransformUpdate = (
   }, []);
 };
 
-// 拉動單張卡片
-
 // contextMenu: 右鍵選單
 interface ContextMenuComponentProps {
   contextMenu: ContextMenu | null;
@@ -293,7 +312,11 @@ export default function SpaceEditor() {
   >([]);
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
-  const isDraggingRef = useViewDrag(whiteBoardRef, viewRef, !focusSpaceCardId);
+  const isViewDraggingRef = useViewDrag(
+    whiteBoardRef,
+    viewRef,
+    !focusSpaceCardId,
+  );
   useViewContextMenu(whiteBoardRef, setContextMenu, contextMenuComponentRef);
   useViewTransformUpdate(parallaxBoardRef, viewRef);
 
@@ -307,13 +330,17 @@ export default function SpaceEditor() {
       }}
     >
       {/* 內容 */}
-      <div className=" origin-top-left" ref={parallaxBoardRef}>
+      <div
+        className=" absolute left-0 top-0 origin-top-left"
+        ref={parallaxBoardRef}
+      >
         {space?.spaceCards.map((spaceCard) => (
           <SpaceCardEditor
             key={spaceCard.id}
             initialSpaceCard={spaceCard}
             socketIOProvider={provider}
             doc={doc}
+            viewRef={viewRef}
             isFocus={focusSpaceCardId === spaceCard.id}
             onClick={(e) => {
               e.stopPropagation();
