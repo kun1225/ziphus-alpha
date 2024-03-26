@@ -1,6 +1,11 @@
 "use client";
 import { Tab, Tabs, TabsHeader } from "../material-tailwind";
-import { EditMode, SketchMode, PencilInfo, EraserInfo } from "./card-editor";
+import {
+  EditMode,
+  SketchMode,
+  PencilInfo,
+  EraserInfo,
+} from "@/hooks/card/useCardEditor";
 import CardEditorHeadToolbarEraser from "./card-editor-head-toolbar-eraser";
 import CardEditorHeadToolbarPencil from "./card-editor-head-toolbar-pencil";
 

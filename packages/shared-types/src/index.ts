@@ -13,3 +13,8 @@ export * from "./card/card-modify-title-request.dto";
 export * from "./card/card-modify-permission-request.dto";
 export * from "./card/card-immediate-modify-content-request.dto";
 export * from "./card/card-immediate-modify-content-response.dto";
+export * from "./space/space.dto";
+export * from "./space/space-create-response.dto";
+export * from "./space/space-get-with-all-response.dto";
+export * from "./space/space-get-by-id-response.dto";
+export * from "./space/space-card-create-response.dto";

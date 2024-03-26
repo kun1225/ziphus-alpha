@@ -2,16 +2,16 @@
 import { cn } from "@/utils/cn";
 import { useEffect, useRef, useState } from "react";
 
-interface CardSidebarContainerProps {
+interface SidebarContainerProps {
   display: "static" | "float";
   className?: string;
   children: React.ReactNode;
 }
-function CardSidebarContainer({
+function SidebarContainer({
   display,
   className,
   children,
-}: CardSidebarContainerProps) {
+}: SidebarContainerProps) {
   const [showFloatingContainer, setShowFloatingContainer] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -55,4 +55,4 @@ function CardSidebarContainer({
   );
 }
 
-export default CardSidebarContainer;
+export default SidebarContainer;

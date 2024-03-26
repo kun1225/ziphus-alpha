@@ -10,7 +10,6 @@ function useQueryCardList() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['cards'],
     queryFn: fetchCardList,
-
   });
   const cards = data?.data.cards ?? [];
 

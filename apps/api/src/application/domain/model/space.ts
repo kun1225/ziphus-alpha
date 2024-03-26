@@ -1,11 +1,17 @@
+export enum SpacePermission {
+  Private = "Private",
+  PublicReadOnly = "PublicReadOnly",
+  PublicEditable = "PublicEditable",
+}
+
 export class SpaceCard {
   constructor(
     readonly id: string,
     readonly targetCardId: string,
     readonly targetSpaceId: string,
     readonly x: number,
-    readonly y: number,
-  ) { }
+    readonly y: number
+  ) {}
 }
 
 export class ChildSpace {
@@ -13,8 +19,8 @@ export class ChildSpace {
     readonly id: string,
     readonly targetSpaceId: string,
     readonly x: number,
-    readonly y: number,
-  ) { }
+    readonly y: number
+  ) {}
 }
 
 class Space {
@@ -22,13 +28,13 @@ class Space {
     readonly id: string,
     readonly belongAccountId: string,
     readonly title: string,
-    readonly content: string,
+    readonly permission: SpacePermission,
     readonly spaceCards: SpaceCard[],
     readonly childSpaces: ChildSpace[],
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null
-  ) { }
+  ) {}
 }
 
 export default Space;

@@ -27,7 +27,7 @@ function CardEditorMarkdownEditor({
   const editor = useCreateBlockNote({
     collaboration: {
       provider,
-      fragment: doc.getXmlFragment("card-content"),
+      fragment: doc.getXmlFragment(`card-content-${cardId}`),
       user: {
         name: accountName,
         color: "#0066ff",

@@ -1,13 +1,13 @@
 "use client";
 import { MdTipsAndUpdates } from "react-icons/md";
-import { Button } from "../material-tailwind";
-import CardSidebarContainer from "./card-sidebar-container";
+import { Button } from "./material-tailwind";
+import SidebarContainer from "./sidebar-container";
 import { useState } from "react";
 
-function CardSidebar() {
+function Sidebar() {
   const [display, setDisplay] = useState<"static" | "float">("static");
   return (
-    <CardSidebarContainer display={display}>
+    <SidebarContainer display={display}>
       <div className="flex justify-between">
         <Button variant="text" className="flex flex-1 justify-start" size="sm">
           <h1 className="text-md font-bold text-gray-400">
@@ -30,8 +30,8 @@ function CardSidebar() {
           )}
         </Button>
       </div>
-    </CardSidebarContainer>
+    </SidebarContainer>
   );
 }
 
-export default CardSidebar;
+export default Sidebar;

@@ -1,18 +1,17 @@
 "use client";
 import { Button, ButtonProps } from "@/components/material-tailwind";
-import useCreateCard from "@/hooks/card/useCreateCard";
+import useCreateSpace from "@/hooks/space/useCreateSpace";
 import { useRouter } from "next/navigation";
 
-interface CardCreateButtonProps extends ButtonProps {
+interface SpaceCreateButtonProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>;
 }
-export function CardCreateButton({
+export function SpaceCreateButton({
   children,
   ...props
-}: CardCreateButtonProps) {
+}: SpaceCreateButtonProps) {
+  const mutate = useCreateSpace();
   const router = useRouter();
-  const mutate = useCreateCard();
-
   return (
     <Button
       variant="outlined"
@@ -20,7 +19,7 @@ export function CardCreateButton({
       onClick={() =>
         mutate.mutate(undefined, {
           onSuccess: (data) => {
-            router.push(`/card/${data.data.card.id}`);
+            router.push(`/space/${data.data.space.id}`);
           },
         })
       }

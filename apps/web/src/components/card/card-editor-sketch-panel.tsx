@@ -1,10 +1,10 @@
-'use client';
-import useDrawAction from '@/hooks/card-sketch/useDrawAction';
-import { useEffect, useState } from 'react';
-import * as Y from 'yjs';
-import Stroke from '@/models/stroke';
-import useRemoteStrokeSync from '@/hooks/card-sketch/useRemoteStrokeSync';
-import { EraserInfo, PencilInfo, SketchMode } from './card-editor';
+"use client";
+import useDrawAction from "@/hooks/card-sketch/useDrawAction";
+import { useEffect, useState } from "react";
+import * as Y from "yjs";
+import Stroke from "@/models/stroke";
+import useRemoteStrokeSync from "@/hooks/card-sketch/useRemoteStrokeSync";
+import { EraserInfo, PencilInfo, SketchMode } from "@/hooks/card/useCardEditor";
 import {
   Shape,
   ShapeType,
@@ -12,9 +12,8 @@ import {
   SketchCanvasProvider,
   useSketchCanvasProvider,
   Line,
-} from '@repo/sketch-canvas';
-import useEraseAction from '@/hooks/card-sketch/useEraseAction';
-
+} from "@repo/sketch-canvas";
+import useEraseAction from "@/hooks/card-sketch/useEraseAction";
 
 interface CardEditorDrawingPanelProps {
   isSketching: boolean;
@@ -24,7 +23,6 @@ interface CardEditorDrawingPanelProps {
   sketchMode: SketchMode;
   pencilInfo: PencilInfo;
   eraserInfo: EraserInfo;
-  sketchCanvasProvider: SketchCanvasProvider;
 }
 
 function CardEditorSketchPanel({
@@ -35,15 +33,16 @@ function CardEditorSketchPanel({
   sketchMode,
   pencilInfo,
   eraserInfo,
-  sketchCanvasProvider,
 }: CardEditorDrawingPanelProps) {
-  const [yStrokes] = useState(doc.getArray('card-drawing'));
-  const [originalRenderStrokes, setOriginalRenderStrokes] = useState<Stroke[]>([]);
+  const [yStrokes] = useState(doc.getArray(`card-drawing-${cardId}`));
+  const [originalRenderStrokes, setOriginalRenderStrokes] = useState<Stroke[]>(
+    [],
+  );
   const remoteRenderStrokes = useRemoteStrokeSync({
     remoteYArray: yStrokes,
     originalStrokes: originalRenderStrokes,
   });
-  const provider = useSketchCanvasProvider();
+  const sketchCanvasProvider = useSketchCanvasProvider();
 
   const { handleStartDraw, handleMoveDraw, handleEndDraw } = useDrawAction({
     remoteYArray: yStrokes,
@@ -53,33 +52,35 @@ function CardEditorSketchPanel({
     sketchCanvasProvider,
   });
 
-  const { eraser, handleEndErase, handleMoveErase, handleStartErase } = useEraseAction({
-    remoteYArray: yStrokes,
-    originalStrokes: originalRenderStrokes,
-    setOriginalStrokes: setOriginalRenderStrokes,
-    eraserInfo,
-    sketchCanvasProvider,
-  });
+  const { eraser, handleEndErase, handleMoveErase, handleStartErase } =
+    useEraseAction({
+      remoteYArray: yStrokes,
+      originalStrokes: originalRenderStrokes,
+      setOriginalStrokes: setOriginalRenderStrokes,
+      eraserInfo,
+      sketchCanvasProvider,
+    });
 
   useEffect(() => {
-    const lines: Line[] =
-      [...originalRenderStrokes, ...remoteRenderStrokes].map(stroke => stroke.lines)
-        .flat()
-        .map((line, index) => ({
-          id: `${line.strokeId}:${index}`,
-          type: ShapeType.Line,
-          startX: line.startX,
-          startY: line.startY,
-          endX: line.endX,
-          endY: line.endY,
-          strokeStyle: line.color,
-          lineWidth: line.width,
-        } as Line));
+    const lines: Line[] = [...originalRenderStrokes, ...remoteRenderStrokes]
+      .map((stroke) => stroke.lines)
+      .flat()
+      .map(
+        (line, index) =>
+          ({
+            id: `${line.strokeId}:${index}`,
+            type: ShapeType.Line,
+            startX: line.startX,
+            startY: line.startY,
+            endX: line.endX,
+            endY: line.endY,
+            strokeStyle: line.color,
+            lineWidth: line.width,
+          }) as Line,
+      );
 
-    const renderShapes: Shape[] = [...lines, ...(
-      eraser ? [eraser] : []
-    )];
-    provider.setShapes(renderShapes);
+    const renderShapes: Shape[] = [...lines, ...(eraser ? [eraser] : [])];
+    sketchCanvasProvider.setShapes(renderShapes);
   }, [originalRenderStrokes, eraser]);
 
   return (
@@ -95,25 +96,25 @@ function CardEditorSketchPanel({
       </button>
       <SketchCanvas
         id="sketch"
-        provider={provider}
+        provider={sketchCanvasProvider}
         className="absolute left-0 top-0 z-10 h-full w-full"
-        style={{ pointerEvents: isSketching ? 'auto' : 'none' }}
+        style={{ pointerEvents: isSketching ? "auto" : "none" }}
         handleStartDraw={(x, y) => {
-          if (sketchMode === 'pencil') {
+          if (sketchMode === "pencil") {
             handleStartDraw(x, y);
           } else {
             handleStartErase(x, y);
           }
         }}
         handleMoveDraw={(x, y) => {
-          if (sketchMode === 'pencil') {
+          if (sketchMode === "pencil") {
             handleMoveDraw(x, y);
           } else {
             handleMoveErase(x, y);
           }
         }}
         handleEndDraw={() => {
-          if (sketchMode === 'pencil') {
+          if (sketchMode === "pencil") {
             handleEndDraw();
           } else {
             handleEndErase();
