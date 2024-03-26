@@ -1,12 +1,12 @@
-'use client';
-import useQuerySpaceById from '@/hooks/space/useQuerySpaceById';
-import React, { useEffect, useRef, useState } from 'react';
-import SpaceCardEditor from './space-card-editor';
-import useYJSProvide from '@/hooks/card/useYJSProvider';
-import { useParams } from 'next/navigation';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useQueryCardList from '@/hooks/card/useQueryCardList';
-import useCreateCard from '@/hooks/card/useCreateCard';
+"use client";
+import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
+import React, { useEffect, useRef, useState } from "react";
+import SpaceCardEditor from "./space-card-editor";
+import useYJSProvide from "@/hooks/card/useYJSProvider";
+import { useParams } from "next/navigation";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useQueryCardList from "@/hooks/card/useQueryCardList";
+import useCreateCard from "@/hooks/card/useCreateCard";
 
 export interface View {
   x: number;
@@ -18,6 +18,20 @@ export interface ContextMenu {
   x: number;
   y: number;
 }
+
+// 將滑鼠在編輯器上的相對位置轉換成實際位置
+const transformMouseClientPositionToViewPosition = (
+  view: View,
+  clientX: number,
+  clientY: number,
+) => {
+  const newX = (clientX - view.x) / view.scale;
+  const newY = (clientY - view.y) / view.scale;
+  return {
+    x: newX,
+    y: newY,
+  };
+};
 
 // 滾輪放大縮小
 const useViewScroll = (
@@ -43,10 +57,10 @@ const useViewScroll = (
       };
     };
 
-    editor.addEventListener('wheel', onWheel, { passive: false });
+    editor.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener('wheel', onWheel);
+      editor.removeEventListener("wheel", onWheel);
     };
   }, []);
 };
@@ -91,12 +105,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener('contextmenu', onContextMenu);
-    editor.addEventListener('mousedown', handleMouseDown);
+    editor.addEventListener("contextmenu", onContextMenu);
+    editor.addEventListener("mousedown", handleMouseDown);
 
     return () => {
-      editor.removeEventListener('contextmenu', onContextMenu);
-      editor.removeEventListener('mousedown', handleMouseDown);
+      editor.removeEventListener("contextmenu", onContextMenu);
+      editor.removeEventListener("mousedown", handleMouseDown);
     };
   }, []);
 };
@@ -144,14 +158,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener('mousedown', onMouseDown);
-    editor.addEventListener('mousemove', onMouseMove);
-    editor.addEventListener('mouseup', onMouseUp);
+    editor.addEventListener("mousedown", onMouseDown);
+    editor.addEventListener("mousemove", onMouseMove);
+    editor.addEventListener("mouseup", onMouseUp);
 
     return () => {
-      editor.removeEventListener('mousedown', onMouseDown);
-      editor.removeEventListener('mousemove', onMouseMove);
-      editor.removeEventListener('mouseup', onMouseUp);
+      editor.removeEventListener("mousedown", onMouseDown);
+      editor.removeEventListener("mousemove", onMouseMove);
+      editor.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
 
@@ -193,6 +207,8 @@ const useViewTransformUpdate = (
   }, []);
 };
 
+// 拉動單張卡片
+
 // contextMenu: 右鍵選單
 interface ContextMenuComponentProps {
   contextMenu: ContextMenu | null;
@@ -207,8 +223,9 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${contextMenu ? '' : 'hidden'
-          }`}
+        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${
+          contextMenu ? "" : "hidden"
+        }`}
         style={{
           left: contextMenu ? contextMenu.x : 0,
           top: contextMenu ? contextMenu.y : 0,
@@ -220,24 +237,27 @@ const ContextMenuComponent = React.forwardRef(
           onClick={() =>
             mutateCreateCard.mutate(undefined, {
               onSuccess: (data) => {
-                console.log('新增卡片成功', data.data);
+                console.log("新增卡片成功", data.data);
                 const view = viewRef.current;
                 mutateCreateSpaceCard.mutate(
                   {
                     spaceId,
                     targetCardId: data.data.card.id,
-                    x: view.x + (contextMenu?.x || 0) / view.scale,
-                    y: view.y + (contextMenu?.y || 0) / view.scale,
+                    ...transformMouseClientPositionToViewPosition(
+                      view,
+                      contextMenu?.x || 0,
+                      contextMenu?.y || 0,
+                    ),
                   },
                   {
                     onSuccess: (data: any) => {
-                      console.log('新增卡片成功', data.data);
+                      console.log("新增卡片成功", data.data);
                     },
                   },
                 );
               },
               onError: (error) => {
-                console.error('新增卡片失敗', error);
+                console.error("新增卡片失敗", error);
               },
             })
           }
@@ -268,14 +288,12 @@ export default function SpaceEditor() {
   const parallaxBoardRef = useRef<HTMLDivElement | null>(null);
   const contextMenuComponentRef = useRef<HTMLDivElement | null>(null);
   const [focusSpaceCardId, setFocusSpaceCardId] = useState<string | null>(null);
-  const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<string[]>([]);
+  const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<
+    string[]
+  >([]);
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
-  const isDraggingRef = useViewDrag(
-    whiteBoardRef,
-    viewRef,
-    !focusSpaceCardId,
-  );
+  const isDraggingRef = useViewDrag(whiteBoardRef, viewRef, !focusSpaceCardId);
   useViewContextMenu(whiteBoardRef, setContextMenu, contextMenuComponentRef);
   useViewTransformUpdate(parallaxBoardRef, viewRef);
 
@@ -289,7 +307,7 @@ export default function SpaceEditor() {
       }}
     >
       {/* 內容 */}
-      <div className=" origin-top-left" ref={parallaxBoardRef} >
+      <div className=" origin-top-left" ref={parallaxBoardRef}>
         {space?.spaceCards.map((spaceCard) => (
           <SpaceCardEditor
             key={spaceCard.id}
