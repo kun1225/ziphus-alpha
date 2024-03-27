@@ -1,4 +1,4 @@
-import { Line } from '../models/shapes';
+import { Line } from "../models/shapes";
 
 const drawLine = (ctx: CanvasRenderingContext2D, line: Line) => {
   ctx.save();
@@ -6,7 +6,6 @@ const drawLine = (ctx: CanvasRenderingContext2D, line: Line) => {
   ctx.moveTo(line.startX, line.startY);
   ctx.lineTo(line.endX, line.endY);
   ctx.lineWidth = line.lineWidth;
-  console.log('line', line);
   if (line.fillStyle) {
     ctx.fillStyle = line.fillStyle;
     ctx.fill();

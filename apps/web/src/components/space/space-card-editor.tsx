@@ -177,13 +177,23 @@ function SpaceCardEditor({
           isFocus ? "pointer-events-auto" : "pointer-events-none",
         )}
       >
+        <CardEditorHeadToolbar
+          editMode={editMode}
+          setEditMode={setEditMode}
+          sketchMode={sketchMode}
+          setSketchMode={setSketchMode}
+          pencilInfo={pencilInfo}
+          setPencilInfo={setPencilInfo}
+          eraserInfo={eraserInfo}
+          setEraserInfo={setEraserInfo}
+        />
         <div
           className="relative w-[1280px] overflow-hidden"
           style={{
             height: card.height,
           }}
         >
-          {/* <CardEditorSketchPanel
+          <CardEditorSketchPanel
             isSketching={editMode === "sketch"}
             cardId={card.id as string}
             accountName={account.name}
@@ -191,7 +201,7 @@ function SpaceCardEditor({
             sketchMode={sketchMode}
             pencilInfo={pencilInfo}
             eraserInfo={eraserInfo}
-          /> */}
+          />
           <CardEditorMarkdownEditor
             cardId={card.id as string}
             accountName={account.name}

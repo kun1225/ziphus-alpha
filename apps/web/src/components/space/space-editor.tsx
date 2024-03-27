@@ -99,7 +99,7 @@ const useViewContextMenu = (
 
     const onContextMenu = (event: MouseEvent) => {
       event.preventDefault();
-      if (Date.now() - mouseDownTimeRef.current > 200) return;
+      if (Date.now() - mouseDownTimeRef.current > 100) return;
       const editor = editorRef.current;
       if (!editor) return;
       const rect = editor.getBoundingClientRect();

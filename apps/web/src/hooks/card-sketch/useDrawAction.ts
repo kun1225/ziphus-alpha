@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
-import Line from '@/models/line';
-import Stroke from '@/models/stroke';
-import * as Y from 'yjs';
-import { v4 } from 'uuid';
-import { PencilInfo } from '@/hooks/card/useCardEditor';
-import { SketchCanvasProvider } from '@repo/sketch-canvas';
+import { useState, useRef } from "react";
+import Line from "@/models/line";
+import Stroke from "@/models/stroke";
+import * as Y from "yjs";
+import { v4 } from "uuid";
+import { PencilInfo } from "@/hooks/card/useCardEditor";
+import { SketchCanvasProvider } from "@repo/sketch-canvas";
 
 const MIN_SYNC_TIME = 1000;
 
@@ -42,8 +42,8 @@ const useDrawAction = ({
       ),
     ]);
     currentYStrokeRef.current = new Y.Map();
-    currentYStrokeRef.current.set('id', newStroke.id);
-    currentYStrokeRef.current.set('lines', newStroke.lines);
+    currentYStrokeRef.current.set("id", newStroke.id);
+    currentYStrokeRef.current.set("lines", newStroke.lines);
 
     // 將筆跡送入遠端
     remoteYArray.push([currentYStrokeRef.current]);
@@ -57,9 +57,7 @@ const useDrawAction = ({
     if (!isDrawing) return;
 
     // 取得當前筆跡
-    const currentStroke = originalStrokes[
-      originalStrokes.length - 1
-    ]!;
+    const currentStroke = originalStrokes[originalStrokes.length - 1]!;
     const lastLine = currentStroke.lines[currentStroke.lines.length - 1];
 
     // 創建路徑
@@ -79,11 +77,12 @@ const useDrawAction = ({
     ]);
 
     // 加入遠端路徑
-    const currentTime = Date.now();
-    if (currentTime - lastSyncMoveYArrayTimeRef.current > MIN_SYNC_TIME) {
-      currentYStrokeRef.current?.set('lines', newStroke.lines);
-      lastSyncMoveYArrayTimeRef.current = currentTime;
-    }
+    // 暫時不同步
+    // const currentTime = Date.now();
+    // if (currentTime - lastSyncMoveYArrayTimeRef.current > MIN_SYNC_TIME) {
+    //   currentYStrokeRef.current?.set('lines', newStroke.lines);
+    //   lastSyncMoveYArrayTimeRef.current = currentTime;
+    // }
     // 加入本地路徑
     setOriginalStrokes(
       originalStrokes.map((stroke) =>
@@ -94,10 +93,8 @@ const useDrawAction = ({
 
   // 結束筆跡
   const handleEndDraw = () => {
-    const currentStroke = originalStrokes[
-      originalStrokes.length - 1
-    ]!;
-    currentYStrokeRef.current?.set('lines', currentStroke.lines);
+    const currentStroke = originalStrokes[originalStrokes.length - 1]!;
+    currentYStrokeRef.current?.set("lines", currentStroke.lines);
     setIsDrawing(false);
   };
 
