@@ -1,6 +1,6 @@
-import { Server } from "socket.io";
+import type { Server } from "socket.io";
 import { YSocketIO } from "y-socket.io/dist/server";
-import YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
+import type YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 
 function YSocketIOFactory(
   io: Server,

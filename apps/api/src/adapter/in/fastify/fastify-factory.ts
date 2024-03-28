@@ -2,15 +2,16 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUI from "@fastify/swagger-ui";
+import type {
+  ZodTypeProvider} from "fastify-type-provider-zod";
 import {
   jsonSchemaTransform,
   createJsonSchemaTransform,
   serializerCompiler,
-  validatorCompiler,
-  ZodTypeProvider,
+  validatorCompiler
 } from "fastify-type-provider-zod";
 
-function fastifyFactory(port: number = 8080) {
+function fastifyFactory(port = 8080) {
   const fastify = Fastify();
   fastify.setValidatorCompiler(validatorCompiler);
   fastify.setSerializerCompiler(serializerCompiler);

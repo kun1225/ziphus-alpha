@@ -17,7 +17,7 @@ const cardModifyPermissionUseCaseConstructor: CardModifyPermissionUseCaseConstru
       }
 
       // 判斷 permission 是否在 在 CardPermission 中
-      if (!(<any>Object).values(CardPermission).includes(permission)) {
+      if (!(Object as any).values(CardPermission).includes(permission)) {
         throw new Error("Invalid permission");
       }
 

@@ -1,4 +1,4 @@
-import { CardDeleteUseCaseConstructor } from "@/application/port/in/card-delete-use-case";
+import type { CardDeleteUseCaseConstructor } from "@/application/port/in/card-delete-use-case";
 
 const cardDeleteUseCaseConstructor: CardDeleteUseCaseConstructor =
   (loadCard, deleteCard) =>

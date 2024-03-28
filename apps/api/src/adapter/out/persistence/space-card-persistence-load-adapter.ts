@@ -5,7 +5,7 @@ const SpaceCardPersistenceLoadAdapter: LoadSpaceCardPort = async (where) => {
   const dataPath = "./persistence/space-cards.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
-  let spaceCards = JSON.parse(data) ?? [];
+  const spaceCards = JSON.parse(data) ?? [];
 
   // 查詢資料
   const findKeys = Object.keys(where);

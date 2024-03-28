@@ -1,10 +1,10 @@
-import { FastifyBaseLogger, FastifyInstance } from "fastify";
-import { ZodTypeProvider } from "fastify-type-provider-zod";
 import type {
   Server as HttpServer,
   IncomingMessage,
   ServerResponse,
 } from "node:http";
+import type { FastifyBaseLogger, FastifyInstance } from "fastify";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { Server } from "socket.io";
 
 function SocketIoFactory(

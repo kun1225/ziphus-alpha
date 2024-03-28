@@ -1,5 +1,5 @@
 import type Space from "@/application/domain/model/space";
-import { LoadSpaceListPort } from "../out/load-space-list-port";
+import type { LoadSpaceListPort } from "../out/load-space-list-port";
 
 export type SpaceGetWithAllUseCaseConstructor = (
   loadSpaceList: LoadSpaceListPort

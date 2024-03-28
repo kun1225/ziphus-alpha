@@ -6,7 +6,7 @@ const SpacePersistenceLoadAdapter: LoadSpacePort = async (where) => {
   const dataPath = "./persistence/spaces.json";
   // 讀取檔案
   const data = fs.readFileSync(dataPath, "utf8");
-  let spaces = JSON.parse(data) ?? [];
+  const spaces = JSON.parse(data) ?? [];
 
   // 查詢資料
   const findKeys = Object.keys(where);

@@ -1,9 +1,9 @@
 import { AuthorizationHeaderSchema } from "@repo/shared-types";
-import type { SpaceCardDeleteUseCase } from "@/application/port/in/space-card-delete-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import z from "zod";
-import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import type { SpaceCardDeleteUseCase } from "@/application/port/in/space-card-delete-use-case";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const spaceCardDeleteController: FastifyControllerInterface<
   [SpaceCardDeleteUseCase, EmitSocketPort]
@@ -38,13 +38,13 @@ const spaceCardDeleteController: FastifyControllerInterface<
           spaceCardId,
         });
 
-        return emitSocket({
-          event: `space:card:delete`,
+        emitSocket({
+          event: "space:card:delete",
           data: {
             spaceCardId,
           },
           room: spaceId,
-        });
+        }); 
       } catch (error) {
         reply.code(400);
         console.error(error);

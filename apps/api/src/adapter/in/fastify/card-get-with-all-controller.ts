@@ -5,8 +5,9 @@ import {
   CardPermissionDTO,
 } from "@repo/shared-types";
 import type { CardGetWithAllUseCase } from "@/application/port/in/card-get-with-all-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
+
 const cardGetWithAllController: FastifyControllerInterface<
   CardGetWithAllUseCase
 > = (fastify, cardGetWithAllUseCase) => {

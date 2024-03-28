@@ -2,10 +2,10 @@ import {
   AuthorizationHeaderSchema,
   CardModifyPermissionRequestDTOSchema,
 } from "@repo/shared-types";
-import type { CardModifyPermissionUseCase } from "@/application/port/in/card-modify-permission-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import { z } from "zod";
+import type { CardModifyPermissionUseCase } from "@/application/port/in/card-modify-permission-use-case";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const cardModifyPermissionController: FastifyControllerInterface<
   CardModifyPermissionUseCase

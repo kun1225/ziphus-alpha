@@ -1,10 +1,10 @@
 import {
   AuthorizationHeaderSchema,
 } from "@repo/shared-types";
-import type { CardDeleteUseCase } from "@/application/port/in/card-delete-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import { z } from "zod";
+import type { CardDeleteUseCase } from "@/application/port/in/card-delete-use-case";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const cardDeleteController: FastifyControllerInterface<
   CardDeleteUseCase

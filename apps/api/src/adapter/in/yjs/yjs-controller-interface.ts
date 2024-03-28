@@ -1,4 +1,4 @@
-import { YSocketIO } from 'y-socket.io/dist/server';
+import type { YSocketIO } from "y-socket.io/dist/server";
 
 type YJSControllerInterface<T> = (
   ySocketIO: YSocketIO,

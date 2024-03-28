@@ -6,8 +6,6 @@ import { v4 } from "uuid";
 import { PencilInfo } from "@/hooks/card/useCardEditor";
 import { SketchCanvasProvider } from "@repo/sketch-canvas";
 
-const MIN_SYNC_TIME = 1000;
-
 interface UseActionProps {
   remoteYArray: Y.Array<any>;
   originalStrokes: Stroke[];
@@ -23,7 +21,6 @@ const useDrawAction = ({
   sketchCanvasProvider,
 }: UseActionProps) => {
   const [isDrawing, setIsDrawing] = useState(false);
-  const lastSyncMoveYArrayTimeRef = useRef<number>(0);
   const currentYStrokeRef = useRef<Y.Map<any> | null>(null);
 
   // 新增筆跡

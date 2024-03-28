@@ -1,4 +1,4 @@
-import AccountTokenInterface from "@/application/port/in/account-token-interface";
+import type AccountTokenInterface from "@/application/port/in/account-token-interface";
 import { decodeToken } from "./jwt-token";
 
 function getAccountTokenInterfaceFromAuth({

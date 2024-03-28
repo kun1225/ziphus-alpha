@@ -1,11 +1,11 @@
-import {
+import type {
   SpaceCardImmediateUpdatePositionRequestDTO,
   Authorization,
 } from "@repo/shared-types";
 import type { SpaceCardUpdatePositionUseCase } from "@/application/port/in/space-card-update-position-use-case";
 import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
-import type IoControllerInterface from "./io-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type IoControllerInterface from "./io-controller-interface";
 
 /**
  * 即時修改卡片位置

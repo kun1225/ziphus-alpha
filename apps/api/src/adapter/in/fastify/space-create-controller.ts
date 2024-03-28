@@ -4,8 +4,8 @@ import {
   SpacePermissionDTO,
 } from "@repo/shared-types";
 import type { SpaceCreateUseCase } from "@/application/port/in/space-create-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const spaceCreateController: FastifyControllerInterface<SpaceCreateUseCase> = (
   fastify,

@@ -1,4 +1,4 @@
-import { SpaceDeleteUseCaseConstructor } from "@/application/port/in/space-delete-use-case";
+import type { SpaceDeleteUseCaseConstructor } from "@/application/port/in/space-delete-use-case";
 
 const spaceDeleteUseCaseConstructor: SpaceDeleteUseCaseConstructor =
   (loadSpace, deleteSpace) =>

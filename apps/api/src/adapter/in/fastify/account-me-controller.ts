@@ -3,8 +3,8 @@ import {
   AccountMeResponseDTOSchema,
 } from "@repo/shared-types";
 import type { AccountGetInfoUseCase } from "@/application/port/in/account-get-info-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
   fastify,

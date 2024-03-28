@@ -1,15 +1,15 @@
-import axiosInstance from "@/utils/axios";
-import { SpaceCreateResponseDTO } from "@repo/shared-types";
+import axiosInstance from '@/utils/axios';
+import { SpaceCreateResponseDTO } from '@repo/shared-types';
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
-} from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import { toast } from "sonner";
+} from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { toast } from 'sonner';
 
 async function fetchCreateSpace() {
-  return await axiosInstance.post<SpaceCreateResponseDTO>("/space");
+  return await axiosInstance.post<SpaceCreateResponseDTO>('/space');
 }
 
 function useCreateSpace(): UseMutationResult<
@@ -22,8 +22,8 @@ function useCreateSpace(): UseMutationResult<
   const mutate = useMutation({
     mutationFn: fetchCreateSpace,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["spaces"] });
-      toast.success("Space created successfully");
+      queryClient.invalidateQueries({ queryKey: ['spaces'] });
+      toast.success('Space created successfully');
     },
   });
   return mutate;

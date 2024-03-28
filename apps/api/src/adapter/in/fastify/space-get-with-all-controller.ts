@@ -3,9 +3,9 @@ import {
   SpaceGetWithAllResponseDTOSchema,
   SpacePermissionDTO,
 } from "@repo/shared-types";
-import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
-import { SpaceGetWithAllUseCase } from "@/application/port/in/space-get-with-all-use-case";
+import type { SpaceGetWithAllUseCase } from "@/application/port/in/space-get-with-all-use-case";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const spaceGetWithAllController: FastifyControllerInterface<
   SpaceGetWithAllUseCase

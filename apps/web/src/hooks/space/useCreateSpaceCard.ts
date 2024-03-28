@@ -1,17 +1,17 @@
-import axiosInstance from "@/utils/axios";
+import axiosInstance from '@/utils/axios';
 import {
   SpaceCardCreateResponseDTO,
   SpaceCardCreateRequestDTO,
   SpaceGetByIdResponseDTO,
-} from "@repo/shared-types";
+} from '@repo/shared-types';
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
-} from "@tanstack/react-query";
-import { AxiosResponse } from "axios";
-import useSocket from "../useSocket";
-import { useEffect } from "react";
+} from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import useSocket from '../useSocket';
+import { useEffect } from 'react';
 
 async function fetchCreateSpaceCard(
   spaceId: string,
@@ -29,9 +29,9 @@ async function fetchCreateSpaceCard(
 
 function useCreateSpaceCard(
   setLocalSpace: React.Dispatch<
-    React.SetStateAction<SpaceGetByIdResponseDTO["space"]>
+    React.SetStateAction<SpaceGetByIdResponseDTO['space']>
   >,
-  localSpace: SpaceGetByIdResponseDTO["space"],
+  localSpace: SpaceGetByIdResponseDTO['space'],
 ): UseMutationResult<
   AxiosResponse<SpaceCardCreateResponseDTO>,
   unknown,
@@ -44,10 +44,10 @@ function useCreateSpaceCard(
   const queryClient = useQueryClient();
   const createSpaceCard = async (data: SpaceCardCreateResponseDTO) => {
     queryClient.invalidateQueries({
-      queryKey: ["space", localSpace?.id],
+      queryKey: ['space', localSpace?.id],
     });
     queryClient.invalidateQueries({
-      queryKey: ["spaces"],
+      queryKey: ['spaces'],
     });
     if (!localSpace) {
       return;
@@ -68,13 +68,13 @@ function useCreateSpaceCard(
   });
 
   useEffect(() => {
-    socket.on("space:card:create", (data: SpaceCardCreateResponseDTO) => {
-      console.log("space:card:create", data);
+    socket.on('space:card:create', (data: SpaceCardCreateResponseDTO) => {
+      console.log('space:card:create', data);
       createSpaceCard(data);
     });
 
     return () => {
-      socket.off("space:card:create");
+      socket.off('space:card:create');
     };
   }, [localSpace?.id, localSpace?.spaceCards]);
   return mutate;

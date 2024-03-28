@@ -1,9 +1,9 @@
 import {
   SpaceCardDTO,
   SpaceCardImmediateUpdatePositionRequestDTO,
-} from "@repo/shared-types";
-import useSocket from "@/hooks/useSocket";
-import { useEffect } from "react";
+} from '@repo/shared-types';
+import useSocket from '@/hooks/useSocket';
+import { useEffect } from 'react';
 
 function useUpdateSpaceCardPosition(
   spaceCardRef: React.MutableRefObject<SpaceCardDTO>,
@@ -15,7 +15,7 @@ function useUpdateSpaceCardPosition(
   function handleUpdatePosition(
     data: SpaceCardImmediateUpdatePositionRequestDTO,
   ) {
-    socketEmitWithAuth("space:card:update-position", data);
+    socketEmitWithAuth('space:card:update-position', data);
   }
 
   useEffect(() => {

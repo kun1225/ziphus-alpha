@@ -3,11 +3,11 @@ import {
   SpaceCardCreateResponseDTOSchema,
   SpaceCardCreateRequestDTOSchema,
 } from "@repo/shared-types";
-import type { SpaceCardCreateUseCase } from "@/application/port/in/space-card-create-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import z from "zod";
-import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import type { SpaceCardCreateUseCase } from "@/application/port/in/space-card-create-use-case";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const spaceCardCreateController: FastifyControllerInterface<
   [SpaceCardCreateUseCase, EmitSocketPort]
@@ -40,7 +40,7 @@ const spaceCardCreateController: FastifyControllerInterface<
           y,
         });
         emitSocket({
-          event: `space:card:create`,
+          event: "space:card:create",
           data: {
             spaceCard,
           },

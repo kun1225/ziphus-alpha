@@ -1,6 +1,6 @@
 import type { SpaceCard } from "@/application/domain/model/space";
 import { type SaveSpaceCardPort } from "../out/save-space-card-port";
-import { LoadSpacePort } from "../out/load-space-port";
+import type { LoadSpacePort } from "../out/load-space-port";
 
 export type SpaceCardCreateUseCaseConstructor = (
   loadSpace: LoadSpacePort,

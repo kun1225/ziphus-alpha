@@ -205,7 +205,7 @@ function SpaceCardEditor({
           }}
         >
           <CardEditorSketchPanel
-            isSketching={editMode === "sketch"}
+            isSketching={editMode === 'sketch'}
             cardId={card.id as string}
             accountName={account.name}
             doc={doc}

@@ -3,10 +3,10 @@ import {
   CardGetByIdResponseDTOSchema,
   CardPermissionDTO,
 } from "@repo/shared-types";
-import type { CardGetByIdUseCase } from "@/application/port/in/card-get-by-id-use-case";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import { z } from "zod";
+import type { CardGetByIdUseCase } from "@/application/port/in/card-get-by-id-use-case";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const cardGetByIdController: FastifyControllerInterface<CardGetByIdUseCase> = (
   fastify,
@@ -34,7 +34,7 @@ const cardGetByIdController: FastifyControllerInterface<CardGetByIdUseCase> = (
 
         const card = await cardGetByIdUseCase({
           accountId: accountToken?.accountId,
-          cardId: cardId,
+          cardId,
         });
         const cardDto = card
           ? {

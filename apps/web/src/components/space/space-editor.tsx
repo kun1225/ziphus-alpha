@@ -1,9 +1,7 @@
 "use client";
-import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
 import React, { useEffect, useRef, useState } from "react";
 import SpaceCardEditor from "./space-card-editor";
 import useYJSProvide from "@/hooks/card/useYJSProvider";
-import { useParams } from "next/navigation";
 import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
 import useQueryCardList from "@/hooks/card/useQueryCardList";
 import useCreateCard from "@/hooks/card/useCreateCard";
@@ -334,7 +332,7 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${
+        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${
           contextMenuInfo ? "" : "hidden"
         }`}
         style={{

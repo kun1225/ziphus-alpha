@@ -1,4 +1,4 @@
-import {
+import type {
   CardImmediateModifyContentRequestDTO,
   CardGetIsNeedImmediateModifyContentRequestDTO,
   CardGetIsNeedImmediateModifyContentResponseDTO,
@@ -6,8 +6,8 @@ import {
 } from "@repo/shared-types";
 import type { CardGetByIdUseCase } from "@/application/port/in/card-get-by-id-use-case";
 import type { CardModifyContentUseCase } from "@/application/port/in/card-modify-content-use-case";
-import type IoControllerInterface from "./io-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type IoControllerInterface from "./io-controller-interface";
 
 // 最小存檔間隔時間
 const MIN_SAVE_INTERVAL = 3000;

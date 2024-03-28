@@ -1,4 +1,4 @@
-import { SpaceCardUpdatePositionUseCaseConstructor } from "@/application/port/in/space-card-update-position-use-case";
+import type { SpaceCardUpdatePositionUseCaseConstructor } from "@/application/port/in/space-card-update-position-use-case";
 import { SpacePermission } from "../model/space";
 
 const spaceCardUpdatePositionUseCaseConstructor: SpaceCardUpdatePositionUseCaseConstructor =

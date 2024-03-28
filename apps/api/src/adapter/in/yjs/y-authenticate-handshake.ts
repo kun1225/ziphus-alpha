@@ -1,9 +1,9 @@
-import { CardAccessEditValidatorUseCase } from "@/application/port/in/card-access-edit-validator-use-case";
+import type { CardAccessEditValidatorUseCase } from "@/application/port/in/card-access-edit-validator-use-case";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 
 const YAuthenticateHandshakeConstructor =
   (cardAccessEditValidatorUseCase: CardAccessEditValidatorUseCase) =>
-  async (handshake: { [key: string]: any }) => {
+  async (handshake: Record<string, any>) => {
     return true;
     const { authorization, cardId } = handshake.auth;
     const accountToken = getAccountTokenInterfaceFromAuth({ authorization });

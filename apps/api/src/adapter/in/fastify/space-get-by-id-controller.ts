@@ -1,13 +1,14 @@
+import type {
+  SpaceDto} from "@repo/shared-types";
 import {
   AuthorizationHeaderSchema,
-  SpaceDto,
   SpaceGetByIdResponseDTOSchema,
   SpacePermissionDTO,
 } from "@repo/shared-types";
-import type FastifyControllerInterface from "./fastify-controller-interface";
-import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
-import { SpaceGetByIdUseCase } from "@/application/port/in/space-get-by-id-use-case";
 import { z } from "zod";
+import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type { SpaceGetByIdUseCase } from "@/application/port/in/space-get-by-id-use-case";
+import type FastifyControllerInterface from "./fastify-controller-interface";
 
 const spaceGetByIdController: FastifyControllerInterface<
   SpaceGetByIdUseCase

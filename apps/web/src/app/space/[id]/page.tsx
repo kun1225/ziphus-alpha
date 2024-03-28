@@ -1,9 +1,9 @@
-import Sidebar from "@/components/sidebar";
-import SpaceHeaderBar from "@/components/space/space-header-bar";
-import SpaceEditor from "@/components/space/space-editor";
-import { cookies } from "next/headers";
-import { fetchSpaceById } from "@/hooks/space/useQuerySpaceById";
-import axiosInstance from "@/utils/axios";
+import Sidebar from '@/components/sidebar';
+import SpaceHeaderBar from '@/components/space/space-header-bar';
+import SpaceEditor from '@/components/space/space-editor';
+import { cookies } from 'next/headers';
+import { fetchSpaceById } from '@/hooks/space/useQuerySpaceById';
+import axiosInstance from '@/utils/axios';
 
 export default async function Page({
   params: { id },
@@ -11,8 +11,8 @@ export default async function Page({
   params: { id: string };
 }): Promise<JSX.Element> {
   const cookieStore = cookies();
-  const authorization = cookieStore.get("authorization");
-  axiosInstance.defaults.headers.authorization = authorization?.value ?? "";
+  const authorization = cookieStore.get('authorization');
+  axiosInstance.defaults.headers.authorization = authorization?.value ?? '';
   const data = await fetchSpaceById(id);
 
   if (!data?.data?.space) {

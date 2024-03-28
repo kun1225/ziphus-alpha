@@ -1,4 +1,4 @@
-import { SpaceCardDeleteUseCaseConstructor } from "@/application/port/in/space-card-delete-use-case";
+import type { SpaceCardDeleteUseCaseConstructor } from "@/application/port/in/space-card-delete-use-case";
 import { SpacePermission } from "../model/space";
 
 const spaceCardDeleteUseCaseConstructor: SpaceCardDeleteUseCaseConstructor =
