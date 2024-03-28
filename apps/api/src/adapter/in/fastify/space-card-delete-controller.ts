@@ -33,12 +33,12 @@ const spaceCardDeleteController: FastifyControllerInterface<
       }
 
       try {
-        return await spaceCardDeleteUseCase({
+        await spaceCardDeleteUseCase({
           accountId: accountToken.accountId,
           spaceCardId,
         });
 
-        emitSocket({
+        return emitSocket({
           event: `space:card:delete`,
           data: {
             spaceCardId,

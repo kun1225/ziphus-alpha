@@ -7,10 +7,11 @@ import type { SpaceCardCreateUseCase } from "@/application/port/in/space-card-cr
 import type FastifyControllerInterface from "./fastify-controller-interface";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import z from "zod";
+import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
 
 const spaceCardCreateController: FastifyControllerInterface<
-  SpaceCardCreateUseCase
-> = (fastify, spaceCardCreateUseCase) => {
+  [SpaceCardCreateUseCase, EmitSocketPort]
+> = (fastify, [spaceCardCreateUseCase, emitSocket]) => {
   fastify.route({
     method: "POST",
     url: "/space/:spaceId/space-card",
@@ -38,7 +39,13 @@ const spaceCardCreateController: FastifyControllerInterface<
           x,
           y,
         });
-
+        emitSocket({
+          event: `space:card:create`,
+          data: {
+            spaceCard,
+          },
+          room: spaceCard.targetSpaceId,
+        });
         return {
           spaceCard,
         };

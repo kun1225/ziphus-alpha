@@ -1,14 +1,14 @@
-'use client';
-import useQuerySpaceById from '@/hooks/space/useQuerySpaceById';
-import React, { useEffect, useRef, useState } from 'react';
-import SpaceCardEditor from './space-card-editor';
-import useYJSProvide from '@/hooks/card/useYJSProvider';
-import { useParams } from 'next/navigation';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useQueryCardList from '@/hooks/card/useQueryCardList';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
+"use client";
+import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
+import React, { useEffect, useRef, useState } from "react";
+import SpaceCardEditor from "./space-card-editor";
+import useYJSProvide from "@/hooks/card/useYJSProvider";
+import { useParams } from "next/navigation";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useQueryCardList from "@/hooks/card/useQueryCardList";
+import useCreateCard from "@/hooks/card/useCreateCard";
+import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import { SpaceGetByIdResponseDTO } from "@repo/shared-types";
 
 export interface View {
   x: number;
@@ -81,10 +81,10 @@ const useViewScroll = (
       };
     };
 
-    editor.addEventListener('wheel', onWheel, { passive: false });
+    editor.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener('wheel', onWheel);
+      editor.removeEventListener("wheel", onWheel);
     };
   }, []);
 };
@@ -108,7 +108,9 @@ const useViewContextMenu = (
       const rect = editor.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
-      const targetSpaceCardId = (event.target as HTMLElement).closest('.space-card')?.id;
+      const targetSpaceCardId = (event.target as HTMLElement).closest(
+        ".space-card",
+      )?.id;
 
       setContextMenuInfo({
         x,
@@ -131,12 +133,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener('contextmenu', onContextMenu);
-    editor.addEventListener('mousedown', handleMouseDown);
+    editor.addEventListener("contextmenu", onContextMenu);
+    editor.addEventListener("mousedown", handleMouseDown);
 
     return () => {
-      editor.removeEventListener('contextmenu', onContextMenu);
-      editor.removeEventListener('mousedown', handleMouseDown);
+      editor.removeEventListener("contextmenu", onContextMenu);
+      editor.removeEventListener("mousedown", handleMouseDown);
     };
   }, []);
 };
@@ -184,14 +186,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener('mousedown', onMouseDown);
-    editor.addEventListener('mousemove', onMouseMove);
-    editor.addEventListener('mouseup', onMouseUp);
+    editor.addEventListener("mousedown", onMouseDown);
+    editor.addEventListener("mousemove", onMouseMove);
+    editor.addEventListener("mouseup", onMouseUp);
 
     return () => {
-      editor.removeEventListener('mousedown', onMouseDown);
-      editor.removeEventListener('mousemove', onMouseMove);
-      editor.removeEventListener('mouseup', onMouseUp);
+      editor.removeEventListener("mousedown", onMouseDown);
+      editor.removeEventListener("mousemove", onMouseMove);
+      editor.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
 
@@ -233,93 +235,97 @@ const useViewTransformUpdate = (
   }, []);
 };
 
-
 interface ContextMenuComponentProps {
   contextMenuInfo: ContextMenuInfo | null;
+  setContextMenuInfo: (contextMenuInfo: ContextMenuInfo | null) => void;
   viewRef: React.MutableRefObject<View>;
   spaceId: string;
-  space: SpaceGetByIdResponseDTO['space'];
-  setSpace: React.Dispatch<React.SetStateAction<SpaceGetByIdResponseDTO['space']>>;
+  mutateDeleteSpaceCard: ReturnType<typeof useDeleteSpaceCard>;
+  mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
+  mutateCreateCard: ReturnType<typeof useCreateCard>;
 }
 
 // global space context menu
 function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
-  const { contextMenuInfo, viewRef, spaceId } = props;
-  const mutateCreateSpaceCard = useCreateSpaceCard();
-  const mutateCreateCard = useCreateCard();
+  const {
+    contextMenuInfo,
+    viewRef,
+    spaceId,
+    mutateCreateSpaceCard,
+    mutateCreateCard,
+    setContextMenuInfo,
+  } = props;
   const { cards } = useQueryCardList();
 
-  return <>
-    <button
-      className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
-      onClick={() =>
-        mutateCreateCard.mutate(undefined, {
-          onSuccess: (data) => {
-            console.log('新增卡片成功', data.data);
-            const view = viewRef.current;
-            mutateCreateSpaceCard.mutate(
-              {
-                spaceId,
-                targetCardId: data.data.card.id,
-                ...transformMouseClientPositionToViewPosition(
-                  view,
-                  contextMenuInfo?.x || 0,
-                  contextMenuInfo?.y || 0,
-                ),
-              },
-              {
-                onSuccess: (data: any) => {
-                  console.log('新增卡片成功', data.data);
+  return (
+    <>
+      <button
+        className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
+        onClick={() => {
+          mutateCreateCard.mutate(undefined, {
+            onSuccess: (data) => {
+              console.log("新增卡片成功", data.data);
+              const view = viewRef.current;
+              mutateCreateSpaceCard.mutate(
+                {
+                  spaceId,
+                  targetCardId: data.data.card.id,
+                  ...transformMouseClientPositionToViewPosition(
+                    view,
+                    contextMenuInfo?.x || 0,
+                    contextMenuInfo?.y || 0,
+                  ),
                 },
-              },
-            );
-          },
-          onError: (error) => {
-            console.error('新增卡片失敗', error);
-          },
-        })
-      }
-    >
-      新增卡片
-    </button>
-    {/* <button className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700">
+                {
+                  onSuccess: (data: any) => {
+                    console.log("新增卡片成功", data.data);
+                  },
+                },
+              );
+            },
+            onError: (error) => {
+              console.error("新增卡片失敗", error);
+            },
+          });
+          setContextMenuInfo(null);
+        }}
+      >
+        新增卡片
+      </button>
+      {/* <button className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700">
           將現有卡片加入
         </button> */}
-  </>;
+    </>
+  );
 }
-
 
 // space card context menu
 function SpaceCardContextMenu(props: ContextMenuComponentProps) {
-  const { contextMenuInfo, spaceId, space, setSpace } = props;
-  const mutateDeleteSpaceCard = useDeleteSpaceCard();
+  const {
+    contextMenuInfo,
+    spaceId,
+    mutateDeleteSpaceCard,
+    setContextMenuInfo,
+  } = props;
 
-  if (!space) {
-    return <></>;
-  }
-
-  return <>
-    <button
-      className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
-      onClick={() => {
-        if (!contextMenuInfo?.targetSpaceCardId) return;
-        mutateDeleteSpaceCard.mutate({
-          spaceId,
-          spaceCardId: contextMenuInfo.targetSpaceCardId,
-        });
-        setSpace({
-          ...space,
-          spaceCards: space.spaceCards.filter(
-            (spaceCard) => spaceCard.id !== contextMenuInfo.targetSpaceCardId,
-          ),
-        });
-      }}
-    >
-      刪除卡片
-    </button>
-  </>;
+  return (
+    <>
+      <button
+        className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
+        onClick={() => {
+          if (!contextMenuInfo?.targetSpaceCardId) return;
+          mutateDeleteSpaceCard.mutate({
+            spaceId,
+            spaceCardId: contextMenuInfo.targetSpaceCardId,
+          });
+          setContextMenuInfo(null);
+        }}
+      >
+        刪除卡片
+      </button>
+    </>
+  );
 }
-
 
 // contextMenu: 右鍵選單
 const ContextMenuComponent = React.forwardRef(
@@ -328,38 +334,42 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${contextMenuInfo ? '' : 'hidden'
-          }`}
+        className={`absolute flex h-fit w-fit flex-col gap-2 rounded-md bg-gray-800 p-2 text-gray-100 ${
+          contextMenuInfo ? "" : "hidden"
+        }`}
         style={{
           left: contextMenuInfo ? contextMenuInfo.x : 0,
           top: contextMenuInfo ? contextMenuInfo.y : 0,
         }}
         ref={ref as React.RefObject<HTMLDivElement>}
       >
-        {
-          contextMenuInfo?.targetSpaceCardId && (
-            <SpaceCardContextMenu
-              {...props}
-            />
-          )
-        }
-        {
-          !contextMenuInfo?.targetSpaceCardId && (
-            <GlobalSpaceContextMenu
-              {...props}
-            />
-          )
-        }
+        {contextMenuInfo?.targetSpaceCardId && (
+          <SpaceCardContextMenu {...props} />
+        )}
+        {!contextMenuInfo?.targetSpaceCardId && (
+          <GlobalSpaceContextMenu {...props} />
+        )}
       </div>
     );
   },
 );
 
-export default function SpaceEditor() {
-  const { id } = useParams();
-  const spaceId = id as string;
-  const { space: initialSpace } = useQuerySpaceById(spaceId);
-  const [space, setSpace] = useState(initialSpace);
+export default function SpaceEditor({
+  initialSpace,
+}: {
+  initialSpace: SpaceGetByIdResponseDTO["space"];
+}) {
+  if (!initialSpace) {
+    return <div>Space not found</div>;
+  }
+  const spaceId = initialSpace?.id;
+  const [space, setSpace] = useState<SpaceGetByIdResponseDTO["space"] | null>(
+    initialSpace,
+  );
+  const mutateDeleteSpaceCard = useDeleteSpaceCard(setSpace, space);
+  const mutateCreateSpaceCard = useCreateSpaceCard(setSpace, space);
+  const mutateCreateCard = useCreateCard();
+
   useEffect(() => {
     setSpace(initialSpace);
   }, [initialSpace]);
@@ -372,20 +382,26 @@ export default function SpaceEditor() {
     scale: 1,
   });
   const whiteBoardRef = useRef<HTMLDivElement>(null);
+
   const parallaxBoardRef = useRef<HTMLDivElement | null>(null);
   const contextMenuComponentRef = useRef<HTMLDivElement | null>(null);
   const [focusSpaceCardId, setFocusSpaceCardId] = useState<string | null>(null);
   const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<
     string[]
   >([]);
-  const [contextMenuInfo, setContextMenuInfo] = useState<ContextMenuInfo | null>(null);
+  const [contextMenuInfo, setContextMenuInfo] =
+    useState<ContextMenuInfo | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
   const isViewDraggingRef = useViewDrag(
     whiteBoardRef,
     viewRef,
     !focusSpaceCardId,
   );
-  useViewContextMenu(whiteBoardRef, setContextMenuInfo, contextMenuComponentRef);
+  useViewContextMenu(
+    whiteBoardRef,
+    setContextMenuInfo,
+    contextMenuComponentRef,
+  );
   useViewTransformUpdate(parallaxBoardRef, viewRef);
 
   return (
@@ -420,11 +436,13 @@ export default function SpaceEditor() {
       {/* 右鍵生成選單 */}
       <ContextMenuComponent
         contextMenuInfo={contextMenuInfo}
+        setContextMenuInfo={setContextMenuInfo}
         ref={contextMenuComponentRef}
         viewRef={viewRef}
         spaceId={spaceId}
-        space={space}
-        setSpace={setSpace}
+        mutateDeleteSpaceCard={mutateDeleteSpaceCard}
+        mutateCreateSpaceCard={mutateCreateSpaceCard}
+        mutateCreateCard={mutateCreateCard}
       />
     </div>
   );

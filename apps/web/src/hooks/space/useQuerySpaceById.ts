@@ -2,7 +2,7 @@ import axiosInstance from '@/utils/axios';
 import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-async function fetchSpaceById(spaceId: string) {
+export async function fetchSpaceById(spaceId: string) {
   return await axiosInstance.get<SpaceGetByIdResponseDTO>(`/space/${spaceId}`);
 }
 

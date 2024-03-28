@@ -1,62 +1,71 @@
-import axiosInstance from '@/utils/axios';
+import axiosInstance from "@/utils/axios";
+import { SpaceGetByIdResponseDTO } from "@repo/shared-types";
 import {
-    UseMutationResult,
-    useMutation,
-    useQueryClient,
-} from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+  UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
+import useSocket from "../useSocket";
+import { useEffect } from "react";
 
 async function fetchDeleteSpaceCard(spaceId: string, spaceCardId: string) {
-    return await axiosInstance.delete(
-        `/space/${spaceId}/space-card/${spaceCardId}`,
-    );
+  return await axiosInstance.delete(
+    `/space/${spaceId}/space-card/${spaceCardId}`,
+  );
 }
 
-function useDeleteSpaceCard(): UseMutationResult<
-    AxiosResponse<void>,
-    unknown,
-    { spaceId: string; spaceCardId: string },
-    unknown
+function useDeleteSpaceCard(
+  setLocalSpace: React.Dispatch<
+    React.SetStateAction<SpaceGetByIdResponseDTO["space"]>
+  >,
+  localSpace: SpaceGetByIdResponseDTO["space"],
+): UseMutationResult<
+  AxiosResponse<void>,
+  unknown,
+  { spaceId: string; spaceCardId: string },
+  unknown
 > {
-    const queryClient = useQueryClient();
-    const mutate = useMutation({
-        mutationFn: ({
-            spaceId,
-            spaceCardId,
-        }: {
-            spaceId: string;
-            spaceCardId: string;
-        }) => fetchDeleteSpaceCard(spaceId, spaceCardId),
-        onSuccess: (data) => {
-            if (queryClient.getQueryData(['space', data.data.spaceCard.targetSpaceId])) {
-                queryClient.setQueryData(['space', data.data.spaceCard.targetSpaceId], (space: any) => {
-                    return {
-                        ...space,
-                        spaceCards: space.spaceCards.filter(
-                            (spaceCard: any) => spaceCard.id !== data.data.spaceCard.id,
-                        ),
-                    };
-                });
-            }
-            if (queryClient.getQueryData(['spaces'])) {
-                queryClient.setQueryData(['spaces'], (spaces: any) => {
-                    return spaces.map((space: any) => {
-                        if (space.id === data.data.spaceCard.targetSpaceId) {
-                            return {
-                                ...space,
-                                spaceCards: space.spaceCards.filter(
-                                    (spaceCard: any) => spaceCard.id !== data.data.spaceCard.id,
-                                ),
-                            };
-                        }
-                        return space;
-                    });
-                });
-            }
-
-        },
+  const { socket } = useSocket(localSpace?.id);
+  const queryClient = useQueryClient();
+  const removeSpaceCard = async (spaceCardId: string) => {
+    queryClient.invalidateQueries({
+      queryKey: ["space", localSpace?.id],
     });
-    return mutate;
+    queryClient.invalidateQueries({
+      queryKey: ["spaces"],
+    });
+    if (setLocalSpace && localSpace) {
+      setLocalSpace({
+        ...localSpace,
+        spaceCards: localSpace.spaceCards.filter(
+          (spaceCard) => spaceCard.id !== spaceCardId,
+        ),
+      });
+    }
+  };
+
+  const mutate = useMutation({
+    mutationKey: ["space", localSpace?.id, "delete"],
+    mutationFn: ({
+      spaceId,
+      spaceCardId,
+    }: {
+      spaceId: string;
+      spaceCardId: string;
+    }) => fetchDeleteSpaceCard(spaceId, spaceCardId),
+  });
+
+  useEffect(() => {
+    socket.on("space:card:delete", (data: { spaceCardId: string }) => {
+      removeSpaceCard(data.spaceCardId);
+    });
+
+    return () => {
+      socket.off("space:card:delete");
+    };
+  }, [localSpace?.id, localSpace?.spaceCards]);
+  return mutate;
 }
 
 export default useDeleteSpaceCard;

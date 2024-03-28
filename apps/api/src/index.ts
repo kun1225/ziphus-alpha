@@ -78,7 +78,6 @@ import spaceModifyTitleController from "@/adapter/in/fastify/space-modify-title-
 import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/socket/space-card-immediate-update-position-controller";
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
 
-
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
 const saveAccount: SaveAccountPort = AccountPersistenceSaveAdapter;
@@ -145,11 +144,12 @@ const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
   loadSpace,
   saveSpace
 );
-const spaceCardUpdatePositionUseCase = spaceCardUpdatePositionUseCaseConstructor(
-  loadSpace,
-  loadSpaceCard,
-  saveSpaceCard
-);
+const spaceCardUpdatePositionUseCase =
+  spaceCardUpdatePositionUseCaseConstructor(
+    loadSpace,
+    loadSpaceCard,
+    saveSpaceCard
+  );
 
 // 初始化基礎設施
 const fastify = fastifyFactory(8080);
@@ -176,7 +176,7 @@ fastify.after(() => {
   spaceDeleteController(fastify, spaceDeleteUseCase);
   spaceGetWithAllController(fastify, spaceGetWithAllUseCase);
   spaceGetByIdController(fastify, spaceGetByIdUseCase);
-  spaceCardCreateController(fastify, spaceCardCreateUseCase);
+  spaceCardCreateController(fastify, [spaceCardCreateUseCase, emitSocket]);
   spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
   spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
 });
