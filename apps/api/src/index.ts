@@ -53,6 +53,7 @@ import spaceDeleteUseCaseConstructor from "@/application/domain/service/space-de
 import spaceGetByIdUseCaseConstructor from "@/application/domain/service/space-get-by-id-service";
 import spaceGetWithAllUseCaseConstructor from "@/application/domain/service/space-get-with-all-use-case";
 import spaceModifyTitleCaseConstructor from "@/application/domain/service/space-modify-title-service";
+import spaceCardUpdatePositionUseCaseConstructor from "@/application/domain/service/space-card-update-position-service";
 
 // 路由
 import accountRegisterController from "@/adapter/in/fastify/account-register-controller";
@@ -69,11 +70,14 @@ import cardImmediateModifyContentController from "@/adapter/in/socket/card-immed
 import YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 import spaceCreateController from "@/adapter/in/fastify/space-create-controller";
 import spaceGetWithAllController from "@/adapter/in/fastify/space-get-with-all-controller";
-import spaceCardCreateController from "./adapter/in/fastify/space-card-create-controller";
-import spaceCardDeleteController from "./adapter/in/fastify/space-card-delete-controller";
-import spaceDeleteController from "./adapter/in/fastify/space-delete-controller";
-import spaceGetByIdController from "./adapter/in/fastify/space-get-by-id-controller";
-import spaceModifyTitleController from "./adapter/in/fastify/space-modify-title-controller";
+import spaceCardCreateController from "@/adapter/in/fastify/space-card-create-controller";
+import spaceCardDeleteController from "@/adapter/in/fastify/space-card-delete-controller";
+import spaceDeleteController from "@/adapter/in/fastify/space-delete-controller";
+import spaceGetByIdController from "@/adapter/in/fastify/space-get-by-id-controller";
+import spaceModifyTitleController from "@/adapter/in/fastify/space-modify-title-controller";
+import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/socket/space-card-immediate-update-position-controller";
+import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
+
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
@@ -141,6 +145,11 @@ const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
   loadSpace,
   saveSpace
 );
+const spaceCardUpdatePositionUseCase = spaceCardUpdatePositionUseCaseConstructor(
+  loadSpace,
+  loadSpaceCard,
+  saveSpaceCard
+);
 
 // 初始化基礎設施
 const fastify = fastifyFactory(8080);
@@ -149,6 +158,7 @@ YSocketIOFactory(
   io,
   YAuthenticateHandshakeConstructor(cardAccessEditValidatorCase)
 );
+const emitSocket = CreateSocketEmitAdapter(io);
 
 // 註冊 controller
 fastify.after(() => {
@@ -167,17 +177,25 @@ fastify.after(() => {
   spaceGetWithAllController(fastify, spaceGetWithAllUseCase);
   spaceGetByIdController(fastify, spaceGetByIdUseCase);
   spaceCardCreateController(fastify, spaceCardCreateUseCase);
-  spaceCardDeleteController(fastify, spaceCardDeleteUseCase);
+  spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
   spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
 });
 
 fastify.ready((err) => {
   if (err) throw err;
+
   io.on("connection", (socket) => {
     cardImmediateModifyContentController(socket, [
       cardGetByIdUseCase,
       cardModifyContentUseCase,
     ]);
+    spaceCardImmediateUpdatePositionUseCaseController(socket, [
+      spaceCardUpdatePositionUseCase,
+      emitSocket,
+    ]);
+    socket.on("join-space", (room) => {
+      socket.join(room);
+    });
     socket.on("disconnect", () => {
       console.log("user disconnected");
     });

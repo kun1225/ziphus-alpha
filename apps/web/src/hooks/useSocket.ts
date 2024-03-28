@@ -11,7 +11,7 @@ interface UseSocket {
   socketEmitWithAuth: (event: string, data: any) => void;
   socket: Socket;
 }
-function useSocket(): UseSocket {
+function useSocket(room?: string): UseSocket {
   // 伺服器端不需要建立 socket
   if (typeof window === 'undefined') {
     throw new Error('useSocket is not supported on the server side');
@@ -26,6 +26,12 @@ function useSocket(): UseSocket {
       auth: {
         authorization: getCookie('authorization'),
       },
+    });
+
+    socket.on('connect', () => {
+      if (room) {
+        socket?.emit('join-space', room);
+      }
     });
   }
 
