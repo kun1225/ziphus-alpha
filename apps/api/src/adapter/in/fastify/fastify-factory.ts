@@ -2,13 +2,12 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUI from "@fastify/swagger-ui";
-import type {
-  ZodTypeProvider} from "fastify-type-provider-zod";
+import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import {
   jsonSchemaTransform,
   createJsonSchemaTransform,
   serializerCompiler,
-  validatorCompiler
+  validatorCompiler,
 } from "fastify-type-provider-zod";
 
 function fastifyFactory(port = 8080) {
@@ -34,9 +33,14 @@ function fastifyFactory(port = 8080) {
     routePrefix: "/documentation",
   });
 
-  fastify.listen({ port }).then((address) => {
-    console.log(`Server listening on ${address}`);
-  });
+  fastify
+    .listen({
+      port,
+      host: "0.0.0.0",
+    })
+    .then((address) => {
+      console.log(`Server listening on ${address}`);
+    });
 
   return fastify.withTypeProvider<ZodTypeProvider>();
 }
