@@ -152,7 +152,7 @@ const spaceCardUpdatePositionUseCase =
   );
 
 // 初始化基礎設施
-const fastify = fastifyFactory(8080);
+const fastify = fastifyFactory(Number(process.env.PORT || 8080));
 const io = SocketIoFactory(fastify);
 YSocketIOFactory(
   io,
