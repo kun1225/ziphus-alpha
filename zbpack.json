@@ -1,3 +1,4 @@
 {
-  "serverless": false
+  "serverless": false,
+  "cache_dependencies": false
 }
