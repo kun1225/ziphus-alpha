@@ -1,15 +1,16 @@
-"use client";
-import useCardEditor from "@/hooks/card/useCardEditor";
-import useMe from "@/hooks/useMe";
-import { SpaceCardDTO } from "@repo/shared-types";
-import { View } from "./space-editor";
-import { useEffect, useRef, useState } from "react";
-import CardEditorSketchPanel from "../card/card-editor-sketch-panel";
-import CardEditorMarkdownEditor from "../card/card-editor-markdown-editor";
-import CardEditorHeadToolbar from "../card/card-editor-head-toolbar";
-import * as Y from "yjs";
-import { SocketIOProvider } from "y-socket.io";
-import { cn } from "@/utils/cn";
+'use client';
+import useCardEditor from '@/hooks/card/useCardEditor';
+import useUpdateSpaceCardPosition from '@/hooks/space/useUpdateSpaceCardPosition';
+import useMe from '@/hooks/useMe';
+import { SpaceCardDTO } from '@repo/shared-types';
+import { View } from './space-editor';
+import { useEffect, useRef, useState } from 'react';
+import CardEditorSketchPanel from '../card/card-editor-sketch-panel';
+import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
+import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
+import * as Y from 'yjs';
+import { SocketIOProvider } from 'y-socket.io';
+import { cn } from '@/utils/cn';
 
 // 隨時更新位置
 const useTransformUpdate = (
@@ -54,6 +55,10 @@ const useSpaceCardDrag = (
   spaceCardRef: React.MutableRefObject<SpaceCardDTO>,
   viewRef: React.MutableRefObject<View>,
 ) => {
+  const {
+    handleUpdatePosition,
+  } = useUpdateSpaceCardPosition(spaceCardRef);
+
   const lastClientXRef = useRef(0);
   const lastClientYRef = useRef(0);
   const isDraggingRef = useRef(false);
@@ -61,8 +66,8 @@ const useSpaceCardDrag = (
     event: React.DragEvent<HTMLDivElement>,
     spaceCardId: string,
   ) => {
-    event.dataTransfer.setData("text/plain", "");
-    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData('text/plain', '');
+    event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setDragImage(new Image(), 0, 0);
     if (isFocus) {
       return;
@@ -70,7 +75,7 @@ const useSpaceCardDrag = (
     lastClientXRef.current = event.clientX;
     lastClientYRef.current = event.clientY;
     isDraggingRef.current = true;
-    console.log("drag start", spaceCardId);
+    console.log('drag start', spaceCardId);
   };
 
   const handleDrag = (
@@ -96,7 +101,12 @@ const useSpaceCardDrag = (
 
     lastClientXRef.current = event.clientX;
     lastClientYRef.current = event.clientY;
-    console.log("drag move", event);
+    handleUpdatePosition({
+      spaceId: spaceCardRef.current.targetSpaceId,
+      spaceCardId,
+      x: spaceCardRef.current.x,
+      y: spaceCardRef.current.y,
+    });
   };
 
   const handleDragEnd = (
@@ -161,8 +171,8 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        "absolute h-fit w-fit rounded-lg border-gray-200 bg-gray-900 shadow-md",
-        isFocus ? "border-4" : "cursor-pointer border",
+        'space-card absolute h-fit w-fit rounded-lg border-gray-200 bg-gray-900 shadow-md',
+        isFocus ? 'border-4' : 'cursor-pointer border',
       )}
       {...props}
       ref={spaceCardElementRef}
@@ -170,11 +180,12 @@ function SpaceCardEditor({
       onDragStart={(event) => handleDragStart(event, initialSpaceCard.id)}
       onDrag={(event) => handleDrag(event, initialSpaceCard.id)}
       onDragEnd={(event) => handleDragEnd(event, initialSpaceCard.id)}
+      id={initialSpaceCard.id}
     >
       <div
         className={cn(
-          "flex flex-col gap-2",
-          isFocus ? "pointer-events-auto" : "pointer-events-none",
+          'flex flex-col gap-2',
+          isFocus ? 'pointer-events-auto' : 'pointer-events-none',
         )}
       >
         <div

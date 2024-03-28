@@ -1,7 +1,7 @@
 import {
   AuthorizationHeaderSchema,
   SpaceCardCreateResponseDTOSchema,
-  SpacePermissionDTO,
+  SpaceCardCreateRequestDTOSchema,
 } from "@repo/shared-types";
 import type { SpaceCardCreateUseCase } from "@/application/port/in/space-card-create-use-case";
 import type FastifyControllerInterface from "./fastify-controller-interface";
@@ -21,11 +21,7 @@ const spaceCardCreateController: FastifyControllerInterface<
       params: z.object({
         spaceId: z.string(),
       }),
-      body: z.object({
-        targetCardId: z.string(),
-        x: z.number(),
-        y: z.number(),
-      }),
+      body: SpaceCardCreateRequestDTOSchema,
       response: {
         200: SpaceCardCreateResponseDTOSchema,
       },
@@ -42,7 +38,7 @@ const spaceCardCreateController: FastifyControllerInterface<
           x,
           y,
         });
-        
+
         return {
           spaceCard,
         };

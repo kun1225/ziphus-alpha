@@ -1,15 +1,19 @@
-import {Server} from "socket.io";
+import { BroadcastOperator, Server } from "socket.io";
 import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
+import { DecorateAcknowledgementsWithMultipleResponses, DefaultEventsMap } from "node_modules/socket.io/dist/typed-events";
 
 function CreateSocketEmitAdapter(
     io: Server
 ): EmitSocketPort {
     return function (props) {
+        let pipeIo: BroadcastOperator<DecorateAcknowledgementsWithMultipleResponses<DefaultEventsMap>, any> | null = null
         if (props.room) {
-            io.to(props.room).emit(props.event, props.data);
-            return;
+            pipeIo = io.to(props.room);
         }
-        io.emit(props.event, props.data);
+        if (props.except) {
+            pipeIo = (pipeIo || io).except(props.except);
+        }
+        (pipeIo || io).emit(props.event, props.data);
     };
 }
 export default CreateSocketEmitAdapter;
