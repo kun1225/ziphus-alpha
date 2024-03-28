@@ -6,7 +6,7 @@ import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
 import useQueryCardList from "@/hooks/card/useQueryCardList";
 import useCreateCard from "@/hooks/card/useCreateCard";
 import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
-import { SpaceGetByIdResponseDTO } from "@repo/shared-types";
+import { type SpaceGetByIdResponseDTO } from "@repo/shared-types";
 
 export interface View {
   x: number;
