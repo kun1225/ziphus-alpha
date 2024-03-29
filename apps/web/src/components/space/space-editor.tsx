@@ -1,12 +1,12 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import SpaceCardEditor from "./space-card-editor";
-import useYJSProvide from "@/hooks/card/useYJSProvider";
-import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
-import useQueryCardList from "@/hooks/card/useQueryCardList";
-import useCreateCard from "@/hooks/card/useCreateCard";
-import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
-import { type SpaceGetByIdResponseDTO } from "@repo/shared-types";
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import SpaceCardEditor from './space-card-editor';
+import useYJSProvide from '@/hooks/card/useYJSProvider';
+import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
+import useQueryCardList from '@/hooks/card/useQueryCardList';
+import useCreateCard from '@/hooks/card/useCreateCard';
+import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
+import { type SpaceGetByIdResponseDTO } from '@repo/shared-types';
 
 export interface View {
   x: number;
@@ -43,8 +43,7 @@ const useViewScroll = (
     const editor = editorRef.current;
     if (!editor) return;
 
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
+    const onScale = (event: WheelEvent) => {
       const rect = editor.getBoundingClientRect();
       const view = viewRef.current!;
       const mouseX = event.clientX - rect.left;
@@ -52,7 +51,7 @@ const useViewScroll = (
 
       const newScale = Math.max(
         0.01,
-        Math.min(2, view.scale - event.deltaY * 0.0005),
+        Math.min(2, view.scale - event.deltaY * 0.001),
       );
 
       // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量
@@ -70,7 +69,6 @@ const useViewScroll = (
         );
       const deltaX = (newCenterX - centerX) * newScale;
       const deltaY = (newCenterY - centerY) * newScale;
-
       // 更新視圖的位置和縮放值
       viewRef.current = {
         x: view.x + deltaX,
@@ -78,14 +76,89 @@ const useViewScroll = (
         scale: newScale,
       };
     };
+    const onMove = (event: WheelEvent) => {
+      const view = viewRef.current!;
+      viewRef.current = {
+        x: view.x + event.deltaX,
+        y: view.y + event.deltaY,
+        scale: view.scale,
+      };
+    };
 
-    editor.addEventListener("wheel", onWheel, { passive: false });
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+
+      // 觸控板
+      if (event.deltaMode === 0) {
+        // 放大
+        if (event.ctrlKey) {
+          onScale(event);
+        }
+        // 向左向右
+        else {
+          onMove(event);
+        }
+      }
+      // 滑鼠滾輪
+      else {
+        onScale(event);
+      }
+    };
+
+
+
+    editor.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener("wheel", onWheel);
+      editor.removeEventListener('wheel', onWheel);
     };
   }, []);
 };
+
+// 滑動放大縮小、拖曳視野
+// const useViewScroll = (
+//   viewRef: React.MutableRefObject<View>,
+// ) => {
+
+//   const bind = useGesture({
+//     onMove: ({ movement: [mx, my], memo = [viewRef.current.x, viewRef.current.y] }) => {
+//       if (!memo) return;
+//       const newX = memo[0] + mx;
+//       const newY = memo[1] + my;
+//       viewRef.current = {
+//         x: newX,
+//         y: newY,
+//         scale: viewRef.current.scale,
+//       };
+//       return memo; // Returning memo is important for continuous tracking
+//     },
+//     onDrag: ({ offset: [x, y] }) => {
+//       viewRef.current = {
+//         x: viewRef.current.x + x,
+//         y: viewRef.current.y + y,
+//         scale: viewRef.current.scale,
+//       };
+//     },
+//     onPinch: ({ offset: [d] }) => {
+//       const view = viewRef.current;
+//       const newScale = Math.max(
+//         0.01,
+//         Math.min(10, view.scale - d * 0.01),
+//       );
+
+//       viewRef.current = {
+//         x: view.x,
+//         y: view.y,
+//         scale: newScale,
+//       };
+//     },
+//   }, {
+//     drag: { filterTaps: true },
+//     pinch: { scaleBounds: { min: 1, max: 5 }, rubberband: true },
+//   });
+
+//   return { bind };
+// };
 
 // 右鍵單點招喚選單
 const useViewContextMenu = (
@@ -107,7 +180,7 @@ const useViewContextMenu = (
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const targetSpaceCardId = (event.target as HTMLElement).closest(
-        ".space-card",
+        '.space-card',
       )?.id;
 
       setContextMenuInfo({
@@ -131,12 +204,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener("contextmenu", onContextMenu);
-    editor.addEventListener("mousedown", handleMouseDown);
+    editor.addEventListener('contextmenu', onContextMenu);
+    editor.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      editor.removeEventListener("contextmenu", onContextMenu);
-      editor.removeEventListener("mousedown", handleMouseDown);
+      editor.removeEventListener('contextmenu', onContextMenu);
+      editor.removeEventListener('mousedown', handleMouseDown);
     };
   }, []);
 };
@@ -184,14 +257,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener("mousedown", onMouseDown);
-    editor.addEventListener("mousemove", onMouseMove);
-    editor.addEventListener("mouseup", onMouseUp);
+    editor.addEventListener('mousedown', onMouseDown);
+    editor.addEventListener('mousemove', onMouseMove);
+    editor.addEventListener('mouseup', onMouseUp);
 
     return () => {
-      editor.removeEventListener("mousedown", onMouseDown);
-      editor.removeEventListener("mousemove", onMouseMove);
-      editor.removeEventListener("mouseup", onMouseUp);
+      editor.removeEventListener('mousedown', onMouseDown);
+      editor.removeEventListener('mousemove', onMouseMove);
+      editor.removeEventListener('mouseup', onMouseUp);
     };
   }, []);
 
@@ -262,7 +335,7 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
         onClick={() => {
           mutateCreateCard.mutate(undefined, {
             onSuccess: (data) => {
-              console.log("新增卡片成功", data.data);
+              console.log('新增卡片成功', data.data);
               const view = viewRef.current;
               mutateCreateSpaceCard.mutate(
                 {
@@ -276,13 +349,13 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
                 },
                 {
                   onSuccess: (data: any) => {
-                    console.log("新增卡片成功", data.data);
+                    console.log('新增卡片成功', data.data);
                   },
                 },
               );
             },
             onError: (error) => {
-              console.error("新增卡片失敗", error);
+              console.error('新增卡片失敗', error);
             },
           });
           setContextMenuInfo(null);
@@ -332,9 +405,8 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${
-          contextMenuInfo ? "" : "hidden"
-        }`}
+        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${contextMenuInfo ? '' : 'hidden'
+          }`}
         style={{
           left: contextMenuInfo ? contextMenuInfo.x : 0,
           top: contextMenuInfo ? contextMenuInfo.y : 0,
@@ -355,13 +427,13 @@ const ContextMenuComponent = React.forwardRef(
 export default function SpaceEditor({
   initialSpace,
 }: {
-  initialSpace: SpaceGetByIdResponseDTO["space"];
+  initialSpace: SpaceGetByIdResponseDTO['space'];
 }) {
   if (!initialSpace) {
     return <div>Space not found</div>;
   }
   const spaceId = initialSpace?.id;
-  const [space, setSpace] = useState<SpaceGetByIdResponseDTO["space"] | null>(
+  const [space, setSpace] = useState<SpaceGetByIdResponseDTO['space'] | null>(
     initialSpace,
   );
   const mutateDeleteSpaceCard = useDeleteSpaceCard(setSpace, space);
@@ -405,7 +477,7 @@ export default function SpaceEditor({
   return (
     <div
       ref={whiteBoardRef}
-      className="relative h-full w-full overflow-hidden bg-black"
+      className="relative h-full w-full overflow-hidden bg-black touch-none"
       onClick={() => {
         setFocusSpaceCardId(null);
         setSelectedSpaceCardIdList([]);
@@ -445,3 +517,7 @@ export default function SpaceEditor({
     </div>
   );
 }
+function useSpring(arg0: () => any): [{ x: any; y: any; scale: any; }, any] {
+  throw new Error('Function not implemented.');
+}
+
