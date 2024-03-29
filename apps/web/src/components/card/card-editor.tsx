@@ -6,11 +6,13 @@ import CardEditorMarkdownEditor from './card-editor-markdown-editor';
 import useYJSProvide from '@/hooks/card/useYJSProvider';
 import CardEditorHeadToolbar from './card-editor-head-toolbar';
 import useCardEditor from '@/hooks/card/useCardEditor';
+import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
 
 function CardEditor() {
   const { id } = useParams();
   const {
     card,
+    setCard,
     isLoading,
     error,
     editMode,
@@ -26,6 +28,7 @@ function CardEditor() {
   const { doc, provider, status } = useYJSProvide({
     cardId: id as string,
   });
+  const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
 
   if (!card || !account) return null;
 
@@ -58,6 +61,18 @@ function CardEditor() {
         />
         <CardEditorMarkdownEditor
           cardId={id as string}
+          onCardSizeChange={(width, height) => {
+            console.log('onCardSizeChange', width, height);
+            if (card.height !== height && height > 1280) {
+              mutateUpdateCardSize.mutate({
+                height,
+              });
+            } else if (card.height > 1280 && height < 1280) {
+              mutateUpdateCardSize.mutate({
+                height: 1280,
+              });
+            }
+          }}
           accountName={account.name}
           provider={provider}
           doc={doc}

@@ -1,5 +1,5 @@
 import useQueryCardById from '@/hooks/card/useQueryCardById';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type EditMode = 'text' | 'sketch';
 export type SketchMode = 'pencil' | 'eraser';
@@ -12,7 +12,11 @@ export interface EraserInfo {
 }
 
 const useCardEditor = (cardId: string) => {
-  const { card, isLoading, error } = useQueryCardById(cardId);
+  const { card: initialCard, isLoading, error } = useQueryCardById(cardId);
+  const [card, setCard] = useState(initialCard);
+  useEffect(() => {
+    setCard(initialCard);
+  }, [initialCard]);
   const [editMode, setEditMode] = useState<EditMode>('text');
   const [sketchMode, setSketchMode] = useState<SketchMode>('pencil');
   const [pencilInfo, setPencilInfo] = useState<PencilInfo>({
@@ -25,6 +29,7 @@ const useCardEditor = (cardId: string) => {
 
   return {
     card,
+    setCard,
     isLoading,
     error,
     editMode,

@@ -9,20 +9,25 @@ import '@blocknote/react/style.css';
 import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
+import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
+import { useRef } from 'react';
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
   accountName: string;
+  onCardSizeChange: (width: number, height: number) => void;
   provider: SocketIOProvider;
   doc: Y.Doc;
 }
 function CardEditorMarkdownEditor({
   cardId,
   accountName,
+  onCardSizeChange,
   provider,
   doc,
 }: CardEditorMarkdownEditorProps) {
   const tryUpdateCardContent = useUpdateCardContent(cardId);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const editor = useCreateBlockNote({
     collaboration: {
@@ -38,10 +43,16 @@ function CardEditorMarkdownEditor({
   const onChange = async () => {
     const html = await editor.blocksToHTMLLossy(editor.document);
     tryUpdateCardContent(html);
+    if (!containerRef.current) return;
+    const offsetWidth = containerRef.current.offsetWidth;
+    const offsetHeight = containerRef.current.offsetHeight;
+    onCardSizeChange(offsetWidth, offsetHeight);
   };
 
   return (
-    <div className=" text-white">
+    <div className=" text-white w-fit h-fit"
+      ref={containerRef}
+    >
       {!!doc && (
         <BlockNoteView
           theme={darkDefaultTheme}

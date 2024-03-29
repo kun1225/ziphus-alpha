@@ -77,6 +77,8 @@ import spaceGetByIdController from "@/adapter/in/fastify/space-get-by-id-control
 import spaceModifyTitleController from "@/adapter/in/fastify/space-modify-title-controller";
 import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/socket/space-card-immediate-update-position-controller";
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
+import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
+import cardModifySizeCaseConstructor from "./application/domain/service/card-modify-size-service";
 
 // 初始化持久層
 const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
@@ -118,6 +120,7 @@ const cardModifyPermissionUseCase = cardModifyPermissionUseCaseConstructor(
   loadCard,
   saveCard
 );
+const cardModifySizeUseCase = cardModifySizeCaseConstructor(loadCard, saveCard);
 const cardAccessEditValidatorCase =
   cardAccessEditValidatorUseCaseConstructor(loadCard);
 const cardDeleteUseCase = cardDeleteUseCaseConstructor(loadCard, deleteCard);
@@ -174,6 +177,7 @@ fastify.after(() => {
   cardModifyContentController(fastify, cardModifyContentUseCase);
   cardModifyTitleController(fastify, cardModifyTitleUseCase);
   cardModifyPermissionController(fastify, cardModifyPermissionUseCase);
+  cardModifySizeController(fastify, [cardModifySizeUseCase, emitSocket]);
   cardDeleteController(fastify, cardDeleteUseCase);
   spaceCreateController(fastify, spaceCreateUseCase);
   spaceDeleteController(fastify, spaceDeleteUseCase);

@@ -11,6 +11,7 @@ import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
 import * as Y from 'yjs';
 import { SocketIOProvider } from 'y-socket.io';
 import { cn } from '@/utils/cn';
+import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
 
 // 隨時更新位置
 const useTransformUpdate = (
@@ -147,6 +148,7 @@ function SpaceCardEditor({
   const spaceCardRef = useRef<SpaceCardDTO>(initialSpaceCard);
   const {
     card,
+    setCard,
     isLoading,
     error,
     editMode,
@@ -158,6 +160,7 @@ function SpaceCardEditor({
     eraserInfo,
     setEraserInfo,
   } = useCardEditor(initialSpaceCard.targetCardId);
+  const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
   useTransformUpdate(spaceCardElementRef, spaceCardRef);
   const { handleDragStart, handleDrag, handleDragEnd } = useSpaceCardDrag(
     isFocus,
@@ -165,6 +168,7 @@ function SpaceCardEditor({
     spaceCardRef,
     viewRef,
   );
+
 
   if (!card || !account) return null;
 
@@ -199,8 +203,9 @@ function SpaceCardEditor({
           setEraserInfo={setEraserInfo}
         />
         <div
-          className="relative w-[1280px] overflow-hidden"
+          className="relative overflow-hidden"
           style={{
+            width: card.width,
             height: card.height,
           }}
         >
@@ -215,6 +220,18 @@ function SpaceCardEditor({
           />
           <CardEditorMarkdownEditor
             cardId={card.id as string}
+            onCardSizeChange={(width, height) => {
+              console.log('onCardSizeChange', width, height);
+              if (card.height !== height && height > 1280) {
+                mutateUpdateCardSize.mutate({
+                  height,
+                });
+              } else if (card.height > 1280 && height < 1280) {
+                mutateUpdateCardSize.mutate({
+                  height: 1280,
+                });
+              }
+            }}
             accountName={account.name}
             provider={socketIOProvider}
             doc={doc}

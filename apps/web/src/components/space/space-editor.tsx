@@ -115,51 +115,6 @@ const useViewScroll = (
   }, []);
 };
 
-// 滑動放大縮小、拖曳視野
-// const useViewScroll = (
-//   viewRef: React.MutableRefObject<View>,
-// ) => {
-
-//   const bind = useGesture({
-//     onMove: ({ movement: [mx, my], memo = [viewRef.current.x, viewRef.current.y] }) => {
-//       if (!memo) return;
-//       const newX = memo[0] + mx;
-//       const newY = memo[1] + my;
-//       viewRef.current = {
-//         x: newX,
-//         y: newY,
-//         scale: viewRef.current.scale,
-//       };
-//       return memo; // Returning memo is important for continuous tracking
-//     },
-//     onDrag: ({ offset: [x, y] }) => {
-//       viewRef.current = {
-//         x: viewRef.current.x + x,
-//         y: viewRef.current.y + y,
-//         scale: viewRef.current.scale,
-//       };
-//     },
-//     onPinch: ({ offset: [d] }) => {
-//       const view = viewRef.current;
-//       const newScale = Math.max(
-//         0.01,
-//         Math.min(10, view.scale - d * 0.01),
-//       );
-
-//       viewRef.current = {
-//         x: view.x,
-//         y: view.y,
-//         scale: newScale,
-//       };
-//     },
-//   }, {
-//     drag: { filterTaps: true },
-//     pinch: { scaleBounds: { min: 1, max: 5 }, rubberband: true },
-//   });
-
-//   return { bind };
-// };
-
 // 右鍵單點招喚選單
 const useViewContextMenu = (
   editorRef: React.RefObject<HTMLDivElement>,
