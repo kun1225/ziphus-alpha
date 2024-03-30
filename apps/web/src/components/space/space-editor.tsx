@@ -54,7 +54,7 @@ const useViewScroll = (
 
       const newScale = Math.max(
         0.01,
-        Math.min(2, view.scale - event.deltaY * 0.001),
+        Math.min(2, view.scale - event.deltaY * 0.003),
       );
 
       // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量

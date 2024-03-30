@@ -14,11 +14,11 @@ const useSpaceEditor = (initialSpace: SpaceGetByIdResponseDTO['space']) => {
   const [editMode, setEditMode] = useState<EditMode>('text');
   const [sketchMode, setSketchMode] = useState<SketchMode>('pencil');
   const [pencilInfo, setPencilInfo] = useState<PencilInfo>({
-    pencilColor: 'black',
-    pencilSize: 2,
+    pencilColor: 'white',
+    pencilSize: 8,
   });
   const [eraserInfo, setEraserInfo] = useState<EraserInfo>({
-    eraserSize: 10,
+    eraserSize: 16,
   });
 
   return {

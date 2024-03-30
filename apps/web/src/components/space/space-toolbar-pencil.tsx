@@ -1,8 +1,8 @@
 import { cn } from '@/utils/cn';
 import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
 
-const pencilWidths = [4, 8, 12];
-const pencilColors = ['black', 'red', 'blue', 'green', 'yellow'];
+const pencilWidths = [4, 8, 12, 16];
+const pencilColors = ['white', 'red', 'blue', 'green', 'yellow'];
 
 interface SpaceToolbarPencilProps {
   pencilInfo: PencilInfo;
@@ -38,11 +38,12 @@ function SpaceToolbarPencil({
           }}
         />
       ))}
+      <div className='my-4'></div>
       {pencilColors.map((color) => (
         <button
           key={color}
-          className={`h-6 w-6 rounded-full border border-gray-200 ${pencilInfo.pencilColor === color
-            ? 'border-gray-900'
+          className={`h-6 w-6 rounded-full border border-solid border-gray-200 ${pencilInfo.pencilColor === color
+            ? 'border-gray-600'
             : 'border-transparent'
             }`}
           style={{

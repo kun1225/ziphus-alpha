@@ -52,7 +52,7 @@ function Sidebar() {
             )}
           </Button>
         </div>
-        <Button variant="text" className="flex flex-1 justify-start" size="sm"
+        <Button variant="text" className="flex w-full justify-start" size="sm"
           onClick={() => {
             router.push('/');
           }}
@@ -64,7 +64,7 @@ function Sidebar() {
             Home
           </h1>
         </Button>
-        <Button variant="text" className="flex flex-1 justify-start" size="sm"
+        <Button variant="text" className="flex w-full justify-start" size="sm"
           onAbort={() => {
             router.push('/spaces');
           }}
@@ -76,7 +76,7 @@ function Sidebar() {
             Spaces
           </h1>
         </Button>
-        <Button variant="text" className="flex flex-1 justify-start" size="sm"
+        <Button variant="text" className="flex w-full justify-start" size="sm"
           onAbort={() => {
             router.push('/cards');
           }}
