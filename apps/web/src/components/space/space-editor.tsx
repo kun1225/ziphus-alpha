@@ -9,6 +9,7 @@ import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
 import { type SpaceGetByIdResponseDTO } from '@repo/shared-types';
 import useSpaceEditor from '@/hooks/space/useSpaceEditor';
 import SpaceToolbar from './space-toolbar';
+import { toast } from 'sonner';
 
 export interface View {
   x: number;
@@ -36,7 +37,7 @@ const transformMouseClientPositionToViewPosition = (
   };
 };
 
-// 滾輪放大縮小
+// 滾動移動視圖
 const useViewScroll = (
   editorRef: React.RefObject<HTMLDivElement>,
   viewRef: React.MutableRefObject<View>,
@@ -78,11 +79,15 @@ const useViewScroll = (
         scale: newScale,
       };
     };
-    const onMove = (event: WheelEvent) => {
+
+    const onMove = (
+      deltaX: number,
+      deltaY: number,
+    ) => {
       const view = viewRef.current!;
       viewRef.current = {
-        x: view.x + event.deltaX,
-        y: view.y + event.deltaY,
+        x: view.x + deltaX,
+        y: view.y + deltaY,
         scale: view.scale,
       };
     };
@@ -98,7 +103,10 @@ const useViewScroll = (
         }
         // 向左向右
         else {
-          onMove(event);
+          onMove(
+            event.deltaX,
+            event.deltaY,
+          );
         }
       }
       // 滑鼠滾輪
@@ -108,11 +116,129 @@ const useViewScroll = (
     };
 
 
-
     editor.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
       editor.removeEventListener('wheel', onWheel);
+    };
+  }, []);
+};
+
+
+// 滑動移動視圖
+const useViewTouch = (
+  editorRef: React.RefObject<HTMLDivElement>,
+  viewRef: React.MutableRefObject<View>,
+) => {
+  const lastTouchPosition = useRef({ x: 0, y: 0 });
+  const twoPointDistance = useRef(0);
+  const startViewRef = useRef({ x: 0, y: 0, scale: 1 });
+  useEffect(() => {
+    const editor = editorRef.current;
+
+    if (!editor) return;
+
+    const onScale = (
+      touchCenterX: number,
+      touchCenterY: number,
+      touchScale: number,
+    ) => {
+      const view = viewRef.current!;
+
+      const newScale = Math.max(
+        0.01,
+        Math.min(2, touchScale),
+      );
+
+      // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量
+      const { x: centerX, y: centerY } =
+        transformMouseClientPositionToViewPosition(view, touchCenterX, touchCenterY);
+      const { x: newCenterX, y: newCenterY } =
+        transformMouseClientPositionToViewPosition(
+          {
+            x: view.x,
+            y: view.y,
+            scale: newScale,
+          },
+          touchCenterX,
+          touchCenterY,
+        );
+      const deltaX = (newCenterX - centerX) * newScale;
+      const deltaY = (newCenterY - centerY) * newScale;
+      // 更新視圖的位置和縮放值
+      viewRef.current = {
+        x: view.x + deltaX,
+        y: view.y + deltaY,
+        scale: newScale,
+      };
+    };
+
+    const onMove = (
+      deltaX: number,
+      deltaY: number,
+    ) => {
+      const view = viewRef.current!;
+      viewRef.current = {
+        x: view.x + deltaX,
+        y: view.y + deltaY,
+        scale: view.scale,
+      };
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const touches = event.touches;
+      if (touches.length !== 2) {
+        return;
+      }
+      event.preventDefault();
+      const centerX = (touches[0]!.clientX + touches[1]!.clientX) / 2;
+      const centerY = (touches[0]!.clientY + touches[1]!.clientY) / 2;
+
+      const twoPointDeltaDistance = Math.sqrt(
+        (touches[0]!.clientX - touches[1]!.clientX) ** 2 +
+        (touches[0]!.clientY - touches[1]!.clientY) ** 2,
+      );
+
+      const deltaScale = twoPointDeltaDistance - twoPointDistance.current;
+
+      onMove(
+        (centerX - lastTouchPosition.current.x),
+        (centerY - lastTouchPosition.current.y),
+      );
+      onScale(
+        centerX,
+        centerY,
+        viewRef.current.scale + deltaScale * 0.002,
+      );
+
+      lastTouchPosition.current.x = centerX;
+      lastTouchPosition.current.y = centerY;
+      twoPointDistance.current = twoPointDeltaDistance;
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      const touches = event.touches;
+      if (touches.length !== 2) {
+        return;
+      }
+      event.preventDefault();
+
+      const centerX = (touches[0]!.clientX + touches[1]!.clientX) / 2;
+      const centerY = (touches[0]!.clientY + touches[1]!.clientY) / 2;
+      lastTouchPosition.current.x = centerX;
+      lastTouchPosition.current.y = centerY;
+      twoPointDistance.current = Math.sqrt(
+        (touches[0]!.clientX - touches[1]!.clientX) ** 2 +
+        (touches[0]!.clientY - touches[1]!.clientY) ** 2,
+      );
+    };
+
+    editor.addEventListener('touchmove', onTouchMove, { passive: false });
+    editor.addEventListener('touchstart', onTouchStart, { passive: false });
+
+    return () => {
+      editor.removeEventListener('touchmove', onTouchMove);
+      editor.removeEventListener('touchstart', onTouchStart);
     };
   }, []);
 };
@@ -425,6 +551,7 @@ export default function SpaceEditor({
   const [contextMenuInfo, setContextMenuInfo] =
     useState<ContextMenuInfo | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
+  useViewTouch(whiteBoardRef, viewRef);
   useViewDrag(
     whiteBoardRef,
     viewRef,

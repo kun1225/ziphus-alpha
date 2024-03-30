@@ -1,6 +1,7 @@
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
 import { useEffect, useState } from 'react';
+import { SocketIOProvider } from 'y-socket.io';
 
 interface UseRemoteStrokeSyncProps {
   remoteYArray: Y.Array<any>;
@@ -24,8 +25,12 @@ function useRemoteStrokeSync({
     }
     remoteYArray.observeDeep(handleSync);
 
+    setTimeout(() => {
+      handleSync();
+    }, 100);
+
     return () => remoteYArray.unobserveDeep(handleSync);
-  }, []);
+  }, [remoteYArray, originalStrokes]);
 
   return remoteRenderStrokes;
 }

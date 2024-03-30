@@ -30,7 +30,7 @@ function CardEditor() {
   });
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
 
-  if (!card || !account) return null;
+  if (!card || !account || status !== 'connected') return null;
 
   return (
     <div className="flex flex-col gap-2">
