@@ -6,7 +6,6 @@ import { MongoCollections } from './mongo-db';
 const SpacePersistenceSaveAdapter = (
   { spaceCollection, spaceCardCollection }: MongoCollections
 ): SaveSpacePort => async (space) => {
-  console.log('space', space);
 
   await spaceCollection.updateOne(
     {

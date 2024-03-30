@@ -5,7 +5,6 @@ import { MongoCollections } from './mongo-db';
 const CardPersistenceSaveAdapter = (
   { cardCollection }: MongoCollections
 ): SaveCardPort => async (card: Card) => {
-  console.log('card', card);
 
   await cardCollection.updateOne(
     {

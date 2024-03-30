@@ -23,8 +23,10 @@ const SpaceListPersistenceLoadAdapter = (
     ])
     .toArray() as Space[];
 
-
-  return spaceList;
+  return spaceList.map(space => ({
+    ...space,
+    childSpaces: []
+  }));
 };
 
 export default SpaceListPersistenceLoadAdapter;
