@@ -5,8 +5,8 @@ import {
 import { z } from "zod";
 import type { CardModifySizeUseCase } from "@/application/port/in/card-modify-size-use-case";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
 import type FastifyControllerInterface from "./fastify-controller-interface";
-import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
 
 const cardModifySizeController: FastifyControllerInterface<
   [CardModifySizeUseCase, EmitSocketPort]
@@ -40,13 +40,13 @@ const cardModifySizeController: FastifyControllerInterface<
           width,
         });
 
-        return emitSocket({
+        emitSocket({
           event: `card:${cardId}:size-modified`,
           data: {
             height,
             width,
           },
-        });
+        }); 
       } catch (error) {
         reply.code(400);
         console.error(error);

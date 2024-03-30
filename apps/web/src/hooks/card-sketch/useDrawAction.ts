@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
-import Line from "@/models/line";
-import Stroke from "@/models/stroke";
-import * as Y from "yjs";
-import { v4 } from "uuid";
-import { PencilInfo } from "@/hooks/card/useCardEditor";
-import { SketchCanvasProvider } from "@repo/sketch-canvas";
+import { useState, useRef } from 'react';
+import Line from '@/models/line';
+import Stroke from '@/models/stroke';
+import * as Y from 'yjs';
+import { v4 } from 'uuid';
+import { PencilInfo } from '@/hooks/card/useCardEditor';
+import { SketchCanvasProvider } from '@repo/sketch-canvas';
 
 interface UseActionProps {
   remoteYArray: Y.Array<any>;
@@ -39,8 +39,8 @@ const useDrawAction = ({
       ),
     ]);
     currentYStrokeRef.current = new Y.Map();
-    currentYStrokeRef.current.set("id", newStroke.id);
-    currentYStrokeRef.current.set("lines", newStroke.lines);
+    currentYStrokeRef.current.set('id', newStroke.id);
+    currentYStrokeRef.current.set('lines', newStroke.lines);
 
     // 將筆跡送入遠端
     remoteYArray.push([currentYStrokeRef.current]);
@@ -91,7 +91,7 @@ const useDrawAction = ({
   // 結束筆跡
   const handleEndDraw = () => {
     const currentStroke = originalStrokes[originalStrokes.length - 1]!;
-    currentYStrokeRef.current?.set("lines", currentStroke.lines);
+    currentYStrokeRef.current?.set('lines', currentStroke.lines);
     setIsDrawing(false);
   };
 

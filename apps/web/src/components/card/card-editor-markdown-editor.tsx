@@ -9,7 +9,6 @@ import '@blocknote/react/style.css';
 import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
-import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
 import { useRef } from 'react';
 
 interface CardEditorMarkdownEditorProps {
@@ -50,9 +49,7 @@ function CardEditorMarkdownEditor({
   };
 
   return (
-    <div className=" text-white w-fit h-fit"
-      ref={containerRef}
-    >
+    <div className=" h-fit w-fit text-white" ref={containerRef}>
       {!!doc && (
         <BlockNoteView
           theme={darkDefaultTheme}
