@@ -5,7 +5,7 @@ import useMe from '@/hooks/useMe';
 import { SpaceCardDTO } from '@repo/shared-types';
 import { View } from './space-editor';
 import { useEffect, useRef, useState } from 'react';
-import CardEditorSketchPanel from '../card/card-editor-sketch-panel';
+import CardEditorSketchPanel, { EditMode, EraserInfo, PencilInfo, SketchMode } from '../card/card-editor-sketch-panel';
 import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
 import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
 import * as Y from 'yjs';
@@ -76,7 +76,6 @@ const useSpaceCardDrag = (
     lastClientXRef.current = event.clientX;
     lastClientYRef.current = event.clientY;
     isDraggingRef.current = true;
-    console.log('drag start', spaceCardId);
   };
 
   const handleDrag = (
@@ -133,6 +132,10 @@ interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   socketIOProvider: SocketIOProvider;
   isFocus: boolean;
   viewRef: React.MutableRefObject<View>;
+  editMode: EditMode;
+  sketchMode: SketchMode;
+  pencilInfo: PencilInfo;
+  eraserInfo: EraserInfo;
 }
 
 function SpaceCardEditor({
@@ -141,6 +144,10 @@ function SpaceCardEditor({
   socketIOProvider,
   isFocus,
   viewRef,
+  editMode,
+  sketchMode,
+  pencilInfo,
+  eraserInfo,
   ...props
 }: SpaceCardEditorProps) {
   const { account } = useMe();
@@ -151,14 +158,6 @@ function SpaceCardEditor({
     setCard,
     isLoading,
     error,
-    editMode,
-    setEditMode,
-    sketchMode,
-    setSketchMode,
-    pencilInfo,
-    setPencilInfo,
-    eraserInfo,
-    setEraserInfo,
   } = useCardEditor(initialSpaceCard.targetCardId);
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
   useTransformUpdate(spaceCardElementRef, spaceCardRef);
@@ -175,8 +174,8 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        'space-card absolute h-fit w-fit rounded-lg border-gray-200 bg-gray-900 shadow-md',
-        isFocus ? 'border-4' : 'cursor-pointer border',
+        'space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md',
+        isFocus ? 'outline outline-4 outline-white ' : 'cursor-pointer outline outline-1 outline-white ',
       )}
       {...props}
       ref={spaceCardElementRef}
@@ -192,16 +191,6 @@ function SpaceCardEditor({
           isFocus ? 'pointer-events-auto' : 'pointer-events-none',
         )}
       >
-        <CardEditorHeadToolbar
-          editMode={editMode}
-          setEditMode={setEditMode}
-          sketchMode={sketchMode}
-          setSketchMode={setSketchMode}
-          pencilInfo={pencilInfo}
-          setPencilInfo={setPencilInfo}
-          eraserInfo={eraserInfo}
-          setEraserInfo={setEraserInfo}
-        />
         <div
           className="relative overflow-hidden"
           style={{
@@ -221,7 +210,6 @@ function SpaceCardEditor({
           <CardEditorMarkdownEditor
             cardId={card.id as string}
             onCardSizeChange={(width, height) => {
-              console.log('onCardSizeChange', width, height);
               if (card.height !== height && height > 1280) {
                 mutateUpdateCardSize.mutate({
                   height,

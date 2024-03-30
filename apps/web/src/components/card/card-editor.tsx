@@ -62,7 +62,6 @@ function CardEditor() {
         <CardEditorMarkdownEditor
           cardId={id as string}
           onCardSizeChange={(width, height) => {
-            console.log('onCardSizeChange', width, height);
             if (card.height !== height && height > 1280) {
               mutateUpdateCardSize.mutate({
                 height,

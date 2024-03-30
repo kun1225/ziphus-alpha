@@ -7,6 +7,8 @@ import useQueryCardList from '@/hooks/card/useQueryCardList';
 import useCreateCard from '@/hooks/card/useCreateCard';
 import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
 import { type SpaceGetByIdResponseDTO } from '@repo/shared-types';
+import useSpaceEditor from '@/hooks/space/useSpaceEditor';
+import SpaceToolbar from './space-toolbar';
 
 export interface View {
   x: number;
@@ -387,19 +389,25 @@ export default function SpaceEditor({
   if (!initialSpace) {
     return <div>Space not found</div>;
   }
-  const spaceId = initialSpace?.id;
-  const [space, setSpace] = useState<SpaceGetByIdResponseDTO['space'] | null>(
-    initialSpace,
-  );
+  const {
+    space,
+    setSpace,
+    editMode,
+    setEditMode,
+    sketchMode,
+    setSketchMode,
+    pencilInfo,
+    setPencilInfo,
+    eraserInfo,
+    setEraserInfo,
+  } = useSpaceEditor(initialSpace);
+
   const mutateDeleteSpaceCard = useDeleteSpaceCard(setSpace, space);
   const mutateCreateSpaceCard = useCreateSpaceCard(setSpace, space);
   const mutateCreateCard = useCreateCard();
 
-  useEffect(() => {
-    setSpace(initialSpace);
-  }, [initialSpace]);
   const { doc, provider, status } = useYJSProvide({
-    spaceId,
+    spaceId: space!.id,
   });
   const viewRef = useRef<View>({
     x: 0,
@@ -417,7 +425,7 @@ export default function SpaceEditor({
   const [contextMenuInfo, setContextMenuInfo] =
     useState<ContextMenuInfo | null>(null);
   useViewScroll(whiteBoardRef, viewRef);
-  const isViewDraggingRef = useViewDrag(
+  useViewDrag(
     whiteBoardRef,
     viewRef,
     !focusSpaceCardId,
@@ -440,7 +448,7 @@ export default function SpaceEditor({
     >
       {/* 內容 */}
       <div
-        className=" absolute left-0 top-0 origin-top-left"
+        className=" absolute left-0 top-0 origin-top-left z-0"
         ref={parallaxBoardRef}
       >
         {space?.spaceCards.map((spaceCard) => (
@@ -450,6 +458,10 @@ export default function SpaceEditor({
             socketIOProvider={provider}
             doc={doc}
             viewRef={viewRef}
+            editMode={editMode}
+            sketchMode={sketchMode}
+            pencilInfo={pencilInfo}
+            eraserInfo={eraserInfo}
             isFocus={focusSpaceCardId === spaceCard.id}
             onClick={(e) => {
               e.stopPropagation();
@@ -458,13 +470,25 @@ export default function SpaceEditor({
           />
         ))}
       </div>
+      {/* 繪圖工具 */}
+      <SpaceToolbar
+        isCardFocused={!!focusSpaceCardId}
+        editMode={editMode}
+        setEditMode={setEditMode}
+        sketchMode={sketchMode}
+        setSketchMode={setSketchMode}
+        pencilInfo={pencilInfo}
+        setPencilInfo={setPencilInfo}
+        eraserInfo={eraserInfo}
+        setEraserInfo={setEraserInfo}
+      />
       {/* 右鍵生成選單 */}
       <ContextMenuComponent
         contextMenuInfo={contextMenuInfo}
         setContextMenuInfo={setContextMenuInfo}
         ref={contextMenuComponentRef}
         viewRef={viewRef}
-        spaceId={spaceId}
+        spaceId={space!.id}
         mutateDeleteSpaceCard={mutateDeleteSpaceCard}
         mutateCreateSpaceCard={mutateCreateSpaceCard}
         mutateCreateCard={mutateCreateCard}
@@ -472,7 +496,3 @@ export default function SpaceEditor({
     </div>
   );
 }
-function useSpring(arg0: () => any): [{ x: any; y: any; scale: any; }, any] {
-  throw new Error('Function not implemented.');
-}
-

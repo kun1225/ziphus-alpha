@@ -14,7 +14,7 @@ const SpacePersistenceLoadAdapter = (
   }
   const spaceCards = await spaceCardCollection
     .find({
-      spaceId: space.id
+      targetSpaceId: space.id
     })
     .toArray();
 

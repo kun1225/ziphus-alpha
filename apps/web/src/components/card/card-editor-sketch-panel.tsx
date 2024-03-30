@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import * as Y from 'yjs';
 import Stroke from '@/models/stroke';
 import useRemoteStrokeSync from '@/hooks/card-sketch/useRemoteStrokeSync';
-import { EraserInfo, PencilInfo, SketchMode } from '@/hooks/card/useCardEditor';
 import {
   Shape,
   ShapeType,
@@ -13,6 +12,16 @@ import {
   Line,
 } from '@repo/sketch-canvas';
 import useEraseAction from '@/hooks/card-sketch/useEraseAction';
+
+export type EditMode = 'text' | 'sketch';
+export type SketchMode = 'pencil' | 'eraser';
+export interface PencilInfo {
+  pencilColor: string;
+  pencilSize: number;
+}
+export interface EraserInfo {
+  eraserSize: number;
+}
 
 interface CardEditorDrawingPanelProps {
   isSketching: boolean;

@@ -5,7 +5,7 @@ import {
   SketchMode,
   PencilInfo,
   EraserInfo,
-} from '@/hooks/card/useCardEditor';
+} from '@/components/card/card-editor-sketch-panel';
 import CardEditorHeadToolbarEraser from './card-editor-head-toolbar-eraser';
 import CardEditorHeadToolbarPencil from './card-editor-head-toolbar-pencil';
 
@@ -60,11 +60,10 @@ function CardEditorHeadToolbar({
             <button
               key={value}
               onClick={() => setSketchMode(value)}
-              className={`ml-2 rounded-full px-2 py-1 ${
-                sketchMode === value
+              className={`ml-2 rounded-full px-2 py-1 ${sketchMode === value
                   ? 'bg-gray-800 text-gray-400'
                   : 'bg-gray-900 text-gray-100'
-              }`}
+                }`}
             >
               {value}
             </button>

@@ -1,13 +1,16 @@
-import useQueryCardById from '@/hooks/card/useQueryCardById';
 import { useEffect, useState } from 'react';
 import { EditMode, EraserInfo, PencilInfo, SketchMode } from '@/components/card/card-editor-sketch-panel';
+import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
 
-const useCardEditor = (cardId: string) => {
-  const { card: initialCard, isLoading, error } = useQueryCardById(cardId);
-  const [card, setCard] = useState(initialCard);
+const useSpaceEditor = (initialSpace: SpaceGetByIdResponseDTO['space']) => {
+  const [space, setSpace] = useState<SpaceGetByIdResponseDTO['space'] | null>(
+    initialSpace,
+  );
   useEffect(() => {
-    setCard(initialCard);
-  }, [initialCard]);
+    setSpace(initialSpace);
+  }, [initialSpace]);
+
+
   const [editMode, setEditMode] = useState<EditMode>('text');
   const [sketchMode, setSketchMode] = useState<SketchMode>('pencil');
   const [pencilInfo, setPencilInfo] = useState<PencilInfo>({
@@ -19,10 +22,8 @@ const useCardEditor = (cardId: string) => {
   });
 
   return {
-    card,
-    setCard,
-    isLoading,
-    error,
+    space,
+    setSpace,
     editMode,
     setEditMode,
     sketchMode,
@@ -34,4 +35,4 @@ const useCardEditor = (cardId: string) => {
   };
 };
 
-export default useCardEditor;
+export default useSpaceEditor;

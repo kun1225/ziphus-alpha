@@ -36,7 +36,6 @@ const spaceGetWithAllController: FastifyControllerInterface<
           ...space,
           permission: SpacePermissionDTO[space.permission],
         }));
-        console.log(spacesDto);
 
         return {
           spaces: spacesDto,

@@ -49,7 +49,7 @@ function CardEditorMarkdownEditor({
   };
 
   return (
-    <div className=" h-fit w-fit text-white" ref={containerRef}>
+    <div className=" h-fit w-[1280px] text-white" ref={containerRef}>
       {!!doc && (
         <BlockNoteView
           theme={darkDefaultTheme}

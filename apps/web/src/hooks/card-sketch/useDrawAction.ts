@@ -3,7 +3,7 @@ import Line from '@/models/line';
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
 import { v4 } from 'uuid';
-import { PencilInfo } from '@/hooks/card/useCardEditor';
+import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
 import { SketchCanvasProvider } from '@repo/sketch-canvas';
 
 interface UseActionProps {

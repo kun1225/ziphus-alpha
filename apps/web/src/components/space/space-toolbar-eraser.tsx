@@ -3,38 +3,40 @@ import { EraserInfo } from '@/components/card/card-editor-sketch-panel';
 
 const eraserWidths = [4, 16, 32, 64];
 
-interface CardEditorHeadToolbarEraserProps {
+interface SpaceToolbarEraserProps {
   eraserInfo: EraserInfo;
   setEraserInfo: (info: EraserInfo) => void;
 }
-function CardEditorHeadToolbarEraser({
+function SpaceToolbarEraser({
   eraserInfo,
   setEraserInfo,
-}: CardEditorHeadToolbarEraserProps) {
+}: SpaceToolbarEraserProps) {
   return (
-    <div className="flex items-center gap-2">
-      {eraserWidths.map((width) => (
+    <div className="w-12 flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-50 gap-2">
+      {eraserWidths.map((width, index) => (
         <button
           key={width}
           className={cn(
-            'h-6 rounded-full border',
+            'rounded-full border',
             eraserInfo.eraserSize === width
               ? 'border-gray-200'
               : 'border-transparent',
           )}
           style={{
-            width: `${width}px`,
+            width: `${16 + 4 * index}px`,
+            height: `${16 + 4 * index}px`,
             backgroundColor: eraserInfo.eraserSize === width ? 'gray' : 'white',
           }}
-          onClick={() =>
+          onClick={(event) => {
+            event.stopPropagation();
             setEraserInfo({
               eraserSize: width,
-            })
-          }
+            });
+          }}
         />
       ))}
     </div>
   );
 }
 
-export default CardEditorHeadToolbarEraser;
+export default SpaceToolbarEraser;

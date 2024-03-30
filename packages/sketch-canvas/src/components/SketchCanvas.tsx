@@ -52,11 +52,9 @@ export const SketchCanvas: React.FC<SketchCanvasProps> = ({
         const rect = canvasRef.current?.getBoundingClientRect();
         if (!rect) return;
         const x =
-          ((event.clientX - rect.left) * (canvasRef.current?.width || 0)) /
-          rect.width;
+          ((event.clientX - rect.left) / rect.width) * (canvasRef.current?.offsetWidth || 0);
         const y =
-          ((event.clientY - rect.top) * (canvasRef.current?.height || 0)) /
-          rect.height;
+          ((event.clientY - rect.top) / rect.height) * (canvasRef.current?.offsetHeight || 0);
         if (handleStartDraw) {
           handleStartDraw(x, y);
         }
@@ -67,11 +65,9 @@ export const SketchCanvas: React.FC<SketchCanvasProps> = ({
         const rect = canvasRef.current?.getBoundingClientRect();
         if (!rect) return;
         const x =
-          ((event.clientX - rect.left) * (canvasRef.current?.width || 0)) /
-          rect.width;
+          ((event.clientX - rect.left) / rect.width) * (canvasRef.current?.offsetWidth || 0);
         const y =
-          ((event.clientY - rect.top) * (canvasRef.current?.height || 0)) /
-          rect.height;
+          ((event.clientY - rect.top) / rect.height) * (canvasRef.current?.offsetHeight || 0);
         if (handleMoveDraw) {
           handleMoveDraw(x, y);
         }
@@ -87,14 +83,10 @@ export const SketchCanvas: React.FC<SketchCanvasProps> = ({
         event.preventDefault();
         const rect = canvasRef.current?.getBoundingClientRect();
         if (!rect || !event.touches[0]) return;
-        const x =
-          ((event.touches[0].clientX - rect.left) *
-            (canvasRef.current?.width || 0)) /
-          rect.width;
-        const y =
-          ((event.touches[0].clientY - rect.top) *
-            (canvasRef.current?.height || 0)) /
-          rect.height;
+
+        const x = ((event.touches[0].clientX - rect.left) / rect.width) * (canvasRef.current?.offsetWidth || 0);
+        const y = ((event.touches[0].clientY - rect.top) / rect.height) * (canvasRef.current?.offsetHeight || 0);
+
         if (handleStartDraw) {
           handleStartDraw(x, y);
         }
@@ -103,14 +95,10 @@ export const SketchCanvas: React.FC<SketchCanvasProps> = ({
         event.preventDefault();
         const rect = canvasRef.current?.getBoundingClientRect();
         if (!rect || !event.touches[0]) return;
-        const x =
-          ((event.touches[0].clientX - rect.left) *
-            (canvasRef.current?.width || 0)) /
-          rect.width;
-        const y =
-          ((event.touches[0].clientY - rect.top) *
-            (canvasRef.current?.height || 0)) /
-          rect.height;
+
+        const x = ((event.touches[0].clientX - rect.left) / rect.width) * (canvasRef.current?.offsetWidth || 0);
+        const y = ((event.touches[0].clientY - rect.top) / rect.height) * (canvasRef.current?.offsetHeight || 0);
+
         if (handleMoveDraw) {
           handleMoveDraw(x, y);
         }

@@ -4,17 +4,17 @@ import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
 const pencilWidths = [4, 8, 12];
 const pencilColors = ['black', 'red', 'blue', 'green', 'yellow'];
 
-interface CardEditorHeadToolbarPencilProps {
+interface SpaceToolbarPencilProps {
   pencilInfo: PencilInfo;
   setPencilInfo: (info: PencilInfo) => void;
 }
-function CardEditorHeadToolbarPencil({
+function SpaceToolbarPencil({
   pencilInfo,
   setPencilInfo,
-}: CardEditorHeadToolbarPencilProps) {
+}: SpaceToolbarPencilProps) {
   return (
-    <div className="flex items-center gap-2">
-      {pencilWidths.map((width) => (
+    <div className="w-12 flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-50 gap-2">
+      {pencilWidths.map((width, index) => (
         <button
           key={width}
           className={cn(
@@ -24,16 +24,18 @@ function CardEditorHeadToolbarPencil({
               : 'border-transparent',
           )}
           style={{
-            width: `${width}px`,
+            width: `${16 + 4 * index}px`,
+            height: `${16 + 4 * index}px`,
             backgroundColor:
               pencilInfo.pencilSize === width ? pencilInfo.pencilColor : 'gray',
           }}
-          onClick={() =>
+          onClick={(event) => {
+            event.stopPropagation();
             setPencilInfo({
               pencilColor: pencilInfo.pencilColor,
               pencilSize: width,
-            })
-          }
+            });
+          }}
         />
       ))}
       {pencilColors.map((color) => (
@@ -46,16 +48,17 @@ function CardEditorHeadToolbarPencil({
           style={{
             backgroundColor: color,
           }}
-          onClick={() =>
+          onClick={(event) => {
+            event.stopPropagation();
             setPencilInfo({
               pencilColor: color,
               pencilSize: pencilInfo.pencilSize,
-            })
-          }
+            });
+          }}
         />
       ))}
     </div>
   );
 }
 
-export default CardEditorHeadToolbarPencil;
+export default SpaceToolbarPencil;

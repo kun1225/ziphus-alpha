@@ -64,12 +64,11 @@ function useCreateSpaceCard(
         spaceId: string;
       },
     ) => fetchCreateSpaceCard(data.spaceId, data),
-    onSuccess: (data) => {},
+    onSuccess: (data) => { },
   });
 
   useEffect(() => {
     socket.on('space:card:create', (data: SpaceCardCreateResponseDTO) => {
-      console.log('space:card:create', data);
       createSpaceCard(data);
     });
 
