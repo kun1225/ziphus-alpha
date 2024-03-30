@@ -1,23 +1,16 @@
-import fs from "node:fs";
+import { Db } from 'mongodb'
+import type Card from "@/application/domain/model/card";
 import type { LoadCardPort } from "@/application/port/out/load-card-port";
+import { MongoCollections } from './mongo-db';
 
-const CardPersistenceLoadAdapter: LoadCardPort = async (where) => {
-  const dataPath = "./persistence/cards.json";
-  // 讀取檔案
-  const data = fs.readFileSync(dataPath, "utf8");
-  const cards = JSON.parse(data);
+const CardPersistenceLoadAdapter = (
+  { cardCollection }: MongoCollections
+): LoadCardPort => async (where) => {
+  const card = await cardCollection.findOne({
+    ...where
+  });
 
-  // 查詢資料
-  const findKeys = Object.keys(where);
-  for (const findKey of findKeys) {
-    const card = cards.find(
-      (card: any) => card[findKey] === where[findKey as keyof typeof where]
-    );
-    if (card) {
-      return card;
-    }
-  }
-  return null;
+  return card;
 };
 
 export default CardPersistenceLoadAdapter;

@@ -4,29 +4,31 @@ import { SpaceCard, SpacePermission } from "../model/space";
 
 const spaceCardCreateUseCaseConstructor: SpaceCardCreateUseCaseConstructor =
   (loadSpace, saveSpaceCard) =>
-  async ({ accountId, targetCardId, targetSpaceId, x, y }) => {
-    const targetSpace = await loadSpace({ id: targetSpaceId });
-    if (!targetSpace) {
-      throw new Error("Space not found");
-    }
-    if (
-      targetSpace.permission !== SpacePermission.PublicEditable &&
-      targetSpace.belongAccountId !== accountId
-    ) {
-      throw new Error("Space not found");
-    }
+    async ({ accountId, targetCardId, targetSpaceId, x, y }) => {
+      const targetSpace = await loadSpace({ id: targetSpaceId });
+      if (!targetSpace) {
+        throw new Error("Space not found");
+      }
+      if (
+        targetSpace.permission !== SpacePermission.PublicEditable &&
+        targetSpace.belongAccountId !== accountId
+      ) {
+        throw new Error("Space not found");
+      }
 
-    const newSpaceCard = new SpaceCard(
-      randomUUID(),
-      targetCardId,
-      targetSpaceId,
-      x,
-      y
-    );
 
-    await saveSpaceCard(newSpaceCard);
+      const newSpaceCard = new SpaceCard(
+        randomUUID(),
+        targetCardId,
+        targetSpaceId,
+        x,
+        y
+      );
 
-    return newSpaceCard;
-  };
+
+      await saveSpaceCard(newSpaceCard);
+
+      return newSpaceCard;
+    };
 
 export default spaceCardCreateUseCaseConstructor;

@@ -36,7 +36,7 @@ function AccountLoginForm() {
       setCookie('authorization', authorization);
       toast.success('Login success');
       axiosInstance.defaults.headers.authorization = authorization;
-      router.push('/cards');
+      router.push('/spaces');
     },
     onError: (error: any) => {
       if (error.response.data.message) {

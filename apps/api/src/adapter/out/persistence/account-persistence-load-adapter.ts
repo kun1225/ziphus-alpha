@@ -1,24 +1,14 @@
-import fs from "node:fs";
 import type { LoadAccountPort } from "@/application/port/out/load-account-port";
+import { MongoCollections } from "./mongo-db";
 
-const AccountPersistenceLoadAdapter: LoadAccountPort = async (where) => {
-  const dataPath = "./persistence/accounts.json";
-  // 讀取檔案
-  const data = fs.readFileSync(dataPath, "utf8");
-  const accounts = JSON.parse(data);
-
-  // 查詢資料
-  const findKeys = Object.keys(where);
-  for (const findKey of findKeys) {
-    const account = accounts.find(
-      (account: any) =>
-        account[findKey] === where[findKey as keyof typeof where]
-    );
-    if (account) {
-      return account;
-    }
-  }
-  return null;
+const AccountPersistenceLoadAdapter = (
+  { accountCollection }: MongoCollections
+): LoadAccountPort => async (where) => {
+  const account = await accountCollection
+    .findOne({
+      ...where
+    });
+  return account;
 };
 
 export default AccountPersistenceLoadAdapter;

@@ -19,6 +19,7 @@ import { type DeleteSpaceCardPort } from "@/application/port/out/delete-space-ca
 import { type LoadSpaceCardPort } from "@/application/port/out/load-space-card-port";
 
 // 持久層 實作
+import createMongoClientCollection from "@/adapter/out/persistence/mongo-db";
 import AccountPersistenceSaveAdapter from "@/adapter/out/persistence/account-persistence-save-adapter";
 import AccountPersistenceLoadAdapter from "@/adapter/out/persistence/account-persistence-load-adapter";
 import CardListPersistenceLoadAdapter from "@/adapter/out/persistence/card-list-persistence-load-adapter";
@@ -80,132 +81,139 @@ import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
 import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
 import cardModifySizeCaseConstructor from "./application/domain/service/card-modify-size-service";
 
-// 初始化持久層
-const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter;
-const saveAccount: SaveAccountPort = AccountPersistenceSaveAdapter;
-const loadCardList: LoadCardListPort = CardListPersistenceLoadAdapter;
-const loadCard: LoadCardPort = CardPersistenceLoadAdapter;
-const saveCard: SaveCardPort = CardPersistenceSaveAdapter;
-const deleteCard: DeleteCardPort = CardPersistenceDeleteAdapter;
-const loadSpaceList: LoadSpaceListPort = SpaceListPersistenceLoadAdapter;
-const loadSpace: LoadSpacePort = SpacePersistenceLoadAdapter;
-const saveSpace: SaveSpacePort = SpacePersistenceSaveAdapter;
-const deleteSpace: DeleteSpacePort = SpacePersistenceDeleteAdapter;
-const loadSpaceCardList: LoadSpaceCardListPort =
-  SpaceCardListPersistenceLoadAdapter;
-const loadSpaceCard: LoadSpaceCardPort = SpaceCardPersistenceLoadAdapter;
-const saveSpaceCard: SaveSpaceCardPort = SpaceCardPersistenceSaveAdapter;
-const deleteSpaceCard: DeleteSpaceCardPort = SpaceCardPersistenceDeleteAdapter;
 
-// 初始化 use case
-const accountRegisterUseCase = accountRegisterUseCaseConstructor(
-  loadAccount,
-  saveAccount
-);
-const accountLoginWithEmailUseCase =
-  accountLoginWithEmailUseCaseConstructor(loadAccount);
-const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
-const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
-const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
-const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
-const cardModifyContentUseCase = cardModifyContentUseCaseConstructor(
-  loadCard,
-  saveCard
-);
-const cardModifyTitleUseCase = cardModifyTitleUseCaseConstructor(
-  loadCard,
-  saveCard
-);
-const cardModifyPermissionUseCase = cardModifyPermissionUseCaseConstructor(
-  loadCard,
-  saveCard
-);
-const cardModifySizeUseCase = cardModifySizeCaseConstructor(loadCard, saveCard);
-const cardAccessEditValidatorCase =
-  cardAccessEditValidatorUseCaseConstructor(loadCard);
-const cardDeleteUseCase = cardDeleteUseCaseConstructor(loadCard, deleteCard);
-const spaceCardCreateUseCase = spaceCardCreateUseCaseConstructor(
-  loadSpace,
-  saveSpaceCard
-);
-const spaceCardDeleteUseCase = spaceCardDeleteUseCaseConstructor(
-  loadSpace,
-  loadSpaceCard,
-  deleteSpaceCard
-);
-const spaceCreateUseCase = spaceCreateUseCaseConstructor(
-  loadAccount,
-  saveSpace
-);
-const spaceDeleteUseCase = spaceDeleteUseCaseConstructor(
-  loadSpace,
-  deleteSpace
-);
-const spaceGetByIdUseCase = spaceGetByIdUseCaseConstructor(loadSpace);
-const spaceGetWithAllUseCase = spaceGetWithAllUseCaseConstructor(loadSpaceList);
-const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
-  loadSpace,
-  saveSpace
-);
-const spaceCardUpdatePositionUseCase =
-  spaceCardUpdatePositionUseCaseConstructor(
+async function init() {
+  // 初始化持久層
+  const mongoCollections = await createMongoClientCollection();
+  const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter(mongoCollections);
+  const saveAccount: SaveAccountPort = AccountPersistenceSaveAdapter(mongoCollections);
+  const loadCardList: LoadCardListPort = CardListPersistenceLoadAdapter(mongoCollections);
+  const loadCard: LoadCardPort = CardPersistenceLoadAdapter(mongoCollections);
+  const saveCard: SaveCardPort = CardPersistenceSaveAdapter(mongoCollections);
+  const deleteCard: DeleteCardPort = CardPersistenceDeleteAdapter(mongoCollections);
+  const loadSpaceList: LoadSpaceListPort = SpaceListPersistenceLoadAdapter(mongoCollections);
+  const loadSpace: LoadSpacePort = SpacePersistenceLoadAdapter(mongoCollections);
+  const saveSpace: SaveSpacePort = SpacePersistenceSaveAdapter(mongoCollections);
+  const deleteSpace: DeleteSpacePort = SpacePersistenceDeleteAdapter(mongoCollections);
+  const loadSpaceCardList: LoadSpaceCardListPort =
+    SpaceCardListPersistenceLoadAdapter(mongoCollections);
+  const loadSpaceCard: LoadSpaceCardPort = SpaceCardPersistenceLoadAdapter(mongoCollections);
+  const saveSpaceCard: SaveSpaceCardPort = SpaceCardPersistenceSaveAdapter(mongoCollections);
+  const deleteSpaceCard: DeleteSpaceCardPort = SpaceCardPersistenceDeleteAdapter(mongoCollections);
+
+  // 初始化 use case
+  const accountRegisterUseCase = accountRegisterUseCaseConstructor(
+    loadAccount,
+    saveAccount
+  );
+  const accountLoginWithEmailUseCase =
+    accountLoginWithEmailUseCaseConstructor(loadAccount);
+  const accountGetInfoUseCase = accountGetInfoUseCaseConstructor(loadAccount);
+  const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
+  const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
+  const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
+  const cardModifyContentUseCase = cardModifyContentUseCaseConstructor(
+    loadCard,
+    saveCard
+  );
+  const cardModifyTitleUseCase = cardModifyTitleUseCaseConstructor(
+    loadCard,
+    saveCard
+  );
+  const cardModifyPermissionUseCase = cardModifyPermissionUseCaseConstructor(
+    loadCard,
+    saveCard
+  );
+  const cardModifySizeUseCase = cardModifySizeCaseConstructor(loadCard, saveCard);
+  const cardAccessEditValidatorCase =
+    cardAccessEditValidatorUseCaseConstructor(loadCard);
+  const cardDeleteUseCase = cardDeleteUseCaseConstructor(loadCard, deleteCard);
+  const spaceCardCreateUseCase = spaceCardCreateUseCaseConstructor(
     loadSpace,
-    loadSpaceCard,
     saveSpaceCard
   );
+  const spaceCardDeleteUseCase = spaceCardDeleteUseCaseConstructor(
+    loadSpace,
+    loadSpaceCard,
+    deleteSpaceCard
+  );
+  const spaceCreateUseCase = spaceCreateUseCaseConstructor(
+    loadAccount,
+    saveSpace
+  );
+  const spaceDeleteUseCase = spaceDeleteUseCaseConstructor(
+    loadSpace,
+    deleteSpace
+  );
+  const spaceGetByIdUseCase = spaceGetByIdUseCaseConstructor(loadSpace);
+  const spaceGetWithAllUseCase = spaceGetWithAllUseCaseConstructor(loadSpaceList);
+  const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
+    loadSpace,
+    saveSpace
+  );
+  const spaceCardUpdatePositionUseCase =
+    spaceCardUpdatePositionUseCaseConstructor(
+      loadSpace,
+      loadSpaceCard,
+      saveSpaceCard
+    );
 
-// 初始化基礎設施
-console.log("PORT", process.env.PORT);
-const port = Number(process.env.PORT) || 8080;
+  // 初始化基礎設施
+  console.log("PORT", process.env.PORT);
+  const port = Number(process.env.PORT) || 8080;
 
-const fastify = fastifyFactory(port);
-const io = SocketIoFactory(fastify);
-YSocketIOFactory(
-  io,
-  YAuthenticateHandshakeConstructor(cardAccessEditValidatorCase)
-);
-const emitSocket = CreateSocketEmitAdapter(io);
+  const fastify = fastifyFactory(port);
+  const io = SocketIoFactory(fastify);
+  YSocketIOFactory(
+    io,
+    YAuthenticateHandshakeConstructor(cardAccessEditValidatorCase)
+  );
+  const emitSocket = CreateSocketEmitAdapter(io);
 
-// 註冊 controller
-fastify.after(() => {
-  accountRegisterController(fastify, accountRegisterUseCase);
-  accountLoginWithEmailController(fastify, accountLoginWithEmailUseCase);
-  accountMeController(fastify, accountGetInfoUseCase);
-  cardCreateController(fastify, cardCreateUseCase);
-  cardGetWithAllController(fastify, cardGetWithAllUseCase);
-  cardGetByIdController(fastify, cardGetByIdUseCase);
-  cardModifyContentController(fastify, cardModifyContentUseCase);
-  cardModifyTitleController(fastify, cardModifyTitleUseCase);
-  cardModifyPermissionController(fastify, cardModifyPermissionUseCase);
-  cardModifySizeController(fastify, [cardModifySizeUseCase, emitSocket]);
-  cardDeleteController(fastify, cardDeleteUseCase);
-  spaceCreateController(fastify, spaceCreateUseCase);
-  spaceDeleteController(fastify, spaceDeleteUseCase);
-  spaceGetWithAllController(fastify, spaceGetWithAllUseCase);
-  spaceGetByIdController(fastify, spaceGetByIdUseCase);
-  spaceCardCreateController(fastify, [spaceCardCreateUseCase, emitSocket]);
-  spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
-  spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
-});
-
-fastify.ready((err) => {
-  if (err) throw err;
-
-  io.on("connection", (socket) => {
-    cardImmediateModifyContentController(socket, [
-      cardGetByIdUseCase,
-      cardModifyContentUseCase,
-    ]);
-    spaceCardImmediateUpdatePositionUseCaseController(socket, [
-      spaceCardUpdatePositionUseCase,
-      emitSocket,
-    ]);
-    socket.on("join-space", (room) => {
-      socket.join(room);
-    });
-    socket.on("disconnect", () => {
-      console.log("user disconnected");
-    });
+  // 註冊 controller
+  fastify.after(() => {
+    accountRegisterController(fastify, accountRegisterUseCase);
+    accountLoginWithEmailController(fastify, accountLoginWithEmailUseCase);
+    accountMeController(fastify, accountGetInfoUseCase);
+    cardCreateController(fastify, cardCreateUseCase);
+    cardGetWithAllController(fastify, cardGetWithAllUseCase);
+    cardGetByIdController(fastify, cardGetByIdUseCase);
+    cardModifyContentController(fastify, cardModifyContentUseCase);
+    cardModifyTitleController(fastify, cardModifyTitleUseCase);
+    cardModifyPermissionController(fastify, cardModifyPermissionUseCase);
+    cardModifySizeController(fastify, [cardModifySizeUseCase, emitSocket]);
+    cardDeleteController(fastify, cardDeleteUseCase);
+    spaceCreateController(fastify, spaceCreateUseCase);
+    spaceDeleteController(fastify, spaceDeleteUseCase);
+    spaceGetWithAllController(fastify, spaceGetWithAllUseCase);
+    spaceGetByIdController(fastify, spaceGetByIdUseCase);
+    spaceCardCreateController(fastify, [spaceCardCreateUseCase, emitSocket]);
+    spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
+    spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
   });
-  fastify.swagger();
-});
+
+  fastify.ready((err) => {
+    if (err) throw err;
+
+    io.on("connection", (socket) => {
+      cardImmediateModifyContentController(socket, [
+        cardGetByIdUseCase,
+        cardModifyContentUseCase,
+      ]);
+      spaceCardImmediateUpdatePositionUseCaseController(socket, [
+        spaceCardUpdatePositionUseCase,
+        emitSocket,
+      ]);
+      socket.on("join-space", (room) => {
+        socket.join(room);
+      });
+      socket.on("disconnect", () => {
+        console.log("user disconnected");
+      });
+    });
+    fastify.swagger();
+  });
+
+}
+
+init();

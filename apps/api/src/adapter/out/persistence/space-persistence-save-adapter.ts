@@ -1,30 +1,28 @@
-import fs from "node:fs";
+import { Db } from 'mongodb'
+import type Space from "@/application/domain/model/space";
 import type { SaveSpacePort } from "@/application/port/out/save-space-port";
+import { MongoCollections } from './mongo-db';
 
-const SpacePersistenceSaveAdapter: SaveSpacePort = async (space) => {
-  const dataPath = "./persistence/spaces.json";
-  // 讀取檔案
-  const data = fs.readFileSync(dataPath, "utf8");
-  let spaces = JSON.parse(data) ?? [];
-  const newSpace = {
-    ...space,
-    spaceCards: undefined,
-    childSpaces: undefined,
-    updatedAt: new Date().toISOString(),
-  };
-  // 新增資料
-  if (!spaces.find((s: any) => s.id === space.id)) {
-    spaces.push(newSpace);
-  } else {
-    spaces = spaces.map((c: any) => {
-      if (c.id === space.id) {
-        return newSpace;
+const SpacePersistenceSaveAdapter = (
+  { spaceCollection, spaceCardCollection }: MongoCollections
+): SaveSpacePort => async (space) => {
+  console.log('space', space);
+
+  await spaceCollection.updateOne(
+    {
+      id: space.id
+    },
+    {
+      $set: {
+        ...space,
+        childSpaces: undefined,
+        spaceCards: undefined
       }
-      return c;
-    });
-  }
-  // 寫入檔案
-  fs.writeFileSync(dataPath, JSON.stringify(spaces));
+    },
+    {
+      upsert: true
+    }
+  );
 };
 
 export default SpacePersistenceSaveAdapter;
