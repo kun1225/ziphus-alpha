@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation';
 import useMe from '@/hooks/useMe';
 import CardEditorSketchPanel from './card-editor-sketch-panel';
 import CardEditorMarkdownEditor from './card-editor-markdown-editor';
-import useYJSProvide from '@/hooks/card/useYJSProvider';
+import useYJSProvide from '@/hooks/useYJSProvider';
 import CardEditorHeadToolbar from './card-editor-head-toolbar';
 import useCardEditor from '@/hooks/card/useCardEditor';
 import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';

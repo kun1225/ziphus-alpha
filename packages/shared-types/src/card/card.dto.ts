@@ -48,7 +48,7 @@ export const cardDtoSchema = z.object({
   ),
   createdAt: z.string(),
   updatedAt: z.string(),
-  deletedAt: z.string().nullable(),
+  deletedAt: z.string().nullable().optional(),
 });
 
 export type CardDto = z.infer<typeof cardDtoSchema>;

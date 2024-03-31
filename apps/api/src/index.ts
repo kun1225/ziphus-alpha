@@ -34,6 +34,7 @@ import SpaceListPersistenceLoadAdapter from "@/adapter/out/persistence/space-lis
 import SpacePersistenceDeleteAdapter from "@/adapter/out/persistence/space-persistence-delete-adapter";
 import SpacePersistenceLoadAdapter from "@/adapter/out/persistence/space-persistence-load-port";
 import SpacePersistenceSaveAdapter from "@/adapter/out/persistence/space-persistence-save-adapter";
+import SpacePersistenceLoadWithCardAdapter from "@/adapter/out/persistence/space-persistence-load-with-card-port";
 
 // 使用案例
 import accountLoginWithEmailUseCaseConstructor from "@/application/domain/service/account-login-with-email-service";
@@ -55,6 +56,7 @@ import spaceGetByIdUseCaseConstructor from "@/application/domain/service/space-g
 import spaceGetWithAllUseCaseConstructor from "@/application/domain/service/space-get-with-all-use-case";
 import spaceModifyTitleCaseConstructor from "@/application/domain/service/space-modify-title-service";
 import spaceCardUpdatePositionUseCaseConstructor from "@/application/domain/service/space-card-update-position-service";
+import spaceGetByIdWithCardUseCaseConstructor from "@/application/domain/service/space-get-by-id-with-card-service";
 
 // 路由
 import accountRegisterController from "@/adapter/in/fastify/account-register-controller";
@@ -80,26 +82,40 @@ import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/sock
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
 import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
 import cardModifySizeCaseConstructor from "./application/domain/service/card-modify-size-service";
-
+import { LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
+import spaceGetByIdWithCardController from "./adapter/in/fastify/space-get-by-id-with-card-controller";
 
 async function init() {
   // 初始化持久層
   const mongoCollections = await createMongoClientCollection();
-  const loadAccount: LoadAccountPort = AccountPersistenceLoadAdapter(mongoCollections);
-  const saveAccount: SaveAccountPort = AccountPersistenceSaveAdapter(mongoCollections);
-  const loadCardList: LoadCardListPort = CardListPersistenceLoadAdapter(mongoCollections);
+  const loadAccount: LoadAccountPort =
+    AccountPersistenceLoadAdapter(mongoCollections);
+  const saveAccount: SaveAccountPort =
+    AccountPersistenceSaveAdapter(mongoCollections);
+  const loadCardList: LoadCardListPort =
+    CardListPersistenceLoadAdapter(mongoCollections);
   const loadCard: LoadCardPort = CardPersistenceLoadAdapter(mongoCollections);
   const saveCard: SaveCardPort = CardPersistenceSaveAdapter(mongoCollections);
-  const deleteCard: DeleteCardPort = CardPersistenceDeleteAdapter(mongoCollections);
-  const loadSpaceList: LoadSpaceListPort = SpaceListPersistenceLoadAdapter(mongoCollections);
-  const loadSpace: LoadSpacePort = SpacePersistenceLoadAdapter(mongoCollections);
-  const saveSpace: SaveSpacePort = SpacePersistenceSaveAdapter(mongoCollections);
-  const deleteSpace: DeleteSpacePort = SpacePersistenceDeleteAdapter(mongoCollections);
+  const deleteCard: DeleteCardPort =
+    CardPersistenceDeleteAdapter(mongoCollections);
+  const loadSpaceList: LoadSpaceListPort =
+    SpaceListPersistenceLoadAdapter(mongoCollections);
+  const loadSpace: LoadSpacePort =
+    SpacePersistenceLoadAdapter(mongoCollections);
+  const saveSpace: SaveSpacePort =
+    SpacePersistenceSaveAdapter(mongoCollections);
+  const deleteSpace: DeleteSpacePort =
+    SpacePersistenceDeleteAdapter(mongoCollections);
   const loadSpaceCardList: LoadSpaceCardListPort =
     SpaceCardListPersistenceLoadAdapter(mongoCollections);
-  const loadSpaceCard: LoadSpaceCardPort = SpaceCardPersistenceLoadAdapter(mongoCollections);
-  const saveSpaceCard: SaveSpaceCardPort = SpaceCardPersistenceSaveAdapter(mongoCollections);
-  const deleteSpaceCard: DeleteSpaceCardPort = SpaceCardPersistenceDeleteAdapter(mongoCollections);
+  const loadSpaceCard: LoadSpaceCardPort =
+    SpaceCardPersistenceLoadAdapter(mongoCollections);
+  const saveSpaceCard: SaveSpaceCardPort =
+    SpaceCardPersistenceSaveAdapter(mongoCollections);
+  const deleteSpaceCard: DeleteSpaceCardPort =
+    SpaceCardPersistenceDeleteAdapter(mongoCollections);
+  const loadSpaceWithCard: LoadSpaceWithCardPort =
+    SpacePersistenceLoadWithCardAdapter(mongoCollections);
 
   // 初始化 use case
   const accountRegisterUseCase = accountRegisterUseCaseConstructor(
@@ -124,7 +140,10 @@ async function init() {
     loadCard,
     saveCard
   );
-  const cardModifySizeUseCase = cardModifySizeCaseConstructor(loadCard, saveCard);
+  const cardModifySizeUseCase = cardModifySizeCaseConstructor(
+    loadCard,
+    saveCard
+  );
   const cardAccessEditValidatorCase =
     cardAccessEditValidatorUseCaseConstructor(loadCard);
   const cardDeleteUseCase = cardDeleteUseCaseConstructor(loadCard, deleteCard);
@@ -146,7 +165,8 @@ async function init() {
     deleteSpace
   );
   const spaceGetByIdUseCase = spaceGetByIdUseCaseConstructor(loadSpace);
-  const spaceGetWithAllUseCase = spaceGetWithAllUseCaseConstructor(loadSpaceList);
+  const spaceGetWithAllUseCase =
+    spaceGetWithAllUseCaseConstructor(loadSpaceList);
   const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
     loadSpace,
     saveSpace
@@ -157,6 +177,8 @@ async function init() {
       loadSpaceCard,
       saveSpaceCard
     );
+  const spaceGetByIdWithCardUseCase =
+    spaceGetByIdWithCardUseCaseConstructor(loadSpaceWithCard);
 
   // 初始化基礎設施
   console.log("PORT", process.env.PORT);
@@ -190,6 +212,7 @@ async function init() {
     spaceCardCreateController(fastify, [spaceCardCreateUseCase, emitSocket]);
     spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
     spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
+    spaceGetByIdWithCardController(fastify, spaceGetByIdWithCardUseCase);
   });
 
   fastify.ready((err) => {
@@ -213,7 +236,6 @@ async function init() {
     });
     fastify.swagger();
   });
-
 }
 
 init();
