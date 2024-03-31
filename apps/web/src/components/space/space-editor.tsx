@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import SpaceCardEditor from './space-card-editor';
-import useYJSProvide from '@/hooks/card/useYJSProvider';
 import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
 import useQueryCardList from '@/hooks/card/useQueryCardList';
 import useCreateCard from '@/hooks/card/useCreateCard';
@@ -9,33 +8,14 @@ import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
 import { type SpaceGetByIdResponseDTO } from '@repo/shared-types';
 import useSpaceEditor from '@/hooks/space/useSpaceEditor';
 import SpaceToolbar from './space-toolbar';
-import { toast } from 'sonner';
-
-export interface View {
-  x: number;
-  y: number;
-  scale: number;
-}
+import { View } from '@/models/view';
+import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
 
 export interface ContextMenuInfo {
   x: number;
   y: number;
   targetSpaceCardId?: string;
 }
-
-// 將滑鼠在編輯器上的相對位置轉換成實際位置
-const transformMouseClientPositionToViewPosition = (
-  view: View,
-  clientX: number,
-  clientY: number,
-) => {
-  const newX = (clientX - view.x) / view.scale;
-  const newY = (clientY - view.y) / view.scale;
-  return {
-    x: newX,
-    y: newY,
-  };
-};
 
 // 滾動移動視圖
 const useViewScroll = (
@@ -123,7 +103,6 @@ const useViewScroll = (
     };
   }, []);
 };
-
 
 // 滑動移動視圖
 const useViewTouch = (
@@ -394,6 +373,8 @@ interface ContextMenuComponentProps {
   setContextMenuInfo: (contextMenuInfo: ContextMenuInfo | null) => void;
   viewRef: React.MutableRefObject<View>;
   spaceId: string;
+  space: SpaceGetByIdResponseDTO['space'];
+  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
   mutateDeleteSpaceCard: ReturnType<typeof useDeleteSpaceCard>;
   mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
   mutateCreateCard: ReturnType<typeof useCreateCard>;
@@ -408,6 +389,8 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
     mutateCreateSpaceCard,
     mutateCreateCard,
     setContextMenuInfo,
+    space,
+    setSpace,
   } = props;
   const { cards } = useQueryCardList();
 
@@ -433,6 +416,13 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
                 {
                   onSuccess: (data: any) => {
                     console.log('新增卡片成功', data.data);
+                    setSpace({
+                      ...space!,
+                      spaceCards: [
+                        ...space!.spaceCards,
+                        data.data.spaceCard,
+                      ],
+                    });
                   },
                 },
               );
@@ -460,6 +450,8 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
     spaceId,
     mutateDeleteSpaceCard,
     setContextMenuInfo,
+    space,
+    setSpace,
   } = props;
 
   return (
@@ -473,6 +465,12 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
             spaceCardId: contextMenuInfo.targetSpaceCardId,
           });
           setContextMenuInfo(null);
+          setSpace({
+            ...space!,
+            spaceCards: space!.spaceCards.filter(
+              (spaceCard) => spaceCard.id !== contextMenuInfo.targetSpaceCardId,
+            ),
+          });
         }}
       >
         刪除卡片
@@ -532,9 +530,6 @@ export default function SpaceEditor({
   const mutateCreateSpaceCard = useCreateSpaceCard(setSpace, space);
   const mutateCreateCard = useCreateCard();
 
-  const { doc, provider, status } = useYJSProvide({
-    spaceId: space!.id,
-  });
   const viewRef = useRef<View>({
     x: 0,
     y: 0,
@@ -582,8 +577,6 @@ export default function SpaceEditor({
           <SpaceCardEditor
             key={spaceCard.id}
             initialSpaceCard={spaceCard}
-            socketIOProvider={provider}
-            doc={doc}
             viewRef={viewRef}
             editMode={editMode}
             sketchMode={sketchMode}
@@ -608,6 +601,12 @@ export default function SpaceEditor({
         setPencilInfo={setPencilInfo}
         eraserInfo={eraserInfo}
         setEraserInfo={setEraserInfo}
+        mutateCreateSpaceCard={mutateCreateSpaceCard}
+        mutateCreateCard={mutateCreateCard}
+        space={space}
+        setSpace={setSpace}
+        viewRef={viewRef}
+        editorRef={whiteBoardRef}
       />
       {/* 右鍵生成選單 */}
       <ContextMenuComponent
@@ -619,6 +618,8 @@ export default function SpaceEditor({
         mutateDeleteSpaceCard={mutateDeleteSpaceCard}
         mutateCreateSpaceCard={mutateCreateSpaceCard}
         mutateCreateCard={mutateCreateCard}
+        space={space}
+        setSpace={setSpace}
       />
     </div>
   );

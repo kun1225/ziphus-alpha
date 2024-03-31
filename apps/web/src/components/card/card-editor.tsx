@@ -25,9 +25,8 @@ function CardEditor() {
     setEraserInfo,
   } = useCardEditor(id as string);
   const { account } = useMe();
-  const { doc, provider, status } = useYJSProvide({
-    cardId: id as string,
-  });
+  const { doc, provider, status } = useYJSProvide(`card-${id}`);
+
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
 
   if (!card || !account || status !== 'connected') return null;

@@ -3,15 +3,14 @@ import useCardEditor from '@/hooks/card/useCardEditor';
 import useUpdateSpaceCardPosition from '@/hooks/space/useUpdateSpaceCardPosition';
 import useMe from '@/hooks/useMe';
 import { SpaceCardDTO } from '@repo/shared-types';
-import { View } from './space-editor';
-import { useEffect, useRef, useState } from 'react';
+import { View } from '@/models/view';
+import { useEffect, useRef } from 'react';
 import CardEditorSketchPanel, { EditMode, EraserInfo, PencilInfo, SketchMode } from '../card/card-editor-sketch-panel';
 import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
-import CardEditorHeadToolbar from '../card/card-editor-head-toolbar';
-import * as Y from 'yjs';
-import { SocketIOProvider } from 'y-socket.io';
 import { cn } from '@/utils/cn';
 import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
+import useYJSProvide from '@/hooks/card/useYJSProvider';
+import useDraggable from '@/hooks/useDraggable';
 
 // 隨時更新位置
 const useTransformUpdate = (
@@ -49,87 +48,8 @@ const useTransformUpdate = (
   }, []);
 };
 
-// 左鍵按住拖曳單張卡片
-const useSpaceCardDrag = (
-  isFocus: Boolean,
-  spaceCardElementRef: React.RefObject<HTMLDivElement>,
-  spaceCardRef: React.MutableRefObject<SpaceCardDTO>,
-  viewRef: React.MutableRefObject<View>,
-) => {
-  const {
-    handleUpdatePosition,
-  } = useUpdateSpaceCardPosition(spaceCardRef);
-
-  const lastClientXRef = useRef(0);
-  const lastClientYRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    spaceCardId: string,
-  ) => {
-    event.dataTransfer.setData('text/plain', '');
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.setDragImage(new Image(), 0, 0);
-    if (isFocus) {
-      return;
-    }
-    lastClientXRef.current = event.clientX;
-    lastClientYRef.current = event.clientY;
-    isDraggingRef.current = true;
-  };
-
-  const handleDrag = (
-    event: React.DragEvent<HTMLDivElement>,
-    spaceCardId: string,
-  ) => {
-    if (
-      isFocus ||
-      (event.clientX === 0 && event.clientY === 0) ||
-      !isDraggingRef.current
-    ) {
-      return;
-    }
-    event.preventDefault();
-    const deltaX = event.clientX - lastClientXRef.current;
-    const deltaY = event.clientY - lastClientYRef.current;
-
-    spaceCardRef.current = {
-      ...spaceCardRef.current,
-      x: spaceCardRef.current.x + deltaX / viewRef.current.scale,
-      y: spaceCardRef.current.y + deltaY / viewRef.current.scale,
-    };
-
-    lastClientXRef.current = event.clientX;
-    lastClientYRef.current = event.clientY;
-    handleUpdatePosition({
-      spaceId: spaceCardRef.current.targetSpaceId,
-      spaceCardId,
-      x: spaceCardRef.current.x,
-      y: spaceCardRef.current.y,
-    });
-  };
-
-  const handleDragEnd = (
-    event: React.DragEvent<HTMLDivElement>,
-    spaceCardId: string,
-  ) => {
-    if (isFocus) {
-      return;
-    }
-    isDraggingRef.current = false;
-  };
-
-  return {
-    handleDragStart,
-    handleDrag,
-    handleDragEnd,
-  };
-};
-
 interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   initialSpaceCard: SpaceCardDTO;
-  doc: Y.Doc;
-  socketIOProvider: SocketIOProvider;
   isFocus: boolean;
   viewRef: React.MutableRefObject<View>;
   editMode: EditMode;
@@ -140,8 +60,6 @@ interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function SpaceCardEditor({
   initialSpaceCard,
-  doc,
-  socketIOProvider,
   isFocus,
   viewRef,
   editMode,
@@ -151,6 +69,8 @@ function SpaceCardEditor({
   ...props
 }: SpaceCardEditorProps) {
   const { account } = useMe();
+  const { doc, provider, status } = useYJSProvide(`card-${initialSpaceCard.targetCardId}`);
+
   const spaceCardElementRef = useRef<HTMLDivElement>(null);
   const spaceCardRef = useRef<SpaceCardDTO>(initialSpaceCard);
   const {
@@ -161,15 +81,32 @@ function SpaceCardEditor({
   } = useCardEditor(initialSpaceCard.targetCardId);
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
   useTransformUpdate(spaceCardElementRef, spaceCardRef);
-  const { handleDragStart, handleDrag, handleDragEnd } = useSpaceCardDrag(
-    isFocus,
-    spaceCardElementRef,
-    spaceCardRef,
-    viewRef,
+
+  const {
+    handleUpdatePosition,
+  } = useUpdateSpaceCardPosition(spaceCardRef);
+
+  useDraggable(
+    {
+      draggableItemRef: spaceCardElementRef,
+      onDrag: ({
+        deltaX,
+        deltaY,
+      }) => {
+        spaceCardRef.current = {
+          ...spaceCardRef.current,
+          x: spaceCardRef.current.x + deltaX / viewRef.current.scale,
+          y: spaceCardRef.current.y + deltaY / viewRef.current.scale,
+        };
+        handleUpdatePosition({
+          spaceId: spaceCardRef.current.targetSpaceId,
+          spaceCardId: spaceCardRef.current.id,
+          x: spaceCardRef.current.x,
+          y: spaceCardRef.current.y,
+        });
+      },
+    },
   );
-
-
-  if (!card || !account) return null;
 
   return (
     <div
@@ -179,53 +116,56 @@ function SpaceCardEditor({
       )}
       {...props}
       ref={spaceCardElementRef}
-      draggable
-      onDragStart={(event) => handleDragStart(event, initialSpaceCard.id)}
-      onDrag={(event) => handleDrag(event, initialSpaceCard.id)}
-      onDragEnd={(event) => handleDragEnd(event, initialSpaceCard.id)}
       id={initialSpaceCard.id}
     >
-      <div
-        className={cn(
-          'flex flex-col gap-2',
-          isFocus ? 'pointer-events-auto' : 'pointer-events-none',
-        )}
-      >
-        <div
-          className="relative overflow-hidden"
-          style={{
-            width: card.width,
-            height: card.height,
-          }}
-        >
-          <CardEditorSketchPanel
-            isSketching={editMode === 'sketch'}
-            cardId={card.id as string}
-            accountName={account.name}
-            doc={doc}
-            sketchMode={sketchMode}
-            pencilInfo={pencilInfo}
-            eraserInfo={eraserInfo}
-          />
-          <CardEditorMarkdownEditor
-            cardId={card.id as string}
-            onCardSizeChange={(width, height) => {
-              if (card.height !== height && height > 1280) {
-                mutateUpdateCardSize.mutate({
-                  height,
-                });
-              } else if (card.height > 1280 && height < 1280) {
-                mutateUpdateCardSize.mutate({
-                  height: 1280,
-                });
-              }
-            }}
-            accountName={account.name}
-            provider={socketIOProvider}
-            doc={doc}
-          />
-        </div>
-      </div>
+      {
+        (card && account) ? (
+
+          <div
+            className={cn(
+              'flex flex-col gap-2',
+              isFocus ? 'pointer-events-auto' : 'pointer-events-none',
+            )}
+          >
+            <div
+              className="relative overflow-hidden"
+              style={{
+                width: card.width,
+                height: card.height,
+              }}
+            >
+              <CardEditorSketchPanel
+                isSketching={editMode === 'sketch'}
+                cardId={card.id as string}
+                accountName={account.name}
+                doc={doc}
+                sketchMode={sketchMode}
+                pencilInfo={pencilInfo}
+                eraserInfo={eraserInfo}
+              />
+              <CardEditorMarkdownEditor
+                cardId={card.id as string}
+                onCardSizeChange={(width, height) => {
+                  if (card.height !== height && height > 1280) {
+                    mutateUpdateCardSize.mutate({
+                      height,
+                    });
+                  } else if (card.height > 1280 && height < 1280) {
+                    mutateUpdateCardSize.mutate({
+                      height: 1280,
+                    });
+                  }
+                }}
+                accountName={account.name}
+                provider={provider}
+                doc={doc}
+              />
+            </div>
+          </div>
+        ) : (
+          <div className='w-full h-full flex justify-center items-center text-lg text-white'>Loading</div>
+        )
+      }
     </div>
   );
 }

@@ -3,16 +3,16 @@ import { EraserInfo } from '@/components/card/card-editor-sketch-panel';
 
 const eraserWidths = [4, 16, 32, 64];
 
-interface SpaceToolbarEraserProps {
+interface SpaceToolbarLayerEraserProps {
   eraserInfo: EraserInfo;
   setEraserInfo: (info: EraserInfo) => void;
 }
-function SpaceToolbarEraser({
+function SpaceToolbarLayerEraser({
   eraserInfo,
   setEraserInfo,
-}: SpaceToolbarEraserProps) {
+}: SpaceToolbarLayerEraserProps) {
   return (
-    <div className="w-12 flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-50 gap-2">
+    <div className="flex flex-col gap-2">
       {eraserWidths.map((width, index) => (
         <button
           key={width}
@@ -39,4 +39,4 @@ function SpaceToolbarEraser({
   );
 }
 
-export default SpaceToolbarEraser;
+export default SpaceToolbarLayerEraser;

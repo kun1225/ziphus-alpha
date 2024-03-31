@@ -2,18 +2,18 @@ import type { LoadCardPort } from "@/application/port/out/load-card-port";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
 import { CardPermission } from "@/application/domain/model/card";
 import { createExampleAccount, createExampleCard } from "./create-example-data";
-import { type CardSetPermissionUseCaseConstructor } from "@/application/port/in/card-set-permission-use-case";
-import cardSetPermissionUseCaseConstructor from "@/application/domain/service/card-set-permission-service";
+import { type CardModifyPermissionUseCaseConstructor } from "@/application/port/in/card-modify-permission-use-case";
+import cardModifyPermissionUseCaseConstructor from "@/application/domain/service/card-modify-permission-service";
 
-describe("CardSetPermissionUseCase", () => {
-  let cardSetPermissionUseCase: ReturnType<CardSetPermissionUseCaseConstructor>;
+describe("CardModifyPermissionUseCase", () => {
+  let cardSetPermissionUseCase: ReturnType<CardModifyPermissionUseCaseConstructor>;
   let loadCardPort: jest.Mock<ReturnType<LoadCardPort>>;
   let saveCardPort: jest.Mock<ReturnType<SaveCardPort>>;
 
   beforeEach(() => {
     loadCardPort = jest.fn();
     saveCardPort = jest.fn();
-    cardSetPermissionUseCase = cardSetPermissionUseCaseConstructor(
+    cardSetPermissionUseCase = cardModifyPermissionUseCaseConstructor(
       loadCardPort,
       saveCardPort
     );

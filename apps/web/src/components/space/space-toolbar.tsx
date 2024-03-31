@@ -5,19 +5,17 @@ import {
   PencilInfo,
   EraserInfo,
 } from '@/components/card/card-editor-sketch-panel';
-import SpaceToolbarEraser from './space-toolbar-eraser';
-import SpaceToolbarPencil from './space-toolbar-pencil';
-import { cn } from '@/utils/cn';
+import SpaceToolbarLayerEraser from './space-toolbar-layer-eraser';
+import SpaceToolbarLayerPencil from './space-toolbar-layer-pencil';
 import { FaEraser, FaPencil } from 'react-icons/fa6';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
-
-interface ToolbarItem {
-  id: number;
-  icon: JSX.Element;
-  handler: () => void;
-}
-
+import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
+import useCreateCard from '@/hooks/card/useCreateCard';
+import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
+import ToolbarItemButton from './space-toolbar-item-button';
+import { View } from '@/models/view';
+import ToolbarItemAddCardButton from './space-toolbar-add-card-button';
 
 interface SpaceToolbarProps {
   isCardFocused: boolean;
@@ -29,6 +27,13 @@ interface SpaceToolbarProps {
   setPencilInfo: (info: PencilInfo) => void;
   eraserInfo: EraserInfo;
   setEraserInfo: (info: EraserInfo) => void;
+  mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
+  mutateCreateCard: ReturnType<typeof useCreateCard>;
+  space: SpaceGetByIdResponseDTO['space'];
+  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
+  viewRef: React.MutableRefObject<View>;
+  editorRef: React.RefObject<HTMLDivElement>;
+
 }
 function SpaceToolbar({
   isCardFocused,
@@ -40,6 +45,12 @@ function SpaceToolbar({
   setPencilInfo,
   eraserInfo,
   setEraserInfo,
+  mutateCreateSpaceCard,
+  mutateCreateCard,
+  space,
+  setSpace,
+  viewRef,
+  editorRef,
 }: SpaceToolbarProps) {
   const [
     selectedId,
@@ -60,69 +71,80 @@ function SpaceToolbar({
     }
   }, [isCardFocused, editMode, sketchMode]);
 
-  const modes = [
-    {
-      id: 0,
-      icon: <IoDocumentTextOutline />,
-      handler: () => setEditMode('text'),
-    },
-    isCardFocused && {
-      id: 1,
-      icon: <FaPencil />,
-      handler: () => {
-        setEditMode('sketch');
-        setSketchMode('pencil');
-      },
-    },
-    isCardFocused && {
-      id: 2,
-      icon: <FaEraser />,
-      handler: () => {
-        setEditMode('sketch');
-        setSketchMode('eraser');
-      },
-    },
-  ].filter(Boolean) as ToolbarItem[];
-
   return (
     <>
-      <div className="w-12 flex flex-col items-center absolute right-2 top-1/2 -translate-y-1/2 z-50">
+      {/** 第一層 */}
+      <div className="w-fit h-fit flex flex-col items-center absolute right-2 top-1/2 -translate-y-1/2 z-50">
+        {/** 文字編輯 0 */}
+        <ToolbarItemButton
+          isFocused={selectedId === 0}
+          onClick={() => setEditMode('text')}
+        >
+          <IoDocumentTextOutline />
+        </ToolbarItemButton>
+        {/**  鉛筆 1 */}
         {
-          modes.map((mode) => (
-            <button
-              key={mode.id}
-              className={
-                cn(
-                  'w-12 h-12 rounded flex justify-center items-center cursor-pointer text-white',
-                  selectedId === mode.id ? 'bg-gray-800' : 'bg-opacity-0',
-                )
-              }
-              onClick={(event) => {
-                event.stopPropagation();
-                mode.handler();
+          isCardFocused && (
+            <ToolbarItemButton
+              isFocused={selectedId === 1}
+              onClick={() => {
+                setEditMode('sketch');
+                setSketchMode('pencil');
               }}
             >
-              {mode.icon}
-            </button>
-          ))
+              <FaPencil />
+            </ToolbarItemButton>
+          )
+        }
+        {/** 橡皮擦 2 */}
+        {
+          isCardFocused && (
+            <ToolbarItemButton
+              isFocused={selectedId === 2}
+              onClick={() => {
+                setEditMode('sketch');
+                setSketchMode('eraser');
+              }}
+            >
+              <FaEraser />
+            </ToolbarItemButton>
+          )
+        }
+        {/** 新增題目 3 */}
+        {
+          !isCardFocused && (
+            <ToolbarItemAddCardButton
+              viewRef={viewRef}
+              mutateCreateSpaceCard={mutateCreateSpaceCard}
+              mutateCreateCard={mutateCreateCard}
+              setSpace={setSpace}
+              space={space}
+              editorRef={editorRef}
+            />
+          )
+        }
+
+      </div>
+
+      {/** 第二層 */}
+      <div className="w-fit h-fit flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-50">
+        {
+          editMode === 'sketch' && sketchMode === 'pencil' && (
+            <SpaceToolbarLayerPencil
+              pencilInfo={pencilInfo}
+              setPencilInfo={setPencilInfo}
+            />
+          )
+        }
+        {
+          editMode === 'sketch' && sketchMode === 'eraser' && (
+            <SpaceToolbarLayerEraser
+              eraserInfo={eraserInfo}
+              setEraserInfo={setEraserInfo}
+            />
+          )
         }
       </div>
-      {
-        editMode === 'sketch' && sketchMode === 'pencil' && (
-          <SpaceToolbarPencil
-            pencilInfo={pencilInfo}
-            setPencilInfo={setPencilInfo}
-          />
-        )
-      }
-      {
-        editMode === 'sketch' && sketchMode === 'eraser' && (
-          <SpaceToolbarEraser
-            eraserInfo={eraserInfo}
-            setEraserInfo={setEraserInfo}
-          />
-        )
-      }
     </>
   );
 }

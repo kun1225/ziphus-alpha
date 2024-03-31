@@ -4,16 +4,16 @@ import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
 const pencilWidths = [4, 8, 12, 16];
 const pencilColors = ['white', 'red', 'blue', 'green', 'yellow'];
 
-interface SpaceToolbarPencilProps {
+interface SpaceToolbarLayerPencilProps {
   pencilInfo: PencilInfo;
   setPencilInfo: (info: PencilInfo) => void;
 }
-function SpaceToolbarPencil({
+function SpaceToolbarLayerPencil({
   pencilInfo,
   setPencilInfo,
-}: SpaceToolbarPencilProps) {
+}: SpaceToolbarLayerPencilProps) {
   return (
-    <div className="w-12 flex flex-col items-center absolute right-16 top-1/2 -translate-y-1/2 z-50 gap-2">
+    <div className="flex flex-col gap-2">
       {pencilWidths.map((width, index) => (
         <button
           key={width}
@@ -62,4 +62,4 @@ function SpaceToolbarPencil({
   );
 }
 
-export default SpaceToolbarPencil;
+export default SpaceToolbarLayerPencil;

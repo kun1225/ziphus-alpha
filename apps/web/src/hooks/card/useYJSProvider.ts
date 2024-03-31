@@ -3,32 +3,22 @@ import * as Y from 'yjs';
 import { SocketIOProvider } from 'y-socket.io';
 import { getCookie } from 'cookies-next';
 
-function useYJSProvide({
-  cardId,
-  spaceId,
-}: {
-  cardId?: string;
-  spaceId?: string;
-}) {
-  if (!cardId && !spaceId) {
-    throw new Error('cardId or spaceId is required');
-  }
-  if (cardId && spaceId) {
-    throw new Error('cardId and spaceId cannot be used at the same time');
+function useYJSProvide(roomName: string, auth?: any) {
+  if (!roomName) {
+    throw new Error('roomName is required');
   }
   const [status, setStatus] = useState<string>('disconnected');
   const [doc] = useState(new Y.Doc());
   const [provider] = useState(
     new SocketIOProvider(
       process.env.NEXT_PUBLIC_WS_ENDPOINT || 'ws://localhost:8080',
-      cardId ? `card-${cardId}` : `space-${spaceId}`,
+      roomName,
       doc,
       {
         autoConnect: true,
         auth: {
+          ...auth,
           authorization: getCookie('authorization'),
-          cardId,
-          spaceId,
         },
       },
     ),
