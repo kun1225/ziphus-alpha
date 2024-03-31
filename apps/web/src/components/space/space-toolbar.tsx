@@ -72,15 +72,17 @@ function SpaceToolbar({
       {/** 第一層 */}
       <div className="absolute right-2 top-1/2 z-50 flex h-fit w-fit -translate-y-1/2 flex-col items-center">
         {/** 文字編輯 0 */}
-        <ToolbarItemButton
-          isFocused={selectedId === 0}
-          onClick={(event) => {
-            event.stopPropagation();
-            setEditMode("text");
-          }}
-        >
-          <IoDocumentTextOutline />
-        </ToolbarItemButton>
+        {isCardFocused && (
+          <ToolbarItemButton
+            isFocused={selectedId === 0}
+            onClick={(event) => {
+              event.stopPropagation();
+              setEditMode("text");
+            }}
+          >
+            <IoDocumentTextOutline />
+          </ToolbarItemButton>
+        )}
         {/**  鉛筆 1 */}
         {isCardFocused && (
           <ToolbarItemButton

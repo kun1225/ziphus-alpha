@@ -2,13 +2,16 @@
 import useQuerySpaceById from "@/hooks/space/useQuerySpaceById";
 import useUpdateSpaceTitle from "@/hooks/space/useUpdateSpaceTitle";
 import { useParams } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function SpaceHeaderBarRetitleInput() {
   const { id } = useParams();
   const { space } = useQuerySpaceById(id as string);
   const [showRetitleInput, setShowRetitleInput] = useState(false);
   const [newTitle, setNewTitle] = useState(space?.title || "");
+  useEffect(() => {
+    setNewTitle(space?.title || "");
+  }, [space?.title]);
   const mutation = useUpdateSpaceTitle(id as string);
   const inputRef = useRef<HTMLInputElement>(null);
 
