@@ -7,22 +7,21 @@ interface SaveSpaceCardCommand {
   saveTime: number;
 }
 
-const commandMap: Record<string, SaveSpaceCardCommand> = {}
+const commandMap: Record<string, SaveSpaceCardCommand> = {};
 
-const SpaceCardPersistenceSaveAdapter = (
-  { spaceCardCollection }: MongoCollections
-): SaveSpaceCardPort => async (
-  spaceCard
-) => {
-    // 為了避免在短時間內重複儲存相同的 SpaceCard，我們會在這裡加入一個緩存機制 
+const SpaceCardPersistenceSaveAdapter =
+  ({ spaceCardCollection }: MongoCollections): SaveSpaceCardPort =>
+  async (spaceCard, needRealTime?: boolean) => {
+    // 為了避免在短時間內重複儲存相同的 SpaceCard，我們會在這裡加入一個緩存機制
     commandMap[spaceCard.id] = {
       spaceCard,
-      saveTime: Date.now() + 3000
-    }
+      saveTime: Date.now() + (needRealTime ? 0 : 3000),
+    };
 
     async function handelCommand() {
-      const needDealCommands = Object.values(commandMap).
-        filter(({ saveTime }) => saveTime < Date.now());
+      const needDealCommands = Object.values(commandMap).filter(
+        ({ saveTime }) => saveTime <= Date.now() + 100
+      );
 
       if (needDealCommands.length === 0) {
         return;
@@ -33,18 +32,20 @@ const SpaceCardPersistenceSaveAdapter = (
           updateOne: {
             filter: { id: spaceCard.id },
             update: { $set: spaceCard },
-            upsert: true
-          }
-        })));
+            upsert: true,
+          },
+        }))
+      );
 
-      const needDealCommandIds = needDealCommands.map(({ spaceCard }) => spaceCard.id);
-      needDealCommandIds.forEach(id => {
+      const needDealCommandIds = needDealCommands.map(
+        ({ spaceCard }) => spaceCard.id
+      );
+      needDealCommandIds.forEach((id) => {
         delete commandMap[id];
       });
     }
 
-    setTimeout(handelCommand, 5000);
-
+    needRealTime ? await handelCommand() : setTimeout(handelCommand, 5000);
   };
 
 export default SpaceCardPersistenceSaveAdapter;

@@ -7,7 +7,7 @@ const spaceCreateUseCaseConstructor: SpaceCreateUseCaseConstructor =
   async ({ accountId }) => {
     const existingAccount = await loadAccount({ id: accountId });
     if (!existingAccount) {
-      throw new Error("Account not found");
+      throw new Error("Unauthorized or Account not found");
     }
 
     const newSpace = new Space(

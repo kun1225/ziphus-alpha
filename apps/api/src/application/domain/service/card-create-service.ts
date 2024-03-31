@@ -11,7 +11,7 @@ const cardCreateUseCaseConstructor: CardCreateUseCaseConstructor =
   async ({ accountId }) => {
     const existingAccount = await loadAccount({ id: accountId });
     if (!existingAccount) {
-      throw new Error("Account not found");
+      throw new Error("Unauthorized or Account not found");
     }
 
     const newCard = new Card(
@@ -29,7 +29,7 @@ const cardCreateUseCaseConstructor: CardCreateUseCaseConstructor =
       null
     );
 
-    await saveCard(newCard);
+    await saveCard(newCard, true);
 
     return newCard;
   };

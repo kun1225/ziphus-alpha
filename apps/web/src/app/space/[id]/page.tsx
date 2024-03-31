@@ -5,6 +5,9 @@ import { cookies } from "next/headers";
 import { fetchSpaceByIdWithCard } from "@/hooks/space/useQuerySpaceByIdWithCard";
 import axiosInstance from "@/utils/axios";
 import { Metadata } from "next";
+import { SpaceGetByIdWithCardResponseDTO } from "@repo/shared-types";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export const metadata: Metadata = {};
 
@@ -16,11 +19,18 @@ export default async function Page({
   const cookieStore = cookies();
   const authorization = cookieStore.get("authorization");
   axiosInstance.defaults.headers.authorization = authorization?.value ?? "";
-  const data = await fetchSpaceByIdWithCard(id);
 
-  const title = data?.data?.space?.title ?? "Ziphus Space Editor";
+  let data: SpaceGetByIdWithCardResponseDTO | null = null;
+  try {
+    data = (await fetchSpaceByIdWithCard(id)).data;
+  } catch (error) {
+    console.error(error);
+    redirect("/login");
+  }
+
+  const title = data?.space?.title ?? "Ziphus Space Editor";
   const description =
-    data?.data?.space?.spaceCards
+    data?.space?.spaceCards
       .map((card) => card?.card?.content ?? "")
       .join("")
       .substring(0, 157) ?? "Ziphus";
@@ -42,7 +52,7 @@ export default async function Page({
     description,
   };
 
-  if (!data?.data?.space) {
+  if (!data?.space) {
     return <div>Space not found</div>;
   }
   return (
@@ -51,7 +61,7 @@ export default async function Page({
       <div className="flex flex-1 flex-col">
         <SpaceHeaderBar />
         <main className="h-full w-full">
-          <SpaceEditor initialSpace={data.data.space} />
+          <SpaceEditor initialSpace={data.space} />
         </main>
       </div>
     </div>

@@ -11,7 +11,7 @@ const cardDeleteUseCaseConstructor: CardDeleteUseCaseConstructor =
       }
 
       if (card.belongAccountId !== accountId) {
-        throw new Error("Card not found");
+        throw new Error("Permission denied");
       }
 
 

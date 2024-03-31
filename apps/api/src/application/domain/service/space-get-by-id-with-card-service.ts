@@ -14,7 +14,7 @@ const spaceGetByIdWithCardUseCaseConstructor: SpaceGetByIdWithCardUseCaseConstru
         space.permission === SpacePermission.Private &&
         space.belongAccountId !== accountId
       ) {
-        throw new Error("Card not found");
+        throw new Error("Permission denied");
       }
 
       return space;

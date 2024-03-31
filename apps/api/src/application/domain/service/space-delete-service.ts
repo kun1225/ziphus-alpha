@@ -9,7 +9,7 @@ const spaceDeleteUseCaseConstructor: SpaceDeleteUseCaseConstructor =
       throw new Error("Space not found");
     }
     if (existingSpace.belongAccountId !== accountId) {
-      throw new Error("Unauthorized");
+      throw new Error("Permission denied");
     }
 
     await deleteSpace(existingSpace);

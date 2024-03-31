@@ -14,7 +14,7 @@ const cardGetByIdUseCaseConstructor: CardGetByIdUseCaseConstructor =
       card.permission === CardPermission.Private &&
       card.belongAccountId !== accountId
     ) {
-      throw new Error("Card not found");
+      throw new Error("Permission denied");
     }
 
     return card;

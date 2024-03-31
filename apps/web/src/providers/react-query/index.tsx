@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import type { PropsWithChildren } from 'react';
-import { useState } from 'react';
+import type { PropsWithChildren } from "react";
+import { useState } from "react";
 import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function ReactQueryProvider({ children }: PropsWithChildren) {
   const router = useRouter();
@@ -20,13 +20,21 @@ function ReactQueryProvider({ children }: PropsWithChildren) {
           onError: (error) => {
             const errorData = JSON.parse(JSON.stringify(error));
             console.error(errorData);
-            if (errorData.message === 'Unauthorized' || errorData.status === 401) {
-              toast.error('請先登入');
-              router.push('/login');
+            if (
+              errorData.message.include("Unauthorized") ||
+              errorData.status === 401
+            ) {
+              toast.error("請先登入");
+              router.push("/login");
+              return;
+            }
+            if (errorData.message.include("Permission denied")) {
+              toast.error("權限不足或帳號登入已過期");
+              router.push("/login");
               return;
             }
             console.error(errorData.status);
-            toast.error('檢測到一個錯誤，請檢查控制台');
+            toast.error("檢測到一個錯誤，請檢查控制台");
           },
         }),
       }),

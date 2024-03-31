@@ -18,7 +18,7 @@ const spaceCardDeleteUseCaseConstructor: SpaceCardDeleteUseCaseConstructor =
       targetSpace.permission !== SpacePermission.PublicEditable &&
       targetSpace.belongAccountId !== accountId
     ) {
-      throw new Error("Space not found");
+      throw new Error("Permission denied");
     }
 
     await deleteSpaceCard(existingSpaceCard);
