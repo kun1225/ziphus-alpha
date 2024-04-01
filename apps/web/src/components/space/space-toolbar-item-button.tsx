@@ -2,7 +2,7 @@ import { cn } from '@/utils/cn';
 import React from 'react';
 
 const ToolbarItemButton = React.forwardRef(
-    ({ isFocused, ...props }: React.HTMLAttributes<HTMLButtonElement> & {
+    ({ isFocused, className, ...props }: React.HTMLAttributes<HTMLButtonElement> & {
         isFocused: boolean;
     }, ref) => {
         return (
@@ -11,6 +11,7 @@ const ToolbarItemButton = React.forwardRef(
                     cn(
                         'w-12 h-12 rounded flex justify-center items-center cursor-pointer text-white',
                         isFocused ? 'bg-gray-800' : 'bg-opacity-0',
+                        className
                     )
                 }
                 {...props}

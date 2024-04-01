@@ -1,19 +1,20 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import SpaceCardEditor from "./space-card-editor";
-import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
-import useQueryCardList from "@/hooks/card/useQueryCardList";
-import useCreateCard from "@/hooks/card/useCreateCard";
-import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+import SpaceCardEditor from './space-card-editor';
+import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
+import useQueryCardList from '@/hooks/card/useQueryCardList';
+import useCreateCard from '@/hooks/card/useCreateCard';
+import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
 import {
   type SpaceGetByIdWithCardResponseDTO,
   type SpaceGetByIdResponseDTO,
-} from "@repo/shared-types";
-import useSpaceEditor from "@/hooks/space/useSpaceEditor";
-import SpaceToolbar from "./space-toolbar";
-import { View } from "@/models/view";
-import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
-import useYJSProvide from "@/hooks/useYJSProvider";
+} from '@repo/shared-types';
+import useSpaceEditor from '@/hooks/space/useSpaceEditor';
+import SpaceToolbar from './space-toolbar';
+import { View } from '@/models/view';
+import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
+import useYJSProvide from '@/hooks/useYJSProvider';
+import { toast } from 'sonner';
 
 export interface ContextMenuInfo {
   x: number;
@@ -93,10 +94,10 @@ const useViewScroll = (
       }
     };
 
-    editor.addEventListener("wheel", onWheel, { passive: false });
+    editor.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener("wheel", onWheel);
+      editor.removeEventListener('wheel', onWheel);
     };
   }, []);
 };
@@ -107,8 +108,8 @@ const useViewTouch = (
   viewRef: React.MutableRefObject<View>,
 ) => {
   const lastTouchPosition = useRef({ x: 0, y: 0 });
-  const twoPointDistance = useRef(0);
-  const startViewRef = useRef({ x: 0, y: 0, scale: 1 });
+  const lastTwoPointDeltaDistance = useRef(0);
+
   useEffect(() => {
     const editor = editorRef.current;
 
@@ -152,6 +153,7 @@ const useViewTouch = (
 
     const onMove = (deltaX: number, deltaY: number) => {
       const view = viewRef.current!;
+
       viewRef.current = {
         x: view.x + deltaX,
         y: view.y + deltaY,
@@ -165,25 +167,46 @@ const useViewTouch = (
         return;
       }
       event.preventDefault();
-      const centerX = (touches[0]!.clientX + touches[1]!.clientX) / 2;
-      const centerY = (touches[0]!.clientY + touches[1]!.clientY) / 2;
+      const rect = editor.getBoundingClientRect();
+      const touch1x = touches[0]!.clientX - rect.left;
+      const touch1y = touches[0]!.clientY - rect.top;
+      const touch2x = touches[1]!.clientX - rect.left;
+      const touch2y = touches[1]!.clientY - rect.top;
+
+      const centerX = (touch1x + touch2x) / 2;
+      const centerY = (touch1y + touch2y) / 2;
 
       const twoPointDeltaDistance = Math.sqrt(
-        (touches[0]!.clientX - touches[1]!.clientX) ** 2 +
-          (touches[0]!.clientY - touches[1]!.clientY) ** 2,
+        (touch1x - touch2x) ** 2 +
+        (touch1y - touch2y) ** 2,
       );
 
-      const deltaScale = twoPointDeltaDistance - twoPointDistance.current;
+      const deltaScale = twoPointDeltaDistance - lastTwoPointDeltaDistance.current;
+
+      const { x: viewCenterX, y: viewCenterY } =
+        transformMouseClientPositionToViewPosition(
+          viewRef.current,
+          centerX,
+          centerY,
+        );
+
+      const { x: lastViewCenterX, y: lastViewCenterY } =
+        transformMouseClientPositionToViewPosition(
+          viewRef.current,
+          lastTouchPosition.current.x,
+          lastTouchPosition.current.y,
+        );
 
       onMove(
-        centerX - lastTouchPosition.current.x,
-        centerY - lastTouchPosition.current.y,
+        (viewCenterX - lastViewCenterX) * viewRef.current.scale,
+        (viewCenterY - lastViewCenterY) * viewRef.current.scale,
       );
       onScale(centerX, centerY, viewRef.current.scale + deltaScale * 0.002);
 
+
       lastTouchPosition.current.x = centerX;
       lastTouchPosition.current.y = centerY;
-      twoPointDistance.current = twoPointDeltaDistance;
+      lastTwoPointDeltaDistance.current = twoPointDeltaDistance;
     };
 
     const onTouchStart = (event: TouchEvent) => {
@@ -191,24 +214,29 @@ const useViewTouch = (
       if (touches.length !== 2) {
         return;
       }
+      const rect = editor.getBoundingClientRect();
+      const touch1x = touches[0]!.clientX - rect.left;
+      const touch1y = touches[0]!.clientY - rect.top;
+      const touch2x = touches[1]!.clientX - rect.left;
+      const touch2y = touches[1]!.clientY - rect.top;
       event.preventDefault();
 
-      const centerX = (touches[0]!.clientX + touches[1]!.clientX) / 2;
-      const centerY = (touches[0]!.clientY + touches[1]!.clientY) / 2;
+      const centerX = (touch1x + touch2x) / 2;
+      const centerY = (touch1y + touch2y) / 2;
       lastTouchPosition.current.x = centerX;
       lastTouchPosition.current.y = centerY;
-      twoPointDistance.current = Math.sqrt(
-        (touches[0]!.clientX - touches[1]!.clientX) ** 2 +
-          (touches[0]!.clientY - touches[1]!.clientY) ** 2,
+      lastTwoPointDeltaDistance.current = Math.sqrt(
+        (touch1x - touch2x) ** 2 +
+        (touch1y - touch2y) ** 2,
       );
     };
 
-    editor.addEventListener("touchmove", onTouchMove, { passive: false });
-    editor.addEventListener("touchstart", onTouchStart, { passive: false });
+    editor.addEventListener('touchmove', onTouchMove, { passive: false });
+    editor.addEventListener('touchstart', onTouchStart, { passive: false });
 
     return () => {
-      editor.removeEventListener("touchmove", onTouchMove);
-      editor.removeEventListener("touchstart", onTouchStart);
+      editor.removeEventListener('touchmove', onTouchMove);
+      editor.removeEventListener('touchstart', onTouchStart);
     };
   }, []);
 };
@@ -233,7 +261,7 @@ const useViewContextMenu = (
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const targetSpaceCardId = (event.target as HTMLElement).closest(
-        ".space-card",
+        '.space-card',
       )?.id;
 
       setContextMenuInfo({
@@ -257,12 +285,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener("contextmenu", onContextMenu);
-    editor.addEventListener("mousedown", handleMouseDown);
+    editor.addEventListener('contextmenu', onContextMenu);
+    editor.addEventListener('mousedown', handleMouseDown);
 
     return () => {
-      editor.removeEventListener("contextmenu", onContextMenu);
-      editor.removeEventListener("mousedown", handleMouseDown);
+      editor.removeEventListener('contextmenu', onContextMenu);
+      editor.removeEventListener('mousedown', handleMouseDown);
     };
   }, []);
 };
@@ -310,14 +338,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener("mousedown", onMouseDown);
-    editor.addEventListener("mousemove", onMouseMove);
-    editor.addEventListener("mouseup", onMouseUp);
+    editor.addEventListener('mousedown', onMouseDown);
+    editor.addEventListener('mousemove', onMouseMove);
+    editor.addEventListener('mouseup', onMouseUp);
 
     return () => {
-      editor.removeEventListener("mousedown", onMouseDown);
-      editor.removeEventListener("mousemove", onMouseMove);
-      editor.removeEventListener("mouseup", onMouseUp);
+      editor.removeEventListener('mousedown', onMouseDown);
+      editor.removeEventListener('mousemove', onMouseMove);
+      editor.removeEventListener('mouseup', onMouseUp);
     };
   }, []);
 
@@ -364,8 +392,8 @@ interface ContextMenuComponentProps {
   setContextMenuInfo: (contextMenuInfo: ContextMenuInfo | null) => void;
   viewRef: React.MutableRefObject<View>;
   spaceId: string;
-  space: SpaceGetByIdResponseDTO["space"];
-  setSpace: (space: SpaceGetByIdResponseDTO["space"]) => void;
+  space: SpaceGetByIdResponseDTO['space'];
+  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
   mutateDeleteSpaceCard: ReturnType<typeof useDeleteSpaceCard>;
   mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
   mutateCreateCard: ReturnType<typeof useCreateCard>;
@@ -392,7 +420,7 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
         onClick={() => {
           mutateCreateCard.mutate(undefined, {
             onSuccess: (data) => {
-              console.log("新增卡片成功", data.data);
+              console.log('新增卡片成功', data.data);
               const view = viewRef.current;
               mutateCreateSpaceCard.mutate(
                 {
@@ -406,7 +434,7 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
                 },
                 {
                   onSuccess: (data: any) => {
-                    console.log("新增卡片成功", data.data);
+                    console.log('新增卡片成功', data.data);
                     setSpace({
                       ...space!,
                       spaceCards: [...space!.spaceCards, data.data.spaceCard],
@@ -416,7 +444,7 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
               );
             },
             onError: (error) => {
-              console.error("新增卡片失敗", error);
+              console.error('新增卡片失敗', error);
             },
           });
           setContextMenuInfo(null);
@@ -474,9 +502,8 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${
-          contextMenuInfo ? "" : "hidden"
-        }`}
+        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${contextMenuInfo ? '' : 'hidden'
+          }`}
         style={{
           left: contextMenuInfo ? contextMenuInfo.x : 0,
           top: contextMenuInfo ? contextMenuInfo.y : 0,
@@ -497,11 +524,12 @@ const ContextMenuComponent = React.forwardRef(
 export default function SpaceEditor({
   initialSpace,
 }: {
-  initialSpace: SpaceGetByIdWithCardResponseDTO["space"];
+  initialSpace: SpaceGetByIdWithCardResponseDTO['space'];
 }) {
   if (!initialSpace) {
     return <div>Space not found</div>;
   }
+  
   const {
     space,
     setSpace,
@@ -581,7 +609,7 @@ export default function SpaceEditor({
       </div>
       {/* 繪圖工具 */}
       <SpaceToolbar
-        isCardFocused={!!focusSpaceCardId}
+        focusSpaceCardId={focusSpaceCardId}
         editMode={editMode}
         setEditMode={setEditMode}
         sketchMode={sketchMode}
@@ -592,6 +620,7 @@ export default function SpaceEditor({
         setEraserInfo={setEraserInfo}
         mutateCreateSpaceCard={mutateCreateSpaceCard}
         mutateCreateCard={mutateCreateCard}
+        mutateDeleteSpaceCard={mutateDeleteSpaceCard}
         space={space}
         setSpace={setSpace}
         viewRef={viewRef}

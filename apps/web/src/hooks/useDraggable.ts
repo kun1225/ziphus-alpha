@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from 'react';
+import { toast } from 'sonner';
 
 interface DragProps {
   x: number;
@@ -46,8 +47,8 @@ function useDraggable({
           y,
           deltaX: 0,
           deltaY: 0,
-          clientX: clientX,
-          clientY: clientY,
+          clientX,
+          clientY,
         });
       }
     },
@@ -66,8 +67,8 @@ function useDraggable({
           y,
           deltaX: x - lastClientXRef.current,
           deltaY: y - lastClientYRef.current,
-          clientX: clientX,
-          clientY: clientY,
+          clientX,
+          clientY,
         });
       }
 
@@ -90,8 +91,8 @@ function useDraggable({
           y,
           deltaX: lastClientXRef.current - x,
           deltaY: lastClientYRef.current - y,
-          clientX: clientX,
-          clientY: clientY,
+          clientX,
+          clientY,
         });
       }
 
@@ -148,7 +149,9 @@ function useDraggable({
       if (!available) {
         return;
       }
-      event.preventDefault();
+      if (event.touches.length > 1) {
+        return;
+      }
       handleDragStart(event.touches[0]!.clientX, event.touches[0]!.clientY);
     };
 
@@ -157,6 +160,9 @@ function useDraggable({
         return;
       }
       if (!available) {
+        return;
+      }
+      if (event.touches.length > 1) {
         return;
       }
       handleDrag(event.touches[0]!.clientX, event.touches[0]!.clientY);
@@ -169,26 +175,29 @@ function useDraggable({
       if (!available) {
         return;
       }
+      if (event.touches.length > 1) {
+        return;
+      }
       handleDragEnd(
         event.changedTouches[0]!.clientX,
         event.changedTouches[0]!.clientY,
       );
     };
 
-    draggableItem.addEventListener("mousedown", handleMouseStart as any);
-    draggableItem.addEventListener("touchstart", handleTouchStart as any);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("touchmove", handleTouchMove);
-    document.addEventListener("mouseup", handleMouseUp);
-    document.addEventListener("touchend", handleTouchEnd);
+    draggableItem.addEventListener('mousedown', handleMouseStart as any);
+    draggableItem.addEventListener('touchstart', handleTouchStart as any);
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchmove', handleTouchMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchend', handleTouchEnd);
 
     return () => {
-      draggableItem.removeEventListener("mousedown", handleMouseStart as any);
-      draggableItem.removeEventListener("touchstart", handleTouchStart as any);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.removeEventListener("touchend", handleTouchEnd);
+      draggableItem.removeEventListener('mousedown', handleMouseStart as any);
+      draggableItem.removeEventListener('touchstart', handleTouchStart as any);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('touchend', handleTouchEnd);
     };
   }, [draggableItemRef, handleDragStart, handleDrag, handleDragEnd, available]);
 
@@ -198,7 +207,7 @@ function useDraggable({
       return;
     }
 
-    container.addEventListener("dragover", (event) => {
+    container.addEventListener('dragover', (event) => {
       event.preventDefault();
     });
   }, [containerRef]);
