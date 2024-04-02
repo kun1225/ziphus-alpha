@@ -41,9 +41,9 @@ importers:
       '@repo/shared-utils':
         specifier: workspace:*
         version: link:../../packages/shared-utils
-      '@repo/y-socket.io':
+      '@repo/y-socket-io':
         specifier: workspace:*
-        version: link:../../packages/y-socket.io
+        version: link:../../packages/y-socket-io
       fastify:
         specifier: ^4.26.2
         version: 4.26.2
@@ -126,9 +126,9 @@ importers:
       '@repo/sketch-canvas':
         specifier: workspace:*
         version: link:../../packages/sketch-canvas
-      '@repo/y-socket.io':
+      '@repo/y-socket-io':
         specifier: workspace:*
-        version: link:../../packages/y-socket.io
+        version: link:../../packages/y-socket-io
       '@tanstack/react-query':
         specifier: ^5.28.2
         version: 5.28.4(react@18.2.0)
@@ -311,7 +311,7 @@ importers:
 
   packages/typescript-config: {}
 
-  packages/y-socket.io:
+  packages/y-socket-io:
     dependencies:
       lib0:
         specifier: ^0.2.52

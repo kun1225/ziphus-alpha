@@ -1,6 +1,6 @@
 import type { Server } from "socket.io";
-import type { Document } from "@repo/y-socket.io/dist/server";
-import { YSocketIO } from "@repo/y-socket.io/dist/server";
+import type { Document } from "@repo/y-socket-io/dist/server";
+import { YSocketIO } from "@repo/y-socket-io/dist/server";
 import { MongodbPersistence } from "y-mongodb-provider";
 import * as Y from "yjs";
 

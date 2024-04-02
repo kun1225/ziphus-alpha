@@ -16,7 +16,7 @@
     "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*",
     "@repo/sketch-canvas": "workspace:*",
-    "@repo/y-socket.io": "workspace:*",
+    "@repo/y-socket-io": "workspace:*",
     "@tanstack/react-query": "^5.28.2",
     "@tanstack/react-query-devtools": "^5.28.4",
     "axios": "^1.6.7",

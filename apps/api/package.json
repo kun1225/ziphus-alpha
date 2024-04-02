@@ -22,7 +22,7 @@
     "@fastify/swagger-ui": "^3.0.0",
     "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*",
-    "@repo/y-socket.io": "workspace:*",
+    "@repo/y-socket-io": "workspace:*",
     "fastify": "^4.26.2",
     "fastify-type-provider-zod": "^1.1.9",
     "jsonwebtoken": "^9.0.2",

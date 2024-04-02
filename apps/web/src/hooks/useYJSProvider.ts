@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Y from "yjs";
-import { SocketIOProvider } from "@repo/y-socket.io";
+import { SocketIOProvider } from "@repo/y-socket-io";
 import { getCookie } from "cookies-next";
 import useSocket from "@/hooks/useSocket";
 
