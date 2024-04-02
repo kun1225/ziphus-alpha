@@ -27,10 +27,28 @@ function YSocketIOFactory(
 
   ySocketIo.on("document-loaded", async (doc: Document) => {
     const persistedYDoc = await mdb.getYDoc(doc.name);
+
+    const persistedStateVector = Y.encodeStateVector(persistedYDoc);
+    const diff = Y.encodeStateAsUpdate(persistedYDoc, persistedStateVector);
+    if (
+      diff.reduce(
+        (previousValue, currentValue) => previousValue + currentValue,
+        0
+      ) > 0
+    )
+      mdb.storeUpdate(doc.name, diff);
+
     Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYDoc));
+
     doc.on("update", async (update) => {
       mdb.storeUpdate(doc.name, update);
     });
+
+    persistedYDoc.destroy();
+  });
+
+  ySocketIo.on("all-document-connections-closed", async (doc: Document) => {
+    await mdb.flushDocument(doc.name);
   });
 
   ySocketIo.initialize();
