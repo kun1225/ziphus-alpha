@@ -35,7 +35,6 @@ function YSocketIOFactory(io: Server) {
     Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYDoc));
 
     doc.on("update", async (update) => {
-      console.log("update", update);
       mdb.storeUpdate(doc.name, update);
     });
 

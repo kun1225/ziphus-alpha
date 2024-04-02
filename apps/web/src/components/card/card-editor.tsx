@@ -29,6 +29,7 @@ function CardEditor() {
 
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
 
+  console.log("card", card, account, status);
   if (!card || !account || status !== "connected") return null;
 
   return (
