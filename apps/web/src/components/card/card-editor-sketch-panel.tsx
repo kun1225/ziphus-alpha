@@ -12,7 +12,6 @@ import {
   Line,
 } from "@repo/sketch-canvas";
 import useEraseAction from "@/hooks/card-sketch/useEraseAction";
-import { SocketIOProvider } from "y-socket.io";
 
 export type EditMode = "text" | "sketch";
 export type SketchMode = "pencil" | "eraser";

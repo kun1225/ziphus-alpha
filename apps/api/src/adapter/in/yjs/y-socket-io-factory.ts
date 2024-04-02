@@ -1,17 +1,11 @@
 import type { Server } from "socket.io";
-import type { Document } from "y-socket.io/dist/server";
-import { YSocketIO } from "y-socket.io/dist/server";
+import type { Document } from "@repo/y-socket.io/dist/server";
+import { YSocketIO } from "@repo/y-socket.io/dist/server";
 import { MongodbPersistence } from "y-mongodb-provider";
 import * as Y from "yjs";
-import type YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 
-function YSocketIOFactory(
-  io: Server,
-  authenticate: ReturnType<typeof YAuthenticateHandshakeConstructor>
-) {
-  const ySocketIo = new YSocketIO(io, {
-    authenticate,
-  });
+function YSocketIOFactory(io: Server) {
+  const ySocketIo = new YSocketIO(io);
 
   const connectionString = process.env.MONGODB_CONNECTION_STRING;
 
@@ -41,6 +35,7 @@ function YSocketIOFactory(
     Y.applyUpdate(doc, Y.encodeStateAsUpdate(persistedYDoc));
 
     doc.on("update", async (update) => {
+      console.log("update", update);
       mdb.storeUpdate(doc.name, update);
     });
 

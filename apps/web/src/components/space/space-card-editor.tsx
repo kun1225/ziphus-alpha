@@ -1,22 +1,21 @@
-'use client';
-import useCardEditor from '@/hooks/card/useCardEditor';
-import useUpdateSpaceCardPosition from '@/hooks/space/useUpdateSpaceCardPosition';
-import useMe from '@/hooks/useMe';
-import { SpaceCardDTO } from '@repo/shared-types';
-import { View } from '@/models/view';
-import { useEffect, useRef } from 'react';
+"use client";
+import useCardEditor from "@/hooks/card/useCardEditor";
+import useUpdateSpaceCardPosition from "@/hooks/space/useUpdateSpaceCardPosition";
+import useMe from "@/hooks/useMe";
+import { SpaceCardDTO } from "@repo/shared-types";
+import { View } from "@/models/view";
+import { useEffect, useRef } from "react";
 import CardEditorSketchPanel, {
   EditMode,
   EraserInfo,
   PencilInfo,
   SketchMode,
-} from '../card/card-editor-sketch-panel';
-import CardEditorMarkdownEditor from '../card/card-editor-markdown-editor';
-import { cn } from '@/utils/cn';
-import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
-import useDraggable from '@/hooks/useDraggable';
-import { SocketIOProvider } from 'y-socket.io';
-import * as Y from 'yjs';
+} from "../card/card-editor-sketch-panel";
+import CardEditorMarkdownEditor from "../card/card-editor-markdown-editor";
+import { cn } from "@/utils/cn";
+import useUpdateCardSize from "@/hooks/card/useUpdateCardSize";
+import useDraggable from "@/hooks/useDraggable";
+import useYJSProvide from "@/hooks/useYJSProvider";
 
 // 隨時更新位置
 const useTransformUpdate = (
@@ -62,8 +61,6 @@ interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   sketchMode: SketchMode;
   pencilInfo: PencilInfo;
   eraserInfo: EraserInfo;
-  provider: SocketIOProvider;
-  doc: Y.Doc;
 }
 
 function SpaceCardEditor({
@@ -74,12 +71,12 @@ function SpaceCardEditor({
   sketchMode,
   pencilInfo,
   eraserInfo,
-  provider,
-  doc,
   ...props
 }: SpaceCardEditorProps) {
   const { account } = useMe();
-
+  const { doc, provider, status } = useYJSProvide(
+    `card:${initialSpaceCard.targetCardId}`,
+  );
   const spaceCardElementRef = useRef<HTMLDivElement>(null);
   const spaceCardRef = useRef<SpaceCardDTO>(initialSpaceCard);
   const { card, setCard, isLoading, error } = useCardEditor(
@@ -111,10 +108,10 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        'space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md',
+        "space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md",
         isFocus
-          ? 'outline outline-4 outline-white '
-          : 'cursor-pointer outline outline-1 outline-white ',
+          ? "outline outline-4 outline-white "
+          : "cursor-pointer outline outline-1 outline-white ",
       )}
       {...props}
       ref={spaceCardElementRef}
@@ -123,8 +120,8 @@ function SpaceCardEditor({
       {card && account ? (
         <div
           className={cn(
-            'flex flex-col gap-2',
-            isFocus ? 'pointer-events-auto' : 'pointer-events-none',
+            "flex flex-col gap-2",
+            isFocus ? "pointer-events-auto" : "pointer-events-none",
           )}
         >
           <div
@@ -135,7 +132,7 @@ function SpaceCardEditor({
             }}
           >
             <CardEditorSketchPanel
-              isSketching={editMode === 'sketch'}
+              isSketching={editMode === "sketch"}
               cardId={card.id as string}
               accountName={account.name}
               doc={doc}

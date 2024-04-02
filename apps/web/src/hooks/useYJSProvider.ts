@@ -1,34 +1,27 @@
-import { useEffect, useState } from 'react';
-import * as Y from 'yjs';
-import { SocketIOProvider } from 'y-socket.io';
-import { getCookie } from 'cookies-next';
+import { useEffect, useState } from "react";
+import * as Y from "yjs";
+import { SocketIOProvider } from "@repo/y-socket.io";
+import { getCookie } from "cookies-next";
+import useSocket from "@/hooks/useSocket";
 
-function useYJSProvide(roomName: string, auth?: any) {
-  if (!roomName) {
-    throw new Error('roomName is required');
-  }
-  const [status, setStatus] = useState<string>('disconnected');
+function useYJSProvide(roomName: string) {
+  const { socket } = useSocket();
+
+  const [status, setStatus] = useState<string>("disconnected");
   const [doc] = useState(new Y.Doc());
   const [provider] = useState(
-    new SocketIOProvider(
-      process.env.NEXT_PUBLIC_WS_ENDPOINT || 'ws://localhost:8080',
-      roomName,
-      doc,
-      {
-        autoConnect: true,
-        auth: {
-          ...auth,
-          authorization: getCookie('authorization'),
-        },
+    new SocketIOProvider(socket, roomName, doc, {
+      auth: {
+        authorization: getCookie("authorization"),
       },
-    ),
+    }),
   );
 
   useEffect(() => {
-    provider.on('sync', (isSync: boolean) =>
-      console.log('websocket sync', isSync),
+    provider.on("sync", (isSync: boolean) =>
+      console.log("websocket sync", isSync),
     );
-    provider.on('status', ({ status: _status }: { status: string }) => {
+    provider.on("status", ({ status: _status }: { status: string }) => {
       if (_status) setStatus(_status);
     });
 

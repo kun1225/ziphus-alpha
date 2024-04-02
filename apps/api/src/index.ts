@@ -70,7 +70,6 @@ import cardModifyTitleController from "@/adapter/in/fastify/card-modify-title-co
 import cardModifyPermissionController from "@/adapter/in/fastify/card-modify-permission-controller";
 import cardDeleteController from "@/adapter/in/fastify/card-delete-controller";
 import cardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
-import YAuthenticateHandshakeConstructor from "@/adapter/in/yjs/y-authenticate-handshake";
 import spaceCreateController from "@/adapter/in/fastify/space-create-controller";
 import spaceGetWithAllController from "@/adapter/in/fastify/space-get-with-all-controller";
 import spaceCardCreateController from "@/adapter/in/fastify/space-card-create-controller";
@@ -186,10 +185,7 @@ async function init() {
 
   const fastify = fastifyFactory(port);
   const io = SocketIoFactory(fastify);
-  YSocketIOFactory(
-    io,
-    YAuthenticateHandshakeConstructor(cardAccessEditValidatorCase)
-  );
+  YSocketIOFactory(io);
   const emitSocket = CreateSocketEmitAdapter(io);
 
   // 註冊 controller

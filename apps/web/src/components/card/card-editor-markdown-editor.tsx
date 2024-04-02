@@ -7,7 +7,7 @@ import {
 } from "@blocknote/react";
 import "@blocknote/react/style.css";
 import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
-import { SocketIOProvider } from "y-socket.io";
+import { SocketIOProvider } from "@repo/y-socket.io";
 import * as Y from "yjs";
 import { useRef } from "react";
 
