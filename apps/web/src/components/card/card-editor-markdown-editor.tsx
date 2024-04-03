@@ -14,14 +14,14 @@ import { useRef } from 'react';
 interface CardEditorMarkdownEditorProps {
   cardId: string;
   accountName: string;
-  onCardSizeChange: (width: number, height: number) => void;
+  onContentSizeChange: (height: number) => void;
   provider: SocketIOProvider;
   doc: Y.Doc;
 }
 function CardEditorMarkdownEditor({
   cardId,
   accountName,
-  onCardSizeChange,
+  onContentSizeChange,
   provider,
   doc,
 }: CardEditorMarkdownEditorProps) {
@@ -43,9 +43,8 @@ function CardEditorMarkdownEditor({
     const html = await editor.blocksToHTMLLossy(editor.document);
     tryUpdateCardContent(html);
     if (!containerRef.current) return;
-    const offsetWidth = containerRef.current.offsetWidth;
     const offsetHeight = containerRef.current.offsetHeight;
-    onCardSizeChange(offsetWidth, offsetHeight);
+    onContentSizeChange(offsetHeight);
   };
 
   return (

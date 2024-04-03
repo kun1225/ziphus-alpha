@@ -4,7 +4,7 @@ import useUpdateSpaceCardPosition from '@/hooks/space/useUpdateSpaceCardPosition
 import useMe from '@/hooks/useMe';
 import { CardGetByIdResponseDTO, SpaceCardDTO } from '@repo/shared-types';
 import { View } from '@/models/view';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import CardEditorSketchPanel, {
   EditMode,
   EraserInfo,
@@ -56,12 +56,13 @@ const useTransformUpdate = (
   }, []);
 };
 
+type ResizeBorderType = 'width' | 'height' | 'all'
 // 拉動卡片邊框
 const useResize = (
-  avaliable: boolean,
+  available: boolean,
   card: CardGetByIdResponseDTO['card'],
-  onChange: (width: number, height: number) => void,
-  onResize: (width: number, height: number) => void,
+  onResizeMove: (width: number, height: number) => void,
+  onResizeFinish: (width: number, height: number) => void,
 ) => {
   const initialCard = useRef(card);
   const initialPosition = useRef({
@@ -70,42 +71,75 @@ const useResize = (
   });
   const widthBorderHandleRef = useRef<HTMLDivElement>(null);
   const heightBorderHandleRef = useRef<HTMLDivElement>(null);
+  const cornerBorderHandleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const widthBorderHandle = widthBorderHandleRef.current;
     const heightBorderHandle = heightBorderHandleRef.current;
-    if (!avaliable || !widthBorderHandle || !heightBorderHandle || !card) return;
+    if (!available || !widthBorderHandle || !heightBorderHandle || !card) return;
 
-    const handleResizeChange = (event: MouseEvent) => {
+    const getResize = (event: MouseEvent) => {
       const deltaWidth = event.clientX - initialPosition.current.x;
       const deltaHeight = event.clientY - initialPosition.current.y;
       const width = Math.max(MIN_CARD_WIDTH, initialCard.current!.width + deltaWidth);
       const height = Math.max(MIN_CARD_HEIGHT, initialCard.current!.height + deltaHeight);
-      onChange(
+      return {
         width,
         height,
+      };
+    };
+
+    const handleResizeMove = (type: ResizeBorderType) => (event: MouseEvent) => {
+      const {
+        width,
+        height,
+      } = getResize(event);
+      onResizeMove(
+        type === 'height' ? initialCard.current!.width : width,
+        type === 'width' ? initialCard.current!.height : height,
       );
     };
 
-    const handleResize = (event: MouseEvent) => {
-      const deltaWidth = event.clientX - initialPosition.current.x;
-      const deltaHeight = event.clientY - initialPosition.current.y;
-      const width = Math.max(MIN_CARD_WIDTH, initialCard.current!.width + deltaWidth);
-      const height = Math.max(MIN_CARD_HEIGHT, initialCard.current!.height + deltaHeight);
-      onResize(
+    const handleResizeFinish = (type: ResizeBorderType) => (event: MouseEvent) => {
+      const {
         width,
         height,
+      } = getResize(event);
+      onResizeFinish(
+        type === 'height' ? initialCard.current!.width : width,
+        type === 'width' ? initialCard.current!.height : height,
       );
     };
 
-    const handleMouseUp = () => {
-      document.removeEventListener('mousemove', handleResizeChange);
-      document.removeEventListener('mouseup', handleMouseUp);
+    const handleResizeMoveMap = {
+      width: handleResizeMove('width'),
+      height: handleResizeMove('height'),
+      all: handleResizeMove('all'),
     };
 
-    const handleMouseDown = (event: MouseEvent) => {
-      document.addEventListener('mousemove', handleResizeChange);
-      document.addEventListener('mouseup', handleMouseUp);
+    const handleResizeFinishMap = {
+      width: handleResizeFinish('width'),
+      height: handleResizeFinish('height'),
+      all: handleResizeFinish('all'),
+    };
+
+    const handleMouseUp = (type: ResizeBorderType) => () => {
+      document.removeEventListener('mousemove', handleResizeMoveMap[type]);
+      document.removeEventListener('mouseup', handleResizeFinishMap[type]);
+      document.removeEventListener('mouseup', handleMouseUpMap[type]);
+    };
+
+    const handleMouseUpMap = {
+      width: handleMouseUp('width'),
+      height: handleMouseUp('height'),
+      all: handleMouseUp('all'),
+    };
+
+    const handleMouseDown = (type: ResizeBorderType) => (event: MouseEvent) => {
+      event.preventDefault();
+      document.addEventListener('mousemove', handleResizeMoveMap[type]);
+      document.addEventListener('mouseup', handleResizeFinishMap[type]);
+      document.addEventListener('mouseup', handleMouseUpMap[type]);
       initialCard.current = card;
       initialPosition.current = {
         x: event.clientX,
@@ -113,18 +147,27 @@ const useResize = (
       };
     };
 
-    widthBorderHandle.addEventListener('mousedown', handleMouseDown);
-    heightBorderHandle.addEventListener('mousedown', handleMouseDown);
+    const handleMouseDownMap = {
+      width: handleMouseDown('width'),
+      height: handleMouseDown('height'),
+      all: handleMouseDown('all'),
+    };
+
+    widthBorderHandle.addEventListener('mousedown', handleMouseDownMap.width);
+    heightBorderHandle.addEventListener('mousedown', handleMouseDownMap.height);
+    cornerBorderHandleRef.current?.addEventListener('mousedown', handleMouseDownMap.all);
 
     return () => {
-      widthBorderHandle.removeEventListener('mousedown', handleResize);
-      heightBorderHandle.removeEventListener('mousedown', handleResize);
+      widthBorderHandle.removeEventListener('mousedown', handleMouseDownMap.width);
+      heightBorderHandle.removeEventListener('mousedown', handleMouseDownMap.height);
+      cornerBorderHandleRef.current?.removeEventListener('mousedown', handleMouseDownMap.all);
     };
-  }, [avaliable, card?.width, card?.height, onResize]);
+  }, [available, card?.width, card?.height, onResizeMove, onResizeFinish]);
 
   return {
     widthBorderHandleRef,
     heightBorderHandleRef,
+    cornerBorderHandleRef,
   };
 };
 
@@ -180,20 +223,12 @@ function SpaceCardEditor({
     },
   });
 
-  const onCardSizeChagne = (width: number, height: number) => {
+  const onContentSizeChange = useCallback((height: number) => {
     if (!card) {
       return;
     }
 
-    setCard({
-      ...card,
-      width: width || card.width,
-      height: height || card.height,
-    });
-  };
-
-  const onCardResize = (width: number, height: number) => {
-    if (!card) {
+    if (Math.abs(height - card.height) > 32) {
       return;
     }
 
@@ -206,23 +241,36 @@ function SpaceCardEditor({
         height: MIN_CARD_HEIGHT,
       });
     }
+  }, [card, setCard]);
 
-
-    if (card.width !== width && width > MIN_CARD_WIDTH) {
-      mutateUpdateCardSize.mutate({
-        width,
-      });
-    } else if (card.height > MIN_CARD_WIDTH && height < MIN_CARD_WIDTH) {
-      mutateUpdateCardSize.mutate({
-        width: MIN_CARD_WIDTH,
-      });
+  const onCardSizeChange = useCallback((width: number, height: number) => {
+    if (!card) {
+      return;
     }
-  };
+
+    setCard({
+      ...card,
+      width: width || card.width,
+      height: height || card.height,
+    });
+  }, [card, setCard]);
+
+  const onCardResize = useCallback((width: number, height: number) => {
+    if (!card) {
+      return;
+    }
+
+    mutateUpdateCardSize.mutate({
+      width,
+      height,
+    });
+  }, [card, mutateUpdateCardSize]);
 
   const {
     widthBorderHandleRef,
     heightBorderHandleRef,
-  } = useResize(isFocus, card, onCardSizeChagne, onCardResize);
+    cornerBorderHandleRef,
+  } = useResize(isFocus, card, onCardSizeChange, onCardResize);
 
   return (
     <div
@@ -261,7 +309,7 @@ function SpaceCardEditor({
             />
             <CardEditorMarkdownEditor
               cardId={card.id as string}
-              onCardSizeChange={onCardResize}
+              onContentSizeChange={onContentSizeChange}
               accountName={account.name}
               provider={provider}
               doc={doc}
@@ -278,11 +326,15 @@ function SpaceCardEditor({
           <>
             <div
               ref={widthBorderHandleRef}
-              className="absolute bottom-0 right-0 w-1 h-full bg-white cursor-ew-resize"
+              className="absolute top-0 right-0 w-2 h-[calc(100%-0.5rem)] cursor-ew-resize"
             />
             <div
               ref={heightBorderHandleRef}
-              className="absolute bottom-0 right-0 w-full h-1 bg-white cursor-ns-resize"
+              className="absolute bottom-0 left-0 w-[calc(100%-0.5rem)] h-2 cursor-ns-resize"
+            />
+            <div
+              ref={cornerBorderHandleRef}
+              className="absolute bottom-0 right-0 w-2 h-2 cursor-nwse-resize"
             />
           </>
         )
