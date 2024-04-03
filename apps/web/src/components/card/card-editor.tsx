@@ -7,6 +7,7 @@ import useYJSProvide from '@/hooks/useYJSProvider';
 import CardEditorHeadToolbar from './card-editor-head-toolbar';
 import useCardEditor from '@/hooks/card/useCardEditor';
 import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
+import { useCallback } from 'react';
 
 const MIN_CARD_HEIGHT = 300;
 const MIN_CARD_WIDTH = 300;
@@ -33,7 +34,27 @@ function CardEditor() {
 
   const mutateUpdateCardSize = useUpdateCardSize(card, setCard);
 
-  console.log('card', card, account, status);
+
+  const onContentSizeChange = useCallback((height: number) => {
+    if (!card) {
+      return;
+    }
+
+    if (Math.abs(height - card.height) > 32) {
+      return;
+    }
+
+    if (card.height !== height && height > MIN_CARD_HEIGHT) {
+      mutateUpdateCardSize.mutate({
+        height,
+      });
+    } else if (card.height > MIN_CARD_HEIGHT && height < MIN_CARD_HEIGHT) {
+      mutateUpdateCardSize.mutate({
+        height: MIN_CARD_HEIGHT,
+      });
+    }
+  }, [card, setCard]);
+
   if (!card || !account || status !== 'connected') return null;
 
   return (
@@ -66,17 +87,7 @@ function CardEditor() {
         />
         <CardEditorMarkdownEditor
           cardId={id as string}
-          onCardSizeChange={(width, height) => {
-            if (card.height !== height && height > MIN_CARD_HEIGHT) {
-              mutateUpdateCardSize.mutate({
-                height,
-              });
-            } else if (card.height > MIN_CARD_HEIGHT && height < MIN_CARD_HEIGHT) {
-              mutateUpdateCardSize.mutate({
-                height: MIN_CARD_HEIGHT,
-              });
-            }
-          }}
+          onContentSizeChange={onContentSizeChange}
           accountName={account.name}
           provider={provider}
           doc={doc}

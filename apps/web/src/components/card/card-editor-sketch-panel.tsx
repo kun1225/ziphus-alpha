@@ -1,20 +1,20 @@
-"use client";
-import useDrawAction from "@/hooks/card-sketch/useDrawAction";
-import { useEffect, useState } from "react";
-import * as Y from "yjs";
-import Stroke from "@/models/stroke";
-import useRemoteStrokeSync from "@/hooks/card-sketch/useRemoteStrokeSync";
+'use client';
+import useDrawAction from '@/hooks/card-sketch/useDrawAction';
+import { useEffect, useState } from 'react';
+import * as Y from 'yjs';
+import Stroke from '@/models/stroke';
+import useRemoteStrokeSync from '@/hooks/card-sketch/useRemoteStrokeSync';
 import {
   Shape,
   ShapeType,
   SketchCanvas,
   useSketchCanvasProvider,
   Line,
-} from "@repo/sketch-canvas";
-import useEraseAction from "@/hooks/card-sketch/useEraseAction";
+} from '@repo/sketch-canvas';
+import useEraseAction from '@/hooks/card-sketch/useEraseAction';
 
-export type EditMode = "text" | "sketch";
-export type SketchMode = "pencil" | "eraser";
+export type EditMode = 'text' | 'sketch';
+export type SketchMode = 'pencil' | 'eraser';
 export interface PencilInfo {
   pencilColor: string;
   pencilSize: number;
@@ -106,23 +106,23 @@ function CardEditorSketchPanel({
         id="sketch"
         provider={sketchCanvasProvider}
         className="absolute left-0 top-0 z-10 h-full w-full"
-        style={{ pointerEvents: isSketching ? "auto" : "none" }}
+        style={{ pointerEvents: isSketching ? 'auto' : 'none' }}
         handleStartDraw={(x, y) => {
-          if (sketchMode === "pencil") {
+          if (sketchMode === 'pencil') {
             handleStartDraw(x, y);
           } else {
             handleStartErase(x, y);
           }
         }}
         handleMoveDraw={(x, y) => {
-          if (sketchMode === "pencil") {
+          if (sketchMode === 'pencil') {
             handleMoveDraw(x, y);
           } else {
             handleMoveErase(x, y);
           }
         }}
         handleEndDraw={() => {
-          if (sketchMode === "pencil") {
+          if (sketchMode === 'pencil') {
             handleEndDraw();
           } else {
             handleEndErase();

@@ -56,8 +56,8 @@ const useTransformUpdate = (
   }, []);
 };
 
-type ResizeBorderType = 'width' | 'height' | 'all'
 // 拉動卡片邊框
+type ResizeBorderType = 'width' | 'height' | 'all'
 const useResize = (
   available: boolean,
   card: CardGetByIdResponseDTO['card'],
@@ -78,9 +78,12 @@ const useResize = (
     const heightBorderHandle = heightBorderHandleRef.current;
     if (!available || !widthBorderHandle || !heightBorderHandle || !card) return;
 
-    const getResize = (event: MouseEvent) => {
-      const deltaWidth = event.clientX - initialPosition.current.x;
-      const deltaHeight = event.clientY - initialPosition.current.y;
+    const getResize = (event: MouseEvent | TouchEvent) => {
+      const clientX = ('clientX' in event ? event.clientX : event.touches[0]?.clientX) ?? 0;
+      const clientY = ('clientY' in event ? event.clientY : event.touches[0]?.clientY) ?? 0;
+
+      const deltaWidth = clientX - initialPosition.current.x;
+      const deltaHeight = clientY - initialPosition.current.y;
       const width = Math.max(MIN_CARD_WIDTH, initialCard.current!.width + deltaWidth);
       const height = Math.max(MIN_CARD_HEIGHT, initialCard.current!.height + deltaHeight);
       return {
@@ -89,7 +92,7 @@ const useResize = (
       };
     };
 
-    const handleResizeMove = (type: ResizeBorderType) => (event: MouseEvent) => {
+    const handleResizeMove = (type: ResizeBorderType) => (event: MouseEvent | TouchEvent) => {
       const {
         width,
         height,
@@ -100,7 +103,7 @@ const useResize = (
       );
     };
 
-    const handleResizeFinish = (type: ResizeBorderType) => (event: MouseEvent) => {
+    const handleResizeFinish = (type: ResizeBorderType) => (event: MouseEvent | TouchEvent) => {
       const {
         width,
         height,
@@ -123,44 +126,58 @@ const useResize = (
       all: handleResizeFinish('all'),
     };
 
-    const handleMouseUp = (type: ResizeBorderType) => () => {
+    const handlePointUp = (type: ResizeBorderType) => () => {
       document.removeEventListener('mousemove', handleResizeMoveMap[type]);
       document.removeEventListener('mouseup', handleResizeFinishMap[type]);
-      document.removeEventListener('mouseup', handleMouseUpMap[type]);
+      document.removeEventListener('mouseup', handlePointUpMap[type]);
+      document.removeEventListener('touchmove', handleResizeMoveMap[type]);
+      document.removeEventListener('touchend', handleResizeFinishMap[type]);
+      document.removeEventListener('touchend', handlePointUpMap[type]);
     };
 
-    const handleMouseUpMap = {
-      width: handleMouseUp('width'),
-      height: handleMouseUp('height'),
-      all: handleMouseUp('all'),
+    const handlePointUpMap = {
+      width: handlePointUp('width'),
+      height: handlePointUp('height'),
+      all: handlePointUp('all'),
     };
 
-    const handleMouseDown = (type: ResizeBorderType) => (event: MouseEvent) => {
+    const handlePointDown = (type: ResizeBorderType) => (event: MouseEvent | TouchEvent) => {
       event.preventDefault();
       document.addEventListener('mousemove', handleResizeMoveMap[type]);
       document.addEventListener('mouseup', handleResizeFinishMap[type]);
-      document.addEventListener('mouseup', handleMouseUpMap[type]);
+      document.addEventListener('mouseup', handlePointUpMap[type]);
+      document.addEventListener('touchmove', handleResizeMoveMap[type]);
+      document.addEventListener('touchend', handleResizeFinishMap[type]);
+      document.addEventListener('touchend', handlePointUpMap[type]);
       initialCard.current = card;
+      const clientX = ('clientX' in event ? event.clientX : event.touches[0]?.clientX) ?? 0;
+      const clientY = ('clientY' in event ? event.clientY : event.touches[0]?.clientY) ?? 0;
       initialPosition.current = {
-        x: event.clientX,
-        y: event.clientY,
+        x: clientX,
+        y: clientY,
       };
     };
 
-    const handleMouseDownMap = {
-      width: handleMouseDown('width'),
-      height: handleMouseDown('height'),
-      all: handleMouseDown('all'),
+    const handlePointDownMap = {
+      width: handlePointDown('width'),
+      height: handlePointDown('height'),
+      all: handlePointDown('all'),
     };
 
-    widthBorderHandle.addEventListener('mousedown', handleMouseDownMap.width);
-    heightBorderHandle.addEventListener('mousedown', handleMouseDownMap.height);
-    cornerBorderHandleRef.current?.addEventListener('mousedown', handleMouseDownMap.all);
+    widthBorderHandle.addEventListener('mousedown', handlePointDownMap.width);
+    heightBorderHandle.addEventListener('mousedown', handlePointDownMap.height);
+    cornerBorderHandleRef.current?.addEventListener('mousedown', handlePointDownMap.all);
+    widthBorderHandle.addEventListener('touchstart', handlePointDownMap.width);
+    heightBorderHandle.addEventListener('touchstart', handlePointDownMap.height);
+    cornerBorderHandleRef.current?.addEventListener('touchstart', handlePointDownMap.all);
 
     return () => {
-      widthBorderHandle.removeEventListener('mousedown', handleMouseDownMap.width);
-      heightBorderHandle.removeEventListener('mousedown', handleMouseDownMap.height);
-      cornerBorderHandleRef.current?.removeEventListener('mousedown', handleMouseDownMap.all);
+      widthBorderHandle.removeEventListener('mousedown', handlePointDownMap.width);
+      heightBorderHandle.removeEventListener('mousedown', handlePointDownMap.height);
+      cornerBorderHandleRef.current?.removeEventListener('mousedown', handlePointDownMap.all);
+      widthBorderHandle.removeEventListener('touchstart', handlePointDownMap.width);
+      heightBorderHandle.removeEventListener('touchstart', handlePointDownMap.height);
+      cornerBorderHandleRef.current?.removeEventListener('touchstart', handlePointDownMap.all);
     };
   }, [available, card?.width, card?.height, onResizeMove, onResizeFinish]);
 

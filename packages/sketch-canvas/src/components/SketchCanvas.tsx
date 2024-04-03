@@ -23,14 +23,14 @@ export const SketchCanvas: React.FC<SketchCanvasProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { getShapes } = provider;
-  useResizeListener(canvasRef);
+  const handleResize = useResizeListener(canvasRef);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
     if (canvas && ctx) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      handleResize();
 
       getShapes().forEach((shape) => {
         if (shape.type === ShapeType.Circle) {
