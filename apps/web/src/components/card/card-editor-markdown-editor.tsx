@@ -1,15 +1,15 @@
-"use client";
-import "@blocknote/core/fonts/inter.css";
+'use client';
+import '@blocknote/core/fonts/inter.css';
 import {
   BlockNoteView,
   darkDefaultTheme,
   useCreateBlockNote,
-} from "@blocknote/react";
-import "@blocknote/react/style.css";
-import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
-import { SocketIOProvider } from "@repo/y-socket-io";
-import * as Y from "yjs";
-import { useRef } from "react";
+} from '@blocknote/react';
+import '@blocknote/react/style.css';
+import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
+import { SocketIOProvider } from '@repo/y-socket-io';
+import * as Y from 'yjs';
+import { useRef } from 'react';
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -34,7 +34,7 @@ function CardEditorMarkdownEditor({
       fragment: doc.getXmlFragment(`card-content-${cardId}`),
       user: {
         name: accountName,
-        color: "#0066ff",
+        color: '#0066ff',
       },
     },
   });
@@ -50,7 +50,7 @@ function CardEditorMarkdownEditor({
 
   return (
     <div
-      className=" h-fit w-[1280px] text-white"
+      className=" h-fit w-full text-white"
       ref={containerRef}
       onClick={() => editor.focus()}
     >

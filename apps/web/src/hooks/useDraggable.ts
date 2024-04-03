@@ -107,6 +107,9 @@ function useDraggable({
     if (!draggableItem) {
       return;
     }
+    if (!available) {
+      return;
+    }
 
     const handleMouseStart = (event: MouseEvent) => {
       event.preventDefault();
