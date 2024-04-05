@@ -14,7 +14,7 @@ const spaceCreateUseCaseConstructor: SpaceCreateUseCaseConstructor =
       randomUUID(),
       accountId,
       "New Space",
-      SpacePermission.Private,
+      SpacePermission.PublicEditable,
       [],
       [],
       new Date().toISOString(),

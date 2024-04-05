@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 import { type CardCreateUseCaseConstructor } from "@/application/port/in/card-create-use-case";
 import Card, { CardPermission } from "../model/card";
 
-const DEFAULT_CARD_PERMISSION = CardPermission.Private;
-const DEFAULT_CARD_WIDTH = 1280;
-const DEFAULT_CARD_HEIGHT = 1280;
+const DEFAULT_CARD_PERMISSION = CardPermission.PublicEditable;
+const DEFAULT_CARD_WIDTH = 600;
+const DEFAULT_CARD_HEIGHT = 800;
 
 const cardCreateUseCaseConstructor: CardCreateUseCaseConstructor =
   (loadAccount, saveCard) =>

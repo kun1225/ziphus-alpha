@@ -1,26 +1,26 @@
-'use client';
-import useMe from '@/hooks/useMe';
-import CardEditorMarkdownEditor from './card-editor-markdown-editor';
-import useYJSProvide from '@/hooks/useYJSProvider';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { CardDto, CardGetByIdResponseDTO } from '@repo/shared-types';
-import useUpdateCardSize from '@/hooks/card/useUpdateCardSize';
+"use client";
+import useMe from "@/hooks/useMe";
+import CardEditorMarkdownEditor from "./card-editor-markdown-editor";
+import useYJSProvide from "@/hooks/useYJSProvider";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { CardDto, CardGetByIdResponseDTO } from "@repo/shared-types";
+import useUpdateCardSize from "@/hooks/card/useUpdateCardSize";
 import CardEditorSketchPanel, {
   EditMode,
   EraserInfo,
   PencilInfo,
   SketchMode,
-} from './card-editor-sketch-panel';
-import useQueryCardById from '@/hooks/card/useQueryCardById';
-import useCanvasEditor from '@/hooks/useCanvasEditor';
-import useCardResize from '@/hooks/card/useCardResize';
-import useUpdateCardIsSizeFitContent from '@/hooks/card/useUpdateCardIsSizeFitContent';
+} from "./card-editor-sketch-panel";
+import useQueryCardById from "@/hooks/card/useQueryCardById";
+import useCanvasEditor from "@/hooks/useCanvasEditor";
+import useCardResize from "@/hooks/card/useCardResize";
+import useUpdateCardIsSizeFitContent from "@/hooks/card/useUpdateCardIsSizeFitContent";
 
-export const MIN_CARD_HEIGHT = 300;
-export const MIN_CARD_WIDTH = 300;
+export const MIN_CARD_HEIGHT = 800;
+export const MIN_CARD_WIDTH = 600;
 
 interface IndependentCardEditor {
-  initialCard: CardGetByIdResponseDTO['card'];
+  initialCard: CardGetByIdResponseDTO["card"];
   cardId: string;
 }
 
@@ -41,7 +41,7 @@ export function IndependentCardEditor(props: IndependentCardEditor) {
 }
 
 interface CardEditorProps {
-  initialCard: CardGetByIdResponseDTO['card'];
+  initialCard: CardGetByIdResponseDTO["card"];
   cardId: string;
   isFocus: boolean;
   isEditable: boolean;
@@ -69,7 +69,7 @@ export function CardEditorSEO(props: CardEditorProps) {
   return <CardEditor {...props} initialCard={initialCard || fetchedCard} />;
 }
 
-// 隨時更新位置
+// 隨時更新大小
 const useViewScaleUpdate = (
   cardHTMLElementRef: React.RefObject<HTMLDivElement>,
   cardDataRef: React.MutableRefObject<CardDto>,
@@ -88,6 +88,10 @@ const useViewScaleUpdate = (
     setRefresh((prev) => prev + 1);
   }, []);
 
+  useEffect(() => {
+    needRefresh();
+  }, []);
+
   return {
     needRefresh,
   };
@@ -102,7 +106,7 @@ function CardEditor({
   pencilInfo,
   eraserInfo,
 }: CardEditorProps) {
-  if (!initialCard) throw new Error('Card not found');
+  if (!initialCard) throw new Error("Card not found");
 
   const cardDataRef = useRef<CardDto>(initialCard);
   const cardHTMLElementRef = useRef<HTMLDivElement>(null);
@@ -169,12 +173,12 @@ function CardEditor({
       onCardSizeChangeFinish,
     );
 
-  if (!account || status !== 'connected' || !provider) return null;
+  if (!account || status !== "connected" || !provider) return null;
 
   return (
     <div className="relative overflow-hidden" ref={cardHTMLElementRef}>
       <CardEditorSketchPanel
-        isSketching={editMode === 'sketch'}
+        isSketching={editMode === "sketch"}
         cardId={cardDataRef.current.id}
         accountName={account.name}
         doc={doc}
