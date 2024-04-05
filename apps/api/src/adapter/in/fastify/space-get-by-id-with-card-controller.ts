@@ -7,9 +7,9 @@ import {
 import { z } from "zod";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
 import type { SpaceGetByIdWithCardUseCase } from "@/application/port/in/space-get-by-id-with-card-use-case";
+import type Card from "@/application/domain/model/card";
+import type { SpaceCard } from "@/application/domain/model/space";
 import type FastifyControllerInterface from "./fastify-controller-interface";
-import Card from "@/application/domain/model/card";
-import { SpaceCard } from "@/application/domain/model/space";
 
 const spaceGetByIdWithCardController: FastifyControllerInterface<
   SpaceGetByIdWithCardUseCase

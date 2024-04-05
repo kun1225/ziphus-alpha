@@ -12,7 +12,7 @@ import { IoDocumentTextOutline } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
 import useCreateCard from '@/hooks/card/useCreateCard';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
+import { SpaceDto } from '@repo/shared-types';
 import ToolbarItemButton from './space-toolbar-item-button';
 import { View } from '@/models/view';
 import ToolbarItemAddCardButton from './space-toolbar-add-card-button';
@@ -32,8 +32,8 @@ interface SpaceToolbarProps {
   mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
   mutateCreateCard: ReturnType<typeof useCreateCard>;
   mutateDeleteSpaceCard: ReturnType<typeof useDeleteSpaceCard>;
-  space: SpaceGetByIdResponseDTO['space'];
-  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
+  space: SpaceDto;
+  setSpace: (space: SpaceDto) => void;
   viewRef: React.MutableRefObject<View>;
   editorRef: React.RefObject<HTMLDivElement>;
 }

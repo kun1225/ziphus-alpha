@@ -1,6 +1,6 @@
 import type Space from "@/application/domain/model/space";
 import type { LoadSpaceListPort } from "@/application/port/out/load-space-list-port";
-import { MongoCollections } from './mongo-db';
+import type { MongoCollections } from "./mongo-db";
 
 const SpaceListPersistenceLoadAdapter = (
   { spaceCollection }: MongoCollections

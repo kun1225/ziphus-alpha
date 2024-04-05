@@ -1,6 +1,6 @@
 import type Account from "@/application/domain/model/account";
 import type { SaveAccountPort } from "@/application/port/out/save-account-port";
-import { MongoCollections } from "./mongo-db";
+import type { MongoCollections } from "./mongo-db";
 
 const AccountPersistenceSaveAdapter = (
   { accountCollection }: MongoCollections
@@ -18,6 +18,6 @@ const AccountPersistenceSaveAdapter = (
         upsert: true
       }
     );
-  }
+  };
 
 export default AccountPersistenceSaveAdapter;

@@ -1,6 +1,6 @@
 import type { SpaceCard } from "@/application/domain/model/space";
 import type { DeleteSpaceCardPort } from "@/application/port/out/delete-space-card-port";
-import { MongoCollections } from './mongo-db';
+import type { MongoCollections } from "./mongo-db";
 
 const SpaceCardPersistenceDeleteAdapter = (
   { spaceCardCollection }: MongoCollections

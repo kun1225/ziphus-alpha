@@ -9,7 +9,11 @@ import '@blocknote/react/style.css';
 import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
 import { SocketIOProvider } from '@repo/y-socket-io';
 import * as Y from 'yjs';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import {
+  BlockNoteSuggestionMenu,
+  schema,
+} from '../blocknote/block-note-setting';
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -27,11 +31,13 @@ function CardEditorMarkdownEditor({
 }: CardEditorMarkdownEditorProps) {
   const tryUpdateCardContent = useUpdateCardContent(cardId);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [fragment] = useState(doc.getXmlFragment('card-content'));
 
   const editor = useCreateBlockNote({
+    schema,
     collaboration: {
       provider,
-      fragment: doc.getXmlFragment(`card-content-${cardId}`),
+      fragment,
       user: {
         name: accountName,
         color: '#0066ff',
@@ -53,13 +59,14 @@ function CardEditorMarkdownEditor({
       ref={containerRef}
       onClick={() => editor.focus()}
     >
-      {!!doc && (
-        <BlockNoteView
-          theme={darkDefaultTheme}
-          editor={editor}
-          onChange={onChange}
-        />
-      )}
+      <BlockNoteView
+        theme={darkDefaultTheme}
+        editor={editor}
+        onChange={onChange}
+        slashMenu={false}
+      >
+        <BlockNoteSuggestionMenu editor={editor} />
+      </BlockNoteView>
     </div>
   );
 }

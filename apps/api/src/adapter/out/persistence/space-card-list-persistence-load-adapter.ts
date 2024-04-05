@@ -1,5 +1,5 @@
 import type { LoadSpaceCardListPort } from "@/application/port/out/load-space-card-list-port";
-import { MongoCollections } from './mongo-db';
+import type { MongoCollections } from "./mongo-db";
 
 const SpaceCardListPersistenceLoadAdapter = (
   { spaceCardCollection }: MongoCollections

@@ -2,7 +2,7 @@ import Line from './line';
 
 export default class Stroke {
   constructor(
-    readonly id: string,
-    readonly lines: Line[],
+    public id: string,
+    public lines: Line[],
   ) {}
 }

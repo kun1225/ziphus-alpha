@@ -5,22 +5,7 @@ import { Observable } from "lib0/observable";
 import { io, ManagerOptions, Socket, SocketOptions } from "socket.io-client";
 import { AwarenessChange } from "../types";
 
-/**
- * SocketIOProvider instance configuration. Here you can configure:
- * - autoConnect: (Optional) Will try to connect to the server when the instance is created if true; otherwise you have to call `provider.connect()` manually
- * - awareness: (Optional) Give an existing awareness
- * - resyncInterval: (Optional) Specify the number of milliseconds to set an interval to synchronize the document,
- *   if it is greater than 0 enable the synchronization interval (by default is -1)
- * - disableBc: (Optional) This boolean disable the broadcast channel functionality, by default is false (broadcast channel enabled)
- * - onConnect: (Optional) Set a callback that will triggered immediately when the socket is connected
- * - onDisconnect: (Optional) Set a callback that will triggered immediately when the socket is disconnected
- * - onConnectError: (Optional) Set a callback that will triggered immediately when the occurs a socket connection error
- */
 export interface ProviderConfiguration {
-  /**
-   * (Optional) This boolean specify if the provider should connect when the instance is created, by default is true
-   */
-  autoConnect?: boolean;
   /**
    * (Optional) An existent awareness, by default is a new AwarenessProtocol.Awareness instance
    */
@@ -115,7 +100,6 @@ export class SocketIOProvider extends Observable<string> {
     roomName: string,
     doc: Y.Doc = new Y.Doc(),
     {
-      autoConnect = true,
       awareness = new AwarenessProtocol.Awareness(doc),
       resyncInterval = -1,
       disableBc = false,
@@ -140,13 +124,13 @@ export class SocketIOProvider extends Observable<string> {
 
     this.doc.on("update", this.onUpdateDoc);
 
-    this.socket.on("connect", () => this.onSocketConnection(resyncInterval));
-
     this.socket.on("disconnect", (event) => this.onSocketDisconnection(event));
 
     this.socket.on("connect_error", (error) =>
       this.onSocketConnectionError(error)
     );
+
+    this.onSocketConnection(resyncInterval);
 
     this.initSyncListeners();
 
@@ -155,8 +139,6 @@ export class SocketIOProvider extends Observable<string> {
     this.initSystemListeners();
 
     awareness.on("update", this.awarenessUpdate);
-
-    if (autoConnect) this.connect();
   }
 
   /**
@@ -186,23 +168,6 @@ export class SocketIOProvider extends Observable<string> {
     }
   }
 
-  /**
-   * This function initializes the socket event listeners to synchronize document changes.
-   *
-   *  The synchronization protocol is as follows:
-   *  - A server emits the sync step one event (`sync-step-1`) which sends the document as a state vector
-   *    and the sync step two callback as an acknowledgment according to the socket io acknowledgments.
-   *  - When the client receives the `sync-step-1` event, it executes the `syncStep2` acknowledgment callback and sends
-   *    the difference between the received state vector and the local document (this difference is called an update).
-   *  - The second step of the sync is to apply the update sent in the `syncStep2` callback parameters from the client
-   *    to the document on the server side.
-   *  - There is another event (`sync-update`) that is emitted from the server, which sends an update for the document,
-   *    and when the client receives this event, it applies the received update to the local document.
-   *  - When an update is applied to a document, it will fire the document's "update" event, which
-   *    sends the update to the server.
-   * @type {() => void}
-   * @private
-   */
   private readonly initSyncListeners = (): void => {
     this.socket.on(
       `${this.roomName}-sync-step-1`,
@@ -212,20 +177,9 @@ export class SocketIOProvider extends Observable<string> {
       }
     );
 
-    this.socket.on("sync-update", this.onSocketSyncUpdate);
+    this.socket.on(`${this.roomName}-sync-update`, this.onSocketSyncUpdate);
   };
 
-  /**
-   * This function initializes socket event listeners to synchronize awareness changes.
-   *
-   *  The awareness protocol is as follows:
-   *  - The server emits the `awareness-update` event by sending the awareness update.
-   *  - The client receives that event and applies the received update to the local awareness.
-   *  - When an update is applied to awareness, the awareness "update" event will fire, which
-   *    sends the update to the server.
-   * @type {() => void}
-   * @private
-   */
   private readonly initAwarenessListeners = (): void => {
     this.socket.on(
       `${this.roomName}-awareness-update`,
@@ -239,11 +193,6 @@ export class SocketIOProvider extends Observable<string> {
     );
   };
 
-  /**
-   * This function initialize the window or process events listener. Specifically set ups the
-   * window `beforeunload` and process `exit` events to remove the client from the awareness.
-   * @type {() => void}
-   */
   private readonly initSystemListeners = (): void => {
     if (typeof window !== "undefined")
       window.addEventListener("beforeunload", this.beforeUnloadHandler);
@@ -251,10 +200,6 @@ export class SocketIOProvider extends Observable<string> {
       process.on("exit", this.beforeUnloadHandler);
   };
 
-  /**
-   * Connect provider's socket
-   * @type {() => void}
-   */
   public connect(): void {
     if (!this.socket.connected) {
       this.emit("status", [{ status: "connecting" }]);
@@ -264,67 +209,49 @@ export class SocketIOProvider extends Observable<string> {
     }
   }
 
-  /**
-   * This function runs when the socket connects and reconnects and emits the `sync-step-1`
-   * and `awareness-update` socket events to start synchronization.
-   *
-   *  Also starts the resync interval if is enabled.
-   * @private
-   * @param {() => void | Promise<void>} onConnect (Optional) A callback that will be triggered every time that socket is connected or reconnected
-   * @param {number} resyncInterval (Optional) A number of milliseconds for interval of synchronize
-   * @type {(onConnect: () => void | Promise<void>, resyncInterval: number = -1) => void}
-   */
   private readonly onSocketConnection = (
     resyncInterval: ProviderConfiguration["resyncInterval"] = -1
   ): void => {
     this.socket.emit("yjs-connect", this.roomName);
-    this.emit("status", [{ status: "connected" }]);
-    this.socket.emit(
-      `${this.roomName}-sync-step-1`,
-      Y.encodeStateVector(this.doc),
-      (update: Uint8Array) => {
-        Y.applyUpdate(this.doc, new Uint8Array(update), this);
-      }
-    );
-    if (this.awareness.getLocalState() !== null)
+
+    this.socket.on(`yjs-${this.roomName}-connected`, () => {
+      this.emit("status", [{ status: "connected" }]);
       this.socket.emit(
-        `${this.roomName}-awareness-update`,
-        AwarenessProtocol.encodeAwarenessUpdate(this.awareness, [
-          this.doc.clientID,
-        ])
+        `${this.roomName}-sync-step-1`,
+        Y.encodeStateVector(this.doc),
+        (update: Uint8Array) => {
+          Y.applyUpdate(this.doc, new Uint8Array(update), this);
+        }
       );
-    if (resyncInterval > 0) {
-      this.resyncInterval = setInterval(() => {
-        if (this.socket.disconnected) return;
+      if (this.awareness.getLocalState() !== null)
         this.socket.emit(
-          `${this.roomName}-sync-step-1`,
-          Y.encodeStateVector(this.doc),
-          (update: Uint8Array) => {
-            Y.applyUpdate(this.doc, new Uint8Array(update), this);
-          }
+          `${this.roomName}-awareness-update`,
+          AwarenessProtocol.encodeAwarenessUpdate(this.awareness, [
+            this.doc.clientID,
+          ])
         );
-      }, resyncInterval);
-    }
+      if (resyncInterval > 0) {
+        this.resyncInterval = setInterval(() => {
+          if (this.socket.disconnected) return;
+          this.socket.emit(
+            `${this.roomName}-sync-step-1`,
+            Y.encodeStateVector(this.doc),
+            (update: Uint8Array) => {
+              Y.applyUpdate(this.doc, new Uint8Array(update), this);
+            }
+          );
+        }, resyncInterval);
+      }
+      this.socket.off(`yjs-${this.roomName}-connected`);
+    });
   };
 
-  /**
-   * Disconnect provider's socket
-   * @type {() => void}
-   */
   public disconnect(): void {
     if (this.socket.connected) {
       this.disconnectBc();
     }
   }
 
-  /**
-   * This function runs when the socket is disconnected and emits the socket event `awareness-update`
-   * which removes this client from awareness.
-   * @private
-   * @param {Socket.DisconnectReason} event The reason of the socket disconnection
-   * @param {() => void | Promise<void>} onDisconnect (Optional) A callback that will be triggered every time that socket is disconnected
-   * @type {(event: Socket.DisconnectReason, onDisconnect: () => void | Promise<void>) => void}
-   */
   private readonly onSocketDisconnection = (
     event: Socket.DisconnectReason
   ): void => {
@@ -340,20 +267,10 @@ export class SocketIOProvider extends Observable<string> {
     this.emit("status", [{ status: "disconnected" }]);
   };
 
-  /**
-   * This function is executed when the socket connection fails.
-   * @param {Error} error The error in the connection
-   * @param {(error: Error) => void | Promise<void>} onConnectError (Optional) A callback that will be triggered every time that socket has a connection error
-   * @type {(error: Error, onConnectError: (error: Error) => void | Promise<void>) => void}
-   */
   private readonly onSocketConnectionError = (error: Error): void => {
     this.emit("connection-error", [error, this]);
   };
 
-  /**
-   * Destroy the provider. This method clears the document, awareness, and window/process listeners and disconnects the socket.
-   * @type {() => void}
-   */
   public destroy(): void {
     if (this.resyncInterval != null) clearInterval(this.resyncInterval);
     this.disconnect();
@@ -367,14 +284,6 @@ export class SocketIOProvider extends Observable<string> {
     super.destroy();
   }
 
-  /**
-   * This function is executed when the document is updated, if the instance that
-   * emit the change is not this, it emit the changes by socket and broadcast channel.
-   * @private
-   * @param {Uint8Array} update Document update
-   * @param {SocketIOProvider} origin The SocketIOProvider instance that emits the change.
-   * @type {(update: Uint8Array, origin: SocketIOProvider) => void}
-   */
   private readonly onUpdateDoc = (
     update: Uint8Array,
     origin: SocketIOProvider
@@ -394,23 +303,10 @@ export class SocketIOProvider extends Observable<string> {
     }
   };
 
-  /**
-   * This function is called when the server emits the `sync-update` event and applies the received update to the local document.
-   * @private
-   * @param {Uint8Array}update A document update received by the `sync-update` socket event
-   * @type {(update: Uint8Array) => void}
-   */
   private readonly onSocketSyncUpdate = (update: ArrayBuffer): void => {
     Y.applyUpdate(this.doc, new Uint8Array(update), this);
   };
 
-  /**
-   * This function is executed when the local awareness changes and this broadcasts the changes per socket and broadcast channel.
-   * @private
-   * @param {{ added: number[], updated: number[], removed: number[] }} awarenessChanges The clients added, updated and removed
-   * @param {SocketIOProvider | null} origin The SocketIOProvider instance that emits the change.
-   * @type {({ added, updated, removed }: { added: number[], updated: number[], removed: number[] }, origin: SocketIOProvider | null) => void}
-   */
   private readonly awarenessUpdate = (
     { added, updated, removed }: AwarenessChange,
     origin: SocketIOProvider | null
@@ -435,12 +331,6 @@ export class SocketIOProvider extends Observable<string> {
     }
   };
 
-  /**
-   * This function is executed when the windows will be unloaded or the process will be closed and this
-   * will remove the local client from awareness.
-   * @private
-   * @type {() => void}
-   */
   private readonly beforeUnloadHandler = (): void => {
     AwarenessProtocol.removeAwarenessStates(
       this.awareness,
@@ -449,10 +339,6 @@ export class SocketIOProvider extends Observable<string> {
     );
   };
 
-  /**
-   * This function subscribes the provider to the broadcast channel and initiates synchronization by broadcast channel.
-   * @type {() => void}
-   */
   private readonly connectBc = (): void => {
     if (!this.bcconnected) {
       bc.subscribe(this._broadcastChannel, this.onBroadcastChannelMessage);
@@ -485,10 +371,6 @@ export class SocketIOProvider extends Observable<string> {
     );
   };
 
-  /**
-   * This function unsubscribes the provider from the broadcast channel and before unsubscribing, updates the awareness.
-   * @type {() => void}
-   */
   private readonly disconnectBc = (): void => {
     bc.publish(
       this._broadcastChannel,
@@ -508,12 +390,6 @@ export class SocketIOProvider extends Observable<string> {
     }
   };
 
-  /**
-   * This method handles messages received by the broadcast channel and responds to them.
-   * @param {{ type: string, data: any }} message The object message received by broadcast channel
-   * @param {SocketIOProvider} origin The SocketIOProvider instance that emits the change
-   * @type {(message: { type: string, data: any }, origin: SocketIOProvider) => void}
-   */
   private readonly onBroadcastChannelMessage = (
     message: { type: string; data: any },
     origin: SocketIOProvider

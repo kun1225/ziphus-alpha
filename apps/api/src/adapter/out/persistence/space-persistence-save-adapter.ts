@@ -1,5 +1,5 @@
 import type { SaveSpacePort } from "@/application/port/out/save-space-port";
-import { MongoCollections } from './mongo-db';
+import type { MongoCollections } from "./mongo-db";
 
 const SpacePersistenceSaveAdapter = (
   { spaceCollection, spaceCardCollection }: MongoCollections

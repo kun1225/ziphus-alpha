@@ -1,6 +1,6 @@
 import type { SaveSpaceCardPort } from "@/application/port/out/save-space-card-port";
-import { MongoCollections } from "./mongo-db";
-import { SpaceCard } from "./mongo-schema";
+import type { MongoCollections } from "./mongo-db";
+import type { SpaceCard } from "./mongo-schema";
 
 interface SaveSpaceCardCommand {
   spaceCard: SpaceCard;

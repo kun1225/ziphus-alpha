@@ -1,11 +1,11 @@
 export default class Line {
   constructor(
-    readonly strokeId: string,
-    readonly color: string,
-    readonly width: number,
-    readonly startX: number,
-    readonly startY: number,
-    readonly endX: number,
-    readonly endY: number,
+    public strokeId: string,
+    public color: string,
+    public width: number,
+    public startX: number,
+    public startY: number,
+    public endX: number,
+    public endY: number,
   ) { }
 }

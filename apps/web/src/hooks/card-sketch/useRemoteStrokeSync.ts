@@ -1,27 +1,29 @@
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
-import { useEffect, useState } from 'react';
-import { SocketIOProvider } from 'y-socket.io';
+import { useEffect, useRef } from 'react';
 
 interface UseRemoteStrokeSyncProps {
   remoteYArray: Y.Array<any>;
-  originalStrokes: Stroke[];
+  originalStrokesRef: React.MutableRefObject<Stroke[]>;
+  refresh: () => void;
 }
 function useRemoteStrokeSync({
   remoteYArray,
-  originalStrokes,
+  originalStrokesRef,
+  refresh,
 }: UseRemoteStrokeSyncProps) {
-  const [remoteRenderStrokes, setRemoteRenderStrokes] = useState<Stroke[]>([]);
+  const remoteRenderStrokesRef = useRef<Stroke[]>([]);
 
   useEffect(() => {
     function handleSync() {
       const remoteStrokes = remoteYArray.toJSON();
-      setRemoteRenderStrokes(remoteStrokes.filter(
+      remoteRenderStrokesRef.current = remoteStrokes.filter(
         (stroke: any) =>
-          !originalStrokes.some(
+          !originalStrokesRef.current.some(
             (originalStroke: any) => originalStroke.id === stroke.id,
           ),
-      ));
+      );
+      refresh();
     }
     remoteYArray.observeDeep(handleSync);
 
@@ -30,9 +32,9 @@ function useRemoteStrokeSync({
     }, 100);
 
     return () => remoteYArray.unobserveDeep(handleSync);
-  }, [remoteYArray, originalStrokes]);
+  }, [remoteYArray]);
 
-  return remoteRenderStrokes;
+  return remoteRenderStrokesRef;
 }
 
 export default useRemoteStrokeSync;

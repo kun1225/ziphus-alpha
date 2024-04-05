@@ -41,21 +41,25 @@ function useUpdateSpaceCardPosition(
           spaceCardRef.current.x = targetSpaceCardPosition.current.x;
           spaceCardRef.current.y = targetSpaceCardPosition.current.y;
         } else {
-          transitionFrameIdRef.current = requestAnimationFrame(updatePositionAnimation);
+          transitionFrameIdRef.current = requestAnimationFrame(
+            updatePositionAnimation,
+          );
         }
       }
     }
 
-    socket.on(
+    socket?.on(
       `space:card:${spaceCardRef.current.id}:update-position`,
       (data: SpaceCardImmediateUpdatePositionRequestDTO) => {
         targetSpaceCardPosition.current = { x: data.x, y: data.y };
-        transitionFrameIdRef.current = requestAnimationFrame(updatePositionAnimation);
+        transitionFrameIdRef.current = requestAnimationFrame(
+          updatePositionAnimation,
+        );
       },
     );
 
     return () => {
-      socket.off(`space:card:${spaceCardRef.current.id}:update-position`);
+      socket?.off(`space:card:${spaceCardRef.current.id}:update-position`);
       cancelAnimationFrame(transitionFrameIdRef.current);
     };
   }, [spaceCardRef.current.id]);

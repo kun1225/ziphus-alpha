@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { toast } from 'sonner';
 
 interface DragProps {
   x: number;

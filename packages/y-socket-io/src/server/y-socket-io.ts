@@ -88,7 +88,7 @@ export class YSocketIO extends Observable<string> {
         } else {
           this.roomSocketListMap.set(roomName, [socket.id]);
         }
-        console.log("connection", this.roomSocketListMap);
+
         const doc = await this.initDocument(
           roomName,
           socket.nsp,
@@ -98,6 +98,7 @@ export class YSocketIO extends Observable<string> {
         this.initAwarenessListeners(socket, doc, roomName);
         this.initSocketListeners(socket, doc);
         this.startSynchronization(socket, doc, roomName);
+        socket.emit(`yjs-${roomName}-connected`);
       });
     });
   }
@@ -182,6 +183,11 @@ export class YSocketIO extends Observable<string> {
 
     socket.on(`${roomName}-sync-update`, (update: Uint8Array) => {
       Y.applyUpdate(doc, update, null);
+      this.roomSocketListMap.get(roomName)?.forEach((socketId) => {
+        if (socketId !== socket.id) {
+          socket.to(socketId).emit(`${roomName}-sync-update`, update);
+        }
+      });
     });
   };
 
@@ -238,7 +244,6 @@ export class YSocketIO extends Observable<string> {
       if (roomSocketList?.length === 0) {
         this.roomSocketListMap.delete(doc.name);
       }
-      console.log("disconnect", this.roomSocketListMap);
 
       if ((await socket.nsp.allSockets()).size === 0) {
         this.emit("all-document-connections-closed", [doc]);

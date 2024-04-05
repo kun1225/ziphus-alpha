@@ -2,7 +2,7 @@ import axiosInstance from '@/utils/axios';
 import { CardGetByIdResponseDTO } from '@repo/shared-types';
 import { useQuery } from '@tanstack/react-query';
 
-async function fetchCardById(cardId: string) {
+export async function fetchCardById(cardId: string) {
   return await axiosInstance.get<CardGetByIdResponseDTO>(`/card/${cardId}`);
 }
 

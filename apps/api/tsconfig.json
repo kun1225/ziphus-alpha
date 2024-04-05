@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
-    "module": "CommonJS",
+    "module": "Node16",
     "moduleResolution": "node16",
     "paths": {
       "@/*": ["./src/*"]

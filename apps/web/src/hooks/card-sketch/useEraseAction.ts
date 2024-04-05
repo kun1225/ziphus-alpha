@@ -1,31 +1,30 @@
 import Stroke from '@/models/stroke';
 import * as Y from 'yjs';
 import { EraserInfo } from '@/components/card/card-editor-sketch-panel';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import isCircleTouchingWideLine from '@/utils/is-circle-touching-wide-line';
-import { Circle, ShapeType, SketchCanvasProvider } from '@repo/sketch-canvas';
+import { Circle, ShapeType } from '@repo/sketch-canvas';
 
 interface UseActionProps {
   remoteYArray: Y.Array<any>;
-  originalStrokes: Stroke[];
-  setOriginalStrokes: React.Dispatch<React.SetStateAction<Stroke[]>>;
+  originalStrokesRef: React.MutableRefObject<Stroke[]>;
   eraserInfo: EraserInfo;
-  sketchCanvasProvider: SketchCanvasProvider;
+  refresh: () => void;
 }
 const useEraseAction = ({
   remoteYArray,
-  originalStrokes,
-  setOriginalStrokes,
+  originalStrokesRef,
   eraserInfo,
-  sketchCanvasProvider,
+  refresh,
 }: UseActionProps) => {
   const isErasing = useRef(false);
-  const [eraser, setEraser] = useState<Circle | null>(null);
+  const eraserRef = useRef<Circle | null>(null);
 
   const handleStartErase = (x: number, y: number) => {
     isErasing.current = true;
     handleMoveErase(x, y);
   };
+
   // 尋找在接觸點附近的筆跡
   const handleMoveErase = (x: number, y: number) => {
     if (!isErasing.current) return;
@@ -45,11 +44,10 @@ const useEraseAction = ({
       }
     }
 
-    setOriginalStrokes(
-      originalStrokes.filter((stroke) => !needDeleteStrokeIdList.includes(stroke.id)),
+    originalStrokesRef.current = originalStrokesRef.current.filter(
+      (stroke) => !needDeleteStrokeIdList.includes(stroke.id),
     );
-
-    setEraser({
+    eraserRef.current = {
       id: 'eraser',
       x,
       y,
@@ -58,16 +56,18 @@ const useEraseAction = ({
       fillStyle: '#ffffff22',
       strokeStyle: '#ffffff88',
       lineWidth: 1,
-    });
+    };
+    refresh();
   };
 
   const handleEndErase = () => {
     isErasing.current = false;
-    setEraser(null);
+    eraserRef.current = null;
+    refresh();
   };
 
   return {
-    eraser,
+    eraserRef,
     handleMoveErase,
     handleStartErase,
     handleEndErase,

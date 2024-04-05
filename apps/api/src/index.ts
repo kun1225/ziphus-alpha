@@ -81,7 +81,7 @@ import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/sock
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
 import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
 import cardModifySizeCaseConstructor from "./application/domain/service/card-modify-size-service";
-import { LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
+import type { LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
 import spaceGetByIdWithCardController from "./adapter/in/fastify/space-get-by-id-with-card-controller";
 
 async function init() {

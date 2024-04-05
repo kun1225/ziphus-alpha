@@ -2,7 +2,7 @@ import axiosInstance from '@/utils/axios';
 import {
   SpaceCardCreateResponseDTO,
   SpaceCardCreateRequestDTO,
-  SpaceGetByIdResponseDTO,
+  SpaceDto,
 } from '@repo/shared-types';
 import {
   UseMutationResult,
@@ -28,10 +28,8 @@ async function fetchCreateSpaceCard(
 }
 
 function useCreateSpaceCard(
-  setLocalSpace: React.Dispatch<
-    React.SetStateAction<SpaceGetByIdResponseDTO['space']>
-  >,
-  localSpace: SpaceGetByIdResponseDTO['space'],
+  setLocalSpace: React.Dispatch<React.SetStateAction<SpaceDto>>,
+  localSpace: SpaceDto,
 ): UseMutationResult<
   AxiosResponse<SpaceCardCreateResponseDTO>,
   unknown,
@@ -64,16 +62,16 @@ function useCreateSpaceCard(
         spaceId: string;
       },
     ) => fetchCreateSpaceCard(data.spaceId, data),
-    onSuccess: (data) => { },
+    onSuccess: (data) => {},
   });
 
   useEffect(() => {
-    socket.on('space:card:create', (data: SpaceCardCreateResponseDTO) => {
+    socket?.on('space:card:create', (data: SpaceCardCreateResponseDTO) => {
       createSpaceCard(data);
     });
 
     return () => {
-      socket.off('space:card:create');
+      socket?.off('space:card:create');
     };
   }, [localSpace?.id, localSpace?.spaceCards]);
   return mutate;

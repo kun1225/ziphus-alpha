@@ -30,7 +30,7 @@ function useUpdateCardContent(cardId: string) {
 
   useEffect(() => {
     // 當收到回應時，若需要立即存檔，則發送存檔請求
-    socket.on(
+    socket?.on(
       'card:get-is-need-modify-content-response',
       (data: CardGetIsNeedImmediateModifyContentResponseDTO) => {
         if (data.available) {
@@ -45,7 +45,7 @@ function useUpdateCardContent(cardId: string) {
     );
 
     return () => {
-      socket.off('card:get-is-need-modify-content-response');
+      socket?.off('card:get-is-need-modify-content-response');
     };
   }, [cardId, content]);
 

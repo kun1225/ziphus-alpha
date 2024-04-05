@@ -1,11 +1,11 @@
 import type { Server } from "socket.io";
 import type { Document } from "@repo/y-socket-io/dist/server";
 import { YSocketIO } from "@repo/y-socket-io/dist/server";
-import { MongodbPersistence } from "y-mongodb-provider";
-import * as Y from "yjs";
 
-function YSocketIOFactory(io: Server) {
+async function YSocketIOFactory(io: Server) {
   const ySocketIo = new YSocketIO(io);
+  const { MongodbPersistence } = await import("y-mongodb-provider");
+  const Y = await import("yjs");
 
   const connectionString = process.env.MONGODB_CONNECTION_STRING;
 

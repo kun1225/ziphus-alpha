@@ -12,33 +12,11 @@ import CardEditorSketchPanel, {
   SketchMode,
 } from './card-editor-sketch-panel';
 import useQueryCardById from '@/hooks/card/useQueryCardById';
-import useCanvasEditor from '@/hooks/useCanvasEditor';
 
 const MIN_CARD_HEIGHT = 300;
 const MIN_CARD_WIDTH = 300;
 
-interface IndependentCardEditor {
-  initialCard: CardGetByIdResponseDTO['card'];
-  cardId: string;
-}
-
-export function IndependentCardEditor(props: IndependentCardEditor) {
-  const { editMode, sketchMode, pencilInfo, eraserInfo } = useCanvasEditor();
-
-  return (
-    <CardEditorSEO
-      {...props}
-      isFocus={true}
-      isEditable={true}
-      editMode={editMode}
-      sketchMode={sketchMode}
-      pencilInfo={pencilInfo}
-      eraserInfo={eraserInfo}
-    />
-  );
-}
-
-interface CardEditorProps {
+interface CardEditorSEOProps {
   initialCard: CardGetByIdResponseDTO['card'];
   cardId: string;
   isFocus: boolean;
@@ -49,9 +27,9 @@ interface CardEditorProps {
   eraserInfo: EraserInfo;
 }
 
-export function CardEditorSEO(props: CardEditorProps) {
+export function CardEditorSEO(props: CardEditorSEOProps) {
   const { initialCard, cardId } = props;
-  const { card: fetchedCard, isLoading, error } = useQueryCardById(cardId);
+  const { card: fetchedCard } = useQueryCardById(cardId);
 
   if (!initialCard && !fetchedCard) return <div>Loading...</div>;
 
@@ -63,6 +41,7 @@ export function CardEditorSEO(props: CardEditorProps) {
         }}
       ></div>
     );
+  
 
   return <CardEditor {...props} initialCard={initialCard || fetchedCard} />;
 }
@@ -267,7 +246,7 @@ function CardEditor({
   sketchMode,
   pencilInfo,
   eraserInfo,
-}: CardEditorProps) {
+}: CardEditorSEOProps) {
   if (!initialCard) throw new Error('Card not found');
 
   const cardDataRef = useRef<CardDto>(initialCard);

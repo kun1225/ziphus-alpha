@@ -1,6 +1,6 @@
 'use client';
 import useDrawAction from '@/hooks/card-sketch/useDrawAction';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Y from 'yjs';
 import Stroke from '@/models/stroke';
 import useRemoteStrokeSync from '@/hooks/card-sketch/useRemoteStrokeSync';
@@ -42,41 +42,42 @@ function CardEditorSketchPanel({
   pencilInfo,
   eraserInfo,
 }: CardEditorDrawingPanelProps) {
-  const [yStrokes] = useState(doc.getArray(`card-drawing-${cardId}`));
-  const [originalRenderStrokes, setOriginalRenderStrokes] = useState<Stroke[]>(
-    [],
-  );
-  const remoteRenderStrokes = useRemoteStrokeSync({
+  const [yStrokes] = useState(doc.getArray('card-drawing'));
+  const [dataFrame, setDataFrame] = useState(0);
+  const originalRenderStrokesRef = useRef<Stroke[]>([]);
+  const remoteRenderStrokesRef = useRemoteStrokeSync({
     remoteYArray: yStrokes,
-    originalStrokes: originalRenderStrokes,
+    originalStrokesRef: originalRenderStrokesRef,
+    refresh: () => setDataFrame((prev) => prev + 1),
   });
   const sketchCanvasProvider = useSketchCanvasProvider();
 
   const { handleStartDraw, handleMoveDraw, handleEndDraw } = useDrawAction({
     remoteYArray: yStrokes,
-    originalStrokes: originalRenderStrokes,
-    setOriginalStrokes: setOriginalRenderStrokes,
+    originalStrokesRef: originalRenderStrokesRef,
     pencilInfo,
-    sketchCanvasProvider,
+    refresh: () => setDataFrame((prev) => prev + 1),
   });
 
-  const { eraser, handleEndErase, handleMoveErase, handleStartErase } =
+  const { eraserRef, handleEndErase, handleMoveErase, handleStartErase } =
     useEraseAction({
       remoteYArray: yStrokes,
-      originalStrokes: originalRenderStrokes,
-      setOriginalStrokes: setOriginalRenderStrokes,
+      originalStrokesRef: originalRenderStrokesRef,
       eraserInfo,
-      sketchCanvasProvider,
+      refresh: () => setDataFrame((prev) => prev + 1),
     });
 
   useEffect(() => {
-    const lines: Line[] = [...originalRenderStrokes, ...remoteRenderStrokes]
+    const lines: Line[] = [
+      ...originalRenderStrokesRef.current,
+      ...remoteRenderStrokesRef.current,
+    ]
       .map((stroke) => stroke.lines)
       .flat()
       .map(
         (line, index) =>
           ({
-            id: `${line.strokeId}:${index}`,
+            id: `${line?.strokeId}:${index}`,
             type: ShapeType.Line,
             startX: line.startX,
             startY: line.startY,
@@ -87,9 +88,13 @@ function CardEditorSketchPanel({
           }) as Line,
       );
 
-    const renderShapes: Shape[] = [...lines, ...(eraser ? [eraser] : [])];
+    const renderShapes: Shape[] = [
+      ...lines,
+      ...(eraserRef.current ? [eraserRef.current] : []),
+    ];
     sketchCanvasProvider.setShapes(renderShapes);
-  }, [originalRenderStrokes, remoteRenderStrokes, eraser]);
+    sketchCanvasProvider.reRender();
+  }, [dataFrame]);
 
   return (
     <>
@@ -97,7 +102,7 @@ function CardEditorSketchPanel({
         className="absolute right-2 top-2 z-20 h-8 w-20 rounded-md bg-white/10 text-white"
         onClick={() => {
           yStrokes.delete(0, yStrokes.length);
-          setOriginalRenderStrokes([]);
+          originalRenderStrokesRef.current = [];
         }}
       >
         清除塗鴉

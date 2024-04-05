@@ -1,9 +1,9 @@
 import type { LoadCardPort } from "@/application/port/out/load-card-port";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
 import { CardPermission } from "@/application/domain/model/card";
-import { createExampleAccount, createExampleCard } from "./create-example-data";
 import { type CardModifyPermissionUseCaseConstructor } from "@/application/port/in/card-modify-permission-use-case";
 import cardModifyPermissionUseCaseConstructor from "@/application/domain/service/card-modify-permission-service";
+import { createExampleAccount, createExampleCard } from "./create-example-data";
 
 describe("CardModifyPermissionUseCase", () => {
   let cardSetPermissionUseCase: ReturnType<CardModifyPermissionUseCaseConstructor>;

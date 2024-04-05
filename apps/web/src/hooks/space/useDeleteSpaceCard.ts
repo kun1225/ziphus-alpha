@@ -1,5 +1,5 @@
 import axiosInstance from '@/utils/axios';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
+import { SpaceDto } from '@repo/shared-types';
 import {
   UseMutationResult,
   useMutation,
@@ -16,10 +16,8 @@ async function fetchDeleteSpaceCard(spaceId: string, spaceCardId: string) {
 }
 
 function useDeleteSpaceCard(
-  setLocalSpace: React.Dispatch<
-    React.SetStateAction<SpaceGetByIdResponseDTO['space']>
-  >,
-  localSpace: SpaceGetByIdResponseDTO['space'],
+  setLocalSpace: React.Dispatch<React.SetStateAction<SpaceDto>>,
+  localSpace: SpaceDto,
 ): UseMutationResult<
   AxiosResponse<void>,
   unknown,
@@ -57,12 +55,12 @@ function useDeleteSpaceCard(
   });
 
   useEffect(() => {
-    socket.on('space:card:delete', (data: { spaceCardId: string }) => {
+    socket?.on('space:card:delete', (data: { spaceCardId: string }) => {
       removeSpaceCard(data.spaceCardId);
     });
 
     return () => {
-      socket.off('space:card:delete');
+      socket?.off('space:card:delete');
     };
   }, [localSpace?.id, localSpace?.spaceCards]);
   return mutate;

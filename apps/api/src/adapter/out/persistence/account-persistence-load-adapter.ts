@@ -1,5 +1,5 @@
 import type { LoadAccountPort } from "@/application/port/out/load-account-port";
-import { MongoCollections } from "./mongo-db";
+import type { MongoCollections } from "./mongo-db";
 
 const AccountPersistenceLoadAdapter = (
   { accountCollection }: MongoCollections

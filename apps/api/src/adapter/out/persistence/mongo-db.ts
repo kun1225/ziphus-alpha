@@ -1,6 +1,7 @@
-import { MongoClient, Collection } from 'mongodb'
-import { Space, SpaceCard, Card } from './mongo-schema';
-import Account from '@/application/domain/model/account';
+import type { Collection } from "mongodb";
+import { MongoClient } from "mongodb";
+import type Account from "@/application/domain/model/account";
+import type { Space, SpaceCard, Card } from "./mongo-schema";
 
 export interface MongoCollections {
     spaceCardCollection: Collection<SpaceCard>;
@@ -19,9 +20,9 @@ async function createMongoClientCollection(): Promise<MongoCollections> {
 
     const client = await MongoClient.connect(
         connectionString
-    )
+    );
 
-    const db = client.db('ziphus')
+    const db = client.db("ziphus");
     const spaceCardCollection = db.collection<SpaceCard>("spaceCards");
     const spaceCollection = db.collection<Space>("spaces");
     const cardCollection = db.collection<Card>("cards");
@@ -32,6 +33,6 @@ async function createMongoClientCollection(): Promise<MongoCollections> {
         spaceCollection,
         cardCollection,
         accountCollection
-    }
+    };
 }
-export default createMongoClientCollection
+export default createMongoClientCollection;

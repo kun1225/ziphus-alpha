@@ -1,36 +1,58 @@
 /* eslint-disable no-unused-vars */
-import { useCallback, useState } from 'react';
-import { Shape } from '../models/shapes';
+import { useCallback, useRef, useState } from "react";
+import { Shape } from "../models/shapes";
 
 export interface SketchCanvasProvider {
-    getShapes: () => Shape[];
-    setShapes: (shapes: Shape[]) => void;
-    addShape: (shape: Shape) => void;
-    setShape: (id: string, shape: Shape) => void;
-    removeShape: (id: string) => void;
-    clear: () => void;
+  getShapes: () => Shape[];
+  setShapes: (shapes: Shape[]) => void;
+  addShape: (shape: Shape) => void;
+  setShape: (id: string, shape: Shape) => void;
+  removeShape: (id: string) => void;
+  clear: () => void;
+  reRender: () => void;
+  frame: number;
 }
 
 export const useSketchCanvasProvider = (): SketchCanvasProvider => {
-    const [shapes, setShapes] = useState<Shape[]>([]);
+  const shapes = useRef<Shape[]>([]);
+  const [frame, setFrame] = useState(0);
 
-    const addShape = useCallback((shape: Shape) => {
-        setShapes((prevShapes) => [...prevShapes, shape]);
-    }, [shapes]);
+  const addShape = useCallback((shape: Shape) => {
+    shapes.current.push(shape);
+  }, []);
 
-    const setShape = useCallback((id: string, newShape: Shape) => {
-        setShapes((prevShapes) =>
-            prevShapes.map((shape) => (shape.id === id ? newShape : shape))
-        );
-    }, []);
+  const setShape = useCallback((id: string, newShape: Shape) => {
+    shapes.current = shapes.current.map((shape) =>
+      shape.id === id ? newShape : shape
+    );
+  }, []);
 
-    const removeShape = useCallback((id: string) => {
-        setShapes((prevShapes) => prevShapes.filter((shape) => shape.id !== id));
-    }, []);
+  const setShapes = useCallback((newShapes: Shape[]) => {
+    shapes.current = newShapes;
+  }, []);
 
-    const clear = useCallback(() => {
-        setShapes([]);
-    }, []);
+  const getShapes = useCallback(() => shapes.current, []);
 
-    return { getShapes: () => shapes, addShape, setShape, removeShape, clear, setShapes };
+  const removeShape = useCallback((id: string) => {
+    shapes.current = shapes.current.filter((shape) => shape.id !== id);
+  }, []);
+
+  const clear = useCallback(() => {
+    shapes.current = [];
+  }, []);
+
+  const reRender = useCallback(() => {
+    setFrame(frame + 1);
+  }, [frame]);
+
+  return {
+    getShapes,
+    setShapes,
+    addShape,
+    setShape,
+    removeShape,
+    clear,
+    reRender,
+    frame,
+  };
 };

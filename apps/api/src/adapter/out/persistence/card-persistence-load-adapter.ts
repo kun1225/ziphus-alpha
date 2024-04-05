@@ -1,5 +1,5 @@
 import type { LoadCardPort } from "@/application/port/out/load-card-port";
-import { MongoCollections } from "./mongo-db";
+import type { MongoCollections } from "./mongo-db";
 
 const CardPersistenceLoadAdapter =
   ({ cardCollection }: MongoCollections): LoadCardPort =>

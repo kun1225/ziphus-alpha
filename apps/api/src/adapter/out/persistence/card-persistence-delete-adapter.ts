@@ -1,6 +1,6 @@
 import type Card from "@/application/domain/model/card";
 import type { DeleteCardPort } from "@/application/port/out/delete-card-port";
-import { MongoCollections } from './mongo-db';
+import type { MongoCollections } from "./mongo-db";
 
 const CardPersistenceDeleteAdapter = (
   { cardCollection }: MongoCollections

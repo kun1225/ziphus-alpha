@@ -1,10 +1,10 @@
 'use client';
 import { cn } from '@/utils/cn';
 import ToolbarItemButton from './space-toolbar-item-button';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
 import useCreateCard from '@/hooks/card/useCreateCard';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
+import { SpaceDto } from '@repo/shared-types';
 import { View } from '@/models/view';
 import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
 import { MdLibraryAdd } from 'react-icons/md';
@@ -13,8 +13,8 @@ import useDraggable from '@/hooks/useDraggable';
 interface ToolbarItemAddCardButtonProps {
   mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
   mutateCreateCard: ReturnType<typeof useCreateCard>;
-  space: SpaceGetByIdResponseDTO['space'];
-  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
+  space: SpaceDto;
+  setSpace: (space: SpaceDto) => void;
   viewRef: React.MutableRefObject<View>;
   editorRef: React.RefObject<HTMLDivElement>;
 }
@@ -102,14 +102,14 @@ export default function ToolbarItemAddCardButton({
         <div
           ref={draggingShadowRef}
           className={cn(
-            'absolute left-0 top-0 h-0 w-0 rounded bg-gray-800 flex justify-center items-center text-white',
+            'absolute left-0 top-0 flex h-0 w-0 items-center justify-center rounded bg-gray-800 text-white',
             draggingStartPosition ? 'h-12 w-12' : 'hidden h-0 w-0',
           )}
         >
           <MdLibraryAdd />
         </div>
         {draggingStartPosition && (
-          <div className=" pointer-events-none absolute right-14 top-0 h-fit w-36 bg-gray-700 rounded text-white px-2 py-1 text-white">
+          <div className=" pointer-events-none absolute right-14 top-0 h-fit w-36 rounded bg-gray-700 px-2 py-1 text-white text-white">
             {availableAddCard ? (
               <p>放開新增卡片</p>
             ) : (

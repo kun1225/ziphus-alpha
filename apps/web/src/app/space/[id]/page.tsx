@@ -6,11 +6,7 @@ import axiosInstance from '@/utils/axios';
 import { Metadata } from 'next';
 import { SpaceGetByIdWithCardResponseDTO } from '@repo/shared-types';
 import { redirect } from 'next/navigation';
-import dynamic from 'next/dynamic';
-const SpaceEditor = dynamic(() => import('@/components/space/space-editor'), {
-  loading: () => <p>Loading...</p>,
-  ssr: false,
-});
+import SpaceEditor from '@/components/space/space-editor';
 
 export const metadata: Metadata = {};
 

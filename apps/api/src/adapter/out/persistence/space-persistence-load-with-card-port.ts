@@ -1,7 +1,7 @@
 import type { LoadSpaceWithCardPort } from "@/application/port/out/load-space-with-card-port";
-import { MongoCollections } from "./mongo-db";
-import { SpaceCard } from "@/application/domain/model/space";
-import Card from "@/application/domain/model/card";
+import type { SpaceCard } from "@/application/domain/model/space";
+import type Card from "@/application/domain/model/card";
+import type { MongoCollections } from "./mongo-db";
 
 const SpacePersistenceLoadWithCardAdapter =
   ({

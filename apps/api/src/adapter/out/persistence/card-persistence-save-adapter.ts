@@ -1,6 +1,6 @@
 import type Card from "@/application/domain/model/card";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
-import { MongoCollections } from "./mongo-db";
+import type { MongoCollections } from "./mongo-db";
 
 interface SaveCardCommand {
   card: Card;

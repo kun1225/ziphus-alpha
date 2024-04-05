@@ -1,17 +1,15 @@
 'use client';
 import ToolbarItemButton from './space-toolbar-item-button';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
-import { View } from '@/models/view';
+import { SpaceDto } from '@repo/shared-types';
 import { IoTrashBinOutline } from 'react-icons/io5';
 import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 interface ToolbarItemDeleteCardButtonProps {
   focusSpaceCardId: string | null;
   mutateDeleteSpaceCard: ReturnType<typeof useDeleteSpaceCard>;
-  space: SpaceGetByIdResponseDTO['space'];
-  setSpace: (space: SpaceGetByIdResponseDTO['space']) => void;
+  space: SpaceDto;
+  setSpace: (space: SpaceDto) => void;
 }
 
 export default function ToolbarItemDeleteCardButton({
