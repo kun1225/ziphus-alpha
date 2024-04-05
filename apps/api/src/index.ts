@@ -45,6 +45,8 @@ import cardGetWithAllUseCaseConstructor from "@/application/domain/service/card-
 import cardModifyContentUseCaseConstructor from "@/application/domain/service/card-modify-content-service";
 import cardModifyTitleUseCaseConstructor from "@/application/domain/service/card-modify-title-service";
 import cardGetByIdUseCaseConstructor from "@/application/domain/service/card-get-by-id-service";
+import cardModifySizeUseCaseConstructor from "@/application/domain/service/card-modify-size-service";
+import cardModifyIsSizeFitContentUseCaseConstructor from "@/application/domain/service/card-modify-is-size-fit-content-service";
 import cardAccessEditValidatorUseCaseConstructor from "@/application/domain/service/card-access-edit-validator-service";
 import cardModifyPermissionUseCaseConstructor from "@/application/domain/service/card-modify-permission-service";
 import cardDeleteUseCaseConstructor from "@/application/domain/service/card-delete-service";
@@ -54,7 +56,7 @@ import spaceCreateUseCaseConstructor from "@/application/domain/service/space-cr
 import spaceDeleteUseCaseConstructor from "@/application/domain/service/space-delete-service";
 import spaceGetByIdUseCaseConstructor from "@/application/domain/service/space-get-by-id-service";
 import spaceGetWithAllUseCaseConstructor from "@/application/domain/service/space-get-with-all-use-case";
-import spaceModifyTitleCaseConstructor from "@/application/domain/service/space-modify-title-service";
+import spaceModifyTitleUseCaseConstructor from "@/application/domain/service/space-modify-title-service";
 import spaceCardUpdatePositionUseCaseConstructor from "@/application/domain/service/space-card-update-position-service";
 import spaceGetByIdWithCardUseCaseConstructor from "@/application/domain/service/space-get-by-id-with-card-service";
 
@@ -68,6 +70,8 @@ import cardGetByIdController from "@/adapter/in/fastify/card-get-by-id-controlle
 import cardModifyContentController from "@/adapter/in/fastify/card-modify-content-controller";
 import cardModifyTitleController from "@/adapter/in/fastify/card-modify-title-controller";
 import cardModifyPermissionController from "@/adapter/in/fastify/card-modify-permission-controller";
+import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
+import cardModifyIsSizeFitContentController from "./adapter/in/fastify/card-modify-is-size-fit-content-controller copy";
 import cardDeleteController from "@/adapter/in/fastify/card-delete-controller";
 import cardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
 import spaceCreateController from "@/adapter/in/fastify/space-create-controller";
@@ -79,8 +83,6 @@ import spaceGetByIdController from "@/adapter/in/fastify/space-get-by-id-control
 import spaceModifyTitleController from "@/adapter/in/fastify/space-modify-title-controller";
 import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/socket/space-card-immediate-update-position-controller";
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
-import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
-import cardModifySizeCaseConstructor from "./application/domain/service/card-modify-size-service";
 import type { LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
 import spaceGetByIdWithCardController from "./adapter/in/fastify/space-get-by-id-with-card-controller";
 
@@ -139,10 +141,12 @@ async function init() {
     loadCard,
     saveCard
   );
-  const cardModifySizeUseCase = cardModifySizeCaseConstructor(
+  const cardModifySizeUseCase = cardModifySizeUseCaseConstructor(
     loadCard,
     saveCard
   );
+  const cardModifyIsSizeFitContentUseCase =
+    cardModifyIsSizeFitContentUseCaseConstructor(loadCard, saveCard);
   const cardAccessEditValidatorCase =
     cardAccessEditValidatorUseCaseConstructor(loadCard);
   const cardDeleteUseCase = cardDeleteUseCaseConstructor(loadCard, deleteCard);
@@ -166,7 +170,7 @@ async function init() {
   const spaceGetByIdUseCase = spaceGetByIdUseCaseConstructor(loadSpace);
   const spaceGetWithAllUseCase =
     spaceGetWithAllUseCaseConstructor(loadSpaceList);
-  const spaceModifyTitleUseCase = spaceModifyTitleCaseConstructor(
+  const spaceModifyTitleUseCase = spaceModifyTitleUseCaseConstructor(
     loadSpace,
     saveSpace
   );
@@ -200,6 +204,10 @@ async function init() {
     cardModifyTitleController(fastify, cardModifyTitleUseCase);
     cardModifyPermissionController(fastify, cardModifyPermissionUseCase);
     cardModifySizeController(fastify, [cardModifySizeUseCase, emitSocket]);
+    cardModifyIsSizeFitContentController(fastify, [
+      cardModifyIsSizeFitContentUseCase,
+      emitSocket,
+    ]);
     cardDeleteController(fastify, cardDeleteUseCase);
     spaceCreateController(fastify, spaceCreateUseCase);
     spaceDeleteController(fastify, spaceDeleteUseCase);

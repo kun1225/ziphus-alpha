@@ -23,6 +23,8 @@ const useViewScroll = (
         Math.min(2, view.scale - event.deltaY * 0.0003),
       );
 
+      console.log(newScale);
+
       // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量
       const { x: centerX, y: centerY } =
         transformMouseClientPositionToViewPosition(view, mouseX, mouseY);

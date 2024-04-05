@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { View } from '@/models/view';
 
-
 // 隨時更新視差效果
 const useViewTransformUpdate = (
   parallaxBoardRef: React.RefObject<HTMLDivElement>,

@@ -20,6 +20,7 @@ export const cardDtoSchema = z.object({
   content: z.string(),
   width: z.number(),
   height: z.number(),
+  isSizeFitContent: z.boolean(),
   illustrations: z.array(
     z.object({
       id: z.string(),

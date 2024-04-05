@@ -43,6 +43,7 @@ class Card {
     readonly content: string,
     readonly width: number,
     readonly height: number,
+    readonly isSizeFitContent: boolean,
     readonly illustrations: Illustration[],
     readonly drawings: Stroke[],
     readonly createdAt: string,

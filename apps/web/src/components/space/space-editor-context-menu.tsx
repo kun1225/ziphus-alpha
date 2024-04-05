@@ -101,6 +101,12 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
     <>
       <button
         className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
+        onClick={() => {}}
+      >
+        Fit to content
+      </button>
+      <button
+        className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left text-red-500 transition-all duration-300 hover:bg-gray-700"
         onClick={() => {
           if (!contextMenuInfo?.targetSpaceCardId) return;
           mutateDeleteSpaceCard.mutate({
