@@ -320,7 +320,7 @@ function CardEditor({
   const { widthBorderHandleRef, heightBorderHandleRef, cornerBorderHandleRef } =
     useResize(isFocus, cardDataRef, onCardSizeChange, onCardSizeChangeFinish);
 
-  if (!account || status !== 'connected') return null;
+  if (!account || status !== "connected" || !provider) return null;
 
   return (
     <div className="relative overflow-hidden" ref={cardHTMLElementRef}>
