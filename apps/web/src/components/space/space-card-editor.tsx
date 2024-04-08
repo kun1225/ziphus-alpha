@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SpaceCardDTO } from "@repo/shared-types";
 import useUpdateSpaceCardPosition from "@/hooks/space/useUpdateSpaceCardPosition";
 import useDraggable from "@/hooks/useDraggable";
@@ -47,6 +47,7 @@ interface SpaceCardEditorProps extends React.HTMLAttributes<HTMLDivElement> {
   initialSpaceCard: SpaceCardDTO;
   isFocus: boolean;
   viewRef: React.MutableRefObject<View>;
+  layers: string[];
 }
 
 function SpaceCardEditor({
@@ -54,10 +55,19 @@ function SpaceCardEditor({
   isFocus,
   viewRef,
   children,
+  layers,
+  style,
   ...props
 }: SpaceCardEditorProps) {
   const spaceCardHTMLElementRef = useRef<HTMLDivElement>(null);
   const spaceCardDataRef = useRef<SpaceCardDTO>(initialSpaceCard);
+  const [currentLayerIndex, setCurrentLayerIndex] = useState<number>(0);
+  useEffect(() => {
+    const layerIndex = layers.findIndex(
+      (layer) => layer === initialSpaceCard.id
+    );
+    setCurrentLayerIndex(layerIndex);
+  }, [layers, initialSpaceCard.id]);
 
   useTransformUpdate(spaceCardHTMLElementRef, spaceCardDataRef);
 
@@ -84,11 +94,15 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        "space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md",
+        "space-card absolute h-fit w-fit rounded-lg bg-dark-card-bg shadow-md",
         isFocus
           ? "outline outline-4 outline-white "
           : "cursor-pointer outline outline-1 outline-white "
       )}
+      style={{
+        ...style,
+        zIndex: currentLayerIndex,
+      }}
       {...props}
       ref={spaceCardHTMLElementRef}
       id={initialSpaceCard.id}

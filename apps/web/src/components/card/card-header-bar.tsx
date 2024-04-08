@@ -1,6 +1,5 @@
-import { MdArrowForwardIos } from "react-icons/md";
 import Link from "next/link";
-import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
+import { Breadcrumbs, BreadcrumbItem } from "@/components/nextui";
 import CardHeaderBarRetitleInput from "./card-header-bar-retitle-input";
 
 function CardHeaderBar() {

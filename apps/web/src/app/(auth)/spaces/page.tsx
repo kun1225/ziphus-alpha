@@ -7,7 +7,7 @@ export default function Page(): JSX.Element {
     <div className="min-w-screen h-full min-h-screen w-full bg-[#0E0E0E]">
       <Header />
       <main className=" container mx-auto py-4">
-        <SpaceCreateButton className="mb-4" color="white">
+        <SpaceCreateButton className="mb-4" color="default">
           Create Space
         </SpaceCreateButton>
         <SpacePreviewList />

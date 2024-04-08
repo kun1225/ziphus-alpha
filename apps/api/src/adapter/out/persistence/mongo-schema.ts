@@ -96,6 +96,7 @@ export class Space {
     readonly belongAccountId: string,
     readonly title: string,
     readonly permission: SpacePermission,
+    readonly layers: string[],
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null

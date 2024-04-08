@@ -17,6 +17,7 @@ const spaceCreateUseCaseConstructor: SpaceCreateUseCaseConstructor =
       SpacePermission.PublicEditable,
       [],
       [],
+      [],
       new Date().toISOString(),
       new Date().toISOString(),
       null

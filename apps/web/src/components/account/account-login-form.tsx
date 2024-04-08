@@ -57,7 +57,7 @@ function AccountLoginForm() {
     >
       <div className="mb-1 flex flex-col gap-6">
         <h4 className="-mb-3 text-white">Login</h4>
-        <h6 className="text-blue-gray-100 -mb-3">Your Email</h6>
+        <h6 className=" -mb-3 text-zinc-100">Your Email</h6>
         <Input
           size="lg"
           placeholder="name@mail.com"
@@ -75,7 +75,7 @@ function AccountLoginForm() {
             {errors.email.message}
           </p>
         )}
-        <h6 className="text-blue-gray-100 -mb-3">Password</h6>
+        <h6 className="-mb-3 text-zinc-100">Password</h6>
         <Input
           type="password"
           size="lg"
@@ -98,12 +98,9 @@ function AccountLoginForm() {
       <Button className="mt-6" fullWidth size="lg" type="submit">
         sign in
       </Button>
-      <p
-        color="gray"
-        className="text-blue-gray-100 mt-4 text-center  font-normal"
-      >
+      <p color="gray" className="mt-4 text-center font-normal  text-zinc-100">
         Do not have an account?{" "}
-        <Link className="text-blue-gray-200 font-medium" href="/register">
+        <Link className="font-medium text-zinc-200" href="/register">
           Sign up
         </Link>
       </p>

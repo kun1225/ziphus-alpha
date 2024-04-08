@@ -31,6 +31,7 @@ class Space {
     readonly permission: SpacePermission,
     readonly spaceCards: SpaceCard[],
     readonly childSpaces: ChildSpace[],
+    readonly layers: string[],
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null

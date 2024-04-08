@@ -5,8 +5,8 @@ import {
 import { z } from "zod";
 import type { CardModifyIsSizeFitContentUseCase } from "@/application/port/in/card-modify-is-size-fit-content-use-case";
 import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interface-from-auth";
+import type { EmitSocketPort } from "@/application/port/out/emit-socket-port";
 import type FastifyControllerInterface from "./fastify-controller-interface";
-import { EmitSocketPort } from "@/application/port/out/emit-socket-port";
 
 const cardModifyIsSizeFitContentController: FastifyControllerInterface<
   [CardModifyIsSizeFitContentUseCase, EmitSocketPort]
@@ -38,12 +38,12 @@ const cardModifyIsSizeFitContentController: FastifyControllerInterface<
           isSizeFitContent,
         });
 
-        return emitSocket({
+        emitSocket({
           event: `card:${cardId}:is-size-fit-content-modified`,
           data: {
             isSizeFitContent,
           },
-        });
+        }); 
       } catch (error) {
         reply.code(400);
         console.error(error);

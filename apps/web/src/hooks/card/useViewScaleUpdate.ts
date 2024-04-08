@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CardDto, CardGetByIdResponseDTO } from "@repo/shared-types";
+import { useCallback, useEffect, useState } from "react";
+import { CardDto } from "@repo/shared-types";
 
 // 隨時更新大小
 const useViewScaleUpdate = (

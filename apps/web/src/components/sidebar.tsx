@@ -20,8 +20,7 @@ function Sidebar() {
         <div className=" fixed left-2 top-10 z-50">
           <Button
             variant="light"
-            className="flex h-12 w-12 justify-start"
-            size="sm"
+            className="size-8"
             onClick={() => setDisplay("static")}
           >
             <span className="text-white">
@@ -33,11 +32,7 @@ function Sidebar() {
 
       <SidebarContainer display={display}>
         <div className="flex justify-between">
-          <Button
-            variant="light"
-            className="flex flex-1 justify-start"
-            size="sm"
-          >
+          <Button variant="light" className="flex size-8 flex-1 justify-start">
             <h1 className="text-md font-bold text-gray-400">
               <span className="mr-2  text-lg text-white">
                 <MdTipsAndUpdates className="inline-block" />
@@ -47,8 +42,7 @@ function Sidebar() {
           </Button>
           <Button
             variant="light"
-            className="flex h-12 w-12 items-center justify-center"
-            size="sm"
+            className="size-8"
             onClick={() =>
               setDisplay(display === "static" ? "float" : "static")
             }

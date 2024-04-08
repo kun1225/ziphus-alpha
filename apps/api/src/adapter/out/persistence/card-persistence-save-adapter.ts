@@ -2,6 +2,8 @@ import type Card from "@/application/domain/model/card";
 import type { SaveCardPort } from "@/application/port/out/save-card-port";
 import type { MongoCollections } from "./mongo-db";
 
+const MIN_SAVE_INTERVAL = 1000;
+
 interface SaveCardCommand {
   card: Card;
   saveTime: number;
@@ -14,7 +16,7 @@ const CardPersistenceSaveAdapter =
   async (card: Card, needRealTime) => {
     commandMap[card.id] = {
       card,
-      saveTime: Date.now() + (needRealTime ? 0 : 3000),
+      saveTime: Date.now() + (needRealTime ? 0 : MIN_SAVE_INTERVAL),
     };
 
     async function handelCommand() {

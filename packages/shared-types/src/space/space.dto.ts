@@ -34,6 +34,7 @@ export const SpaceDtoSchema = z.object({
   permission: SpacePermissionDTOSchema,
   spaceCards: z.array(SpaceCardDTOSchema),
   childSpaces: z.array(ChildSpaceDTOSchema),
+  layers: z.array(z.string()),
   createdAt: z.string(),
   updatedAt: z.string(),
   deletedAt: z.string().nullable(),

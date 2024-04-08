@@ -23,6 +23,7 @@
     "@repo/shared-types": "workspace:*",
     "@repo/shared-utils": "workspace:*",
     "@repo/y-socket-io": "workspace:*",
+    "eslint": "^8.57.0",
     "fastify": "^4.26.2",
     "fastify-type-provider-zod": "^1.1.9",
     "jsonwebtoken": "^9.0.2",

@@ -6,6 +6,7 @@ import {
 } from "@repo/shared-types";
 import useSocket from "@/hooks/useSocket";
 
+const MIN_SAVE_INTERVAL = 1000;
 function useUpdateCardContent(cardId: string) {
   const { socketEmitWithAuth, socket } = useSocket();
   const [content, setContent] = useState<string>("");
@@ -14,7 +15,10 @@ function useUpdateCardContent(cardId: string) {
   const tryUpdateCardContent = useCallback(
     (content: string) => {
       // 如果距離上次存檔時間小於 3 秒，則不發送存檔請求
-      if (new Date().getTime() - lastCardContentUpdateTimeRef.current < 3000) {
+      if (
+        new Date().getTime() - lastCardContentUpdateTimeRef.current <
+        MIN_SAVE_INTERVAL
+      ) {
         return;
       }
 

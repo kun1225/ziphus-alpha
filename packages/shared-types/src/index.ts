@@ -22,4 +22,6 @@ export * from "./space/space-get-by-id-response.dto";
 export * from "./space/space-get-by-id-with-card-response.dto";
 export * from "./space/space-card-create-response.dto";
 export * from "./space/space-card-create-request.dto";
+export * from "./space/space-card-update-layer-request.dto";
+export * from "./space/space-card-update-layer-response.dto";
 export * from "./space/space-card-immediate-update-position-request.dto";

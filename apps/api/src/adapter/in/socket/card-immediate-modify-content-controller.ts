@@ -10,7 +10,7 @@ import getAccountTokenInterfaceFromAuth from "@/common/get-account-token-interfa
 import type IoControllerInterface from "./io-controller-interface";
 
 // 最小存檔間隔時間
-const MIN_SAVE_INTERVAL = 3000;
+const MIN_SAVE_INTERVAL = 1000;
 /**
  * 即時存檔卡片內容的 Socket.io 控制器
  * 因為考慮到反覆修改文件的問題

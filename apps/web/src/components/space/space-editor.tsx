@@ -9,6 +9,7 @@ import {
 import useCreateCard from "@/hooks/card/useCreateCard";
 import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
 import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import useUpdateSpaceCardLayer from "@/hooks/space/useUpdateSpaceCardLayer";
 import useViewContextMenu from "@/hooks/space/useViewContextMenu";
 import useViewDrag from "@/hooks/space/useViewDrag";
 import useViewScroll from "@/hooks/space/useViewScroll";
@@ -43,6 +44,7 @@ export default function SpaceEditor({
   const mutateDeleteSpaceCard = useDeleteSpaceCard(setSpace, space);
   const mutateCreateSpaceCard = useCreateSpaceCard(setSpace, space);
   const mutateCreateCard = useCreateCard();
+  const mutateUpdateSpaceCardLayer = useUpdateSpaceCardLayer(setSpace, space);
 
   const viewRef = useRef<View>({
     x: 0,
@@ -54,6 +56,7 @@ export default function SpaceEditor({
   const parallaxBoardRef = useRef<HTMLDivElement | null>(null);
   const contextMenuComponentRef = useRef<HTMLDivElement | null>(null);
   const [focusSpaceCardId, setFocusSpaceCardId] = useState<string | null>(null);
+  const mouseDownTimeRef = useRef<number>(0);
   const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<
     string[]
   >([]);
@@ -89,8 +92,14 @@ export default function SpaceEditor({
             initialSpaceCard={spaceCard}
             viewRef={viewRef}
             isFocus={focusSpaceCardId === spaceCard.id}
+            onMouseDown={(e) => {
+              mouseDownTimeRef.current = Date.now();
+            }}
             onClick={(e) => {
               e.stopPropagation();
+              if (Date.now() - mouseDownTimeRef.current > 200) {
+                return;
+              }
               setSelectedSpaceCardIdList([spaceCard.id]);
               setFocusSpaceCardId(spaceCard.id);
             }}
@@ -98,6 +107,7 @@ export default function SpaceEditor({
               e.stopPropagation();
               setFocusSpaceCardId(spaceCard.id);
             }}
+            layers={space.layers}
           >
             <CardEditorSEO
               initialCard={
@@ -148,6 +158,7 @@ export default function SpaceEditor({
         mutateDeleteSpaceCard={mutateDeleteSpaceCard}
         mutateCreateSpaceCard={mutateCreateSpaceCard}
         mutateCreateCard={mutateCreateCard}
+        mutateUpdateSpaceCardLayer={mutateUpdateSpaceCardLayer}
         space={space}
         setSpace={setSpace}
       />

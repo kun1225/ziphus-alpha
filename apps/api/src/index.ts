@@ -59,6 +59,7 @@ import spaceGetWithAllUseCaseConstructor from "@/application/domain/service/spac
 import spaceModifyTitleUseCaseConstructor from "@/application/domain/service/space-modify-title-service";
 import spaceCardUpdatePositionUseCaseConstructor from "@/application/domain/service/space-card-update-position-service";
 import spaceGetByIdWithCardUseCaseConstructor from "@/application/domain/service/space-get-by-id-with-card-service";
+import spaceCardUpdateLayerUseCaseConstructor from "@/application/domain/service/space-card-update-layer-service";
 
 // 路由
 import accountRegisterController from "@/adapter/in/fastify/account-register-controller";
@@ -70,8 +71,6 @@ import cardGetByIdController from "@/adapter/in/fastify/card-get-by-id-controlle
 import cardModifyContentController from "@/adapter/in/fastify/card-modify-content-controller";
 import cardModifyTitleController from "@/adapter/in/fastify/card-modify-title-controller";
 import cardModifyPermissionController from "@/adapter/in/fastify/card-modify-permission-controller";
-import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
-import cardModifyIsSizeFitContentController from "./adapter/in/fastify/card-modify-is-size-fit-content-controller copy";
 import cardDeleteController from "@/adapter/in/fastify/card-delete-controller";
 import cardImmediateModifyContentController from "@/adapter/in/socket/card-immediate-modify-content-controller";
 import spaceCreateController from "@/adapter/in/fastify/space-create-controller";
@@ -83,8 +82,11 @@ import spaceGetByIdController from "@/adapter/in/fastify/space-get-by-id-control
 import spaceModifyTitleController from "@/adapter/in/fastify/space-modify-title-controller";
 import spaceCardImmediateUpdatePositionUseCaseController from "@/adapter/in/socket/space-card-immediate-update-position-controller";
 import CreateSocketEmitAdapter from "@/adapter/out/io/emit-socket-adapter";
-import type { LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
+import cardModifyIsSizeFitContentController from "./adapter/in/fastify/card-modify-is-size-fit-content-controller copy";
+import cardModifySizeController from "./adapter/in/fastify/card-modify-size-controller";
+import { type LoadSpaceWithCardPort } from "./application/port/out/load-space-with-card-port";
 import spaceGetByIdWithCardController from "./adapter/in/fastify/space-get-by-id-with-card-controller";
+import spaceCardUpdateLayerController from "./adapter/in/fastify/space-card-update-layer-controller";
 
 async function init() {
   // 初始化持久層
@@ -180,6 +182,11 @@ async function init() {
       loadSpaceCard,
       saveSpaceCard
     );
+  const spaceCardUpdateLayerUseCase = spaceCardUpdateLayerUseCaseConstructor(
+    loadSpaceCard,
+    loadSpace,
+    saveSpace
+  );
   const spaceGetByIdWithCardUseCase =
     spaceGetByIdWithCardUseCaseConstructor(loadSpaceWithCard);
 
@@ -217,6 +224,10 @@ async function init() {
     spaceCardDeleteController(fastify, [spaceCardDeleteUseCase, emitSocket]);
     spaceModifyTitleController(fastify, spaceModifyTitleUseCase);
     spaceGetByIdWithCardController(fastify, spaceGetByIdWithCardUseCase);
+    spaceCardUpdateLayerController(fastify, [
+      spaceCardUpdateLayerUseCase,
+      emitSocket,
+    ]);
   });
 
   fastify.ready((err) => {

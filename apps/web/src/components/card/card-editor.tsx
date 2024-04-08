@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { CardDto, CardGetByIdResponseDTO } from "@repo/shared-types";
 import useCardResize from "@/hooks/card/useCardResize";
 import useFitContentEvent from "@/hooks/card/useFitContentEvent";
@@ -22,12 +22,12 @@ import CardEditorSketchPanel, {
 export const MIN_CONTENT_CARD_HEIGHT = 800;
 export const MIN_CONTENT_CARD_WIDTH = 600;
 
-interface IndependentCardEditor {
+interface IndependentCardEditorProps {
   initialCard: CardGetByIdResponseDTO["card"];
   cardId: string;
 }
 
-export function IndependentCardEditor(props: IndependentCardEditor) {
+export function IndependentCardEditor(props: IndependentCardEditorProps) {
   const { editMode, sketchMode, pencilInfo, eraserInfo } = useCanvasEditor();
 
   return (
@@ -57,7 +57,7 @@ interface CardEditorProps {
 
 export function CardEditorSEO(props: CardEditorProps) {
   const { initialCard, cardId } = props;
-  const { card: fetchedCard, isLoading, error } = useQueryCardById(cardId);
+  const { card: fetchedCard } = useQueryCardById(cardId);
 
   if (!initialCard && !fetchedCard) return <div>Loading...</div>;
 
@@ -157,8 +157,12 @@ function CardEditor({
     mutateUpdateCardIsSizeFitContent.mutate({
       isSizeFitContent: true,
     });
-    onCardSizeChange(MIN_CONTENT_CARD_WIDTH, contentHeightRef.current);
-    onCardSizeChangeFinish(MIN_CONTENT_CARD_WIDTH, contentHeightRef.current);
+    const newHeight =
+      contentHeightRef.current < MIN_CONTENT_CARD_HEIGHT
+        ? MIN_CONTENT_CARD_HEIGHT
+        : contentHeightRef.current;
+    onCardSizeChange(MIN_CONTENT_CARD_WIDTH, newHeight);
+    onCardSizeChangeFinish(MIN_CONTENT_CARD_WIDTH, newHeight);
   });
 
   return (

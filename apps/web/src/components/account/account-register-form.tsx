@@ -55,7 +55,7 @@ function AccountRegisterForm() {
     >
       <div className="mb-1 flex flex-col gap-6">
         <h4 className="-mb-3 text-white">Create an account</h4>
-        <h6 className="text-blue-gray-100 -mb-3">Your Email</h6>
+        <h6 className="-mb-3 text-zinc-100">Your Email</h6>
         <Input
           size="lg"
           placeholder="name@mail.com"
@@ -73,7 +73,7 @@ function AccountRegisterForm() {
             {errors.email.message}
           </p>
         )}
-        <h6 className="text-blue-gray-100 -mb-3">Name</h6>
+        <h6 className="-mb-3 text-zinc-100">Name</h6>
         <Input
           size="lg"
           placeholder="name"
@@ -87,7 +87,7 @@ function AccountRegisterForm() {
             {errors.name.message}
           </p>
         )}
-        <h6 className="text-blue-gray-100 -mb-3">Password</h6>
+        <h6 className="-mb-3 text-zinc-100">Password</h6>
         <Input
           type="password"
           size="lg"
@@ -110,12 +110,9 @@ function AccountRegisterForm() {
       <Button className="mt-6" fullWidth size="lg" type="submit">
         sign up
       </Button>
-      <p
-        color="gray"
-        className="text-blue-gray-100 mt-4 text-center  font-normal"
-      >
+      <p color="gray" className="mt-4 text-center font-normal  text-zinc-100">
         Already have an account?{" "}
-        <Link className="text-blue-gray-200 font-medium" href="/login">
+        <Link className="font-medium text-zinc-200" href="/login">
           Sign in
         </Link>
       </p>
