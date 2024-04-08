@@ -1,19 +1,20 @@
-'use client';
-import '@blocknote/core/fonts/inter.css';
+"use client";
+
+import { useRef, useState } from "react";
+import {
+  BlockNoteSuggestionMenu,
+  schema,
+} from "../blocknote/block-note-setting";
+import * as Y from "yjs";
+import "@blocknote/core/fonts/inter.css";
 import {
   BlockNoteView,
   darkDefaultTheme,
   useCreateBlockNote,
-} from '@blocknote/react';
-import '@blocknote/react/style.css';
-import useUpdateCardContent from '@/hooks/card/useUpdateCardContent';
-import { SocketIOProvider } from '@repo/y-socket-io';
-import * as Y from 'yjs';
-import { useRef, useState } from 'react';
-import {
-  BlockNoteSuggestionMenu,
-  schema,
-} from '../blocknote/block-note-setting';
+} from "@blocknote/react";
+import "@blocknote/react/style.css";
+import { SocketIOProvider } from "@repo/y-socket-io/";
+import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -31,7 +32,7 @@ function CardEditorMarkdownEditor({
 }: CardEditorMarkdownEditorProps) {
   const tryUpdateCardContent = useUpdateCardContent(cardId);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [fragment] = useState(doc.getXmlFragment('card-content'));
+  const [fragment] = useState(doc.getXmlFragment("card-content"));
 
   const editor = useCreateBlockNote({
     schema,
@@ -40,7 +41,7 @@ function CardEditorMarkdownEditor({
       fragment,
       user: {
         name: accountName,
-        color: '#0066ff',
+        color: "#0066ff",
       },
     },
   });

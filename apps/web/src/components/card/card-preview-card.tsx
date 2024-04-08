@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { cn } from '@/utils/cn';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   CardGetWithAllResponseDTO,
   CardPermissionDTO,
-} from '@repo/shared-types';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+} from "@repo/shared-types";
+import { cn } from "@/utils/cn";
 
 /**
  * CardPreviewCardContainer is a container component that wraps the card preview card to provide a 3D hover effect.
@@ -44,17 +44,17 @@ function CardPreviewCardContainer({
   return (
     <div
       className={cn(
-        'relative h-fit w-fit overflow-hidden',
-        !isHovering && 'shadow-2xl transition-all duration-500',
-        fadingIn && 'shadow-2xl transition-all duration-150',
-        className,
+        "relative h-fit w-fit overflow-hidden",
+        !isHovering && "shadow-2xl transition-all duration-500",
+        fadingIn && "shadow-2xl transition-all duration-150",
+        className
       )}
       style={{
         transform: isHovering
           ? `perspective(1000px) rotateX(${
               (mousePosition.y - 150) / 10
             }deg) rotateY(${(150 - mousePosition.x) / 10}deg)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg)",
       }}
       ref={cardRef}
       onMouseMove={handleMouseMove}
@@ -78,21 +78,21 @@ function CardPreviewCardContainer({
 }
 
 interface CardPreviewCardProps {
-  card: CardGetWithAllResponseDTO['cards'][0];
+  card: CardGetWithAllResponseDTO["cards"][0];
 }
 function CardPreviewCard({ card }: CardPreviewCardProps) {
   const permissionText =
     card.permission === CardPermissionDTO.Private
-      ? '私人筆記'
+      ? "私人筆記"
       : card.permission === CardPermissionDTO.PublicReadOnly
-        ? '公開筆記（唯讀）'
-        : '公開筆記（可編輯）';
+        ? "公開筆記（唯讀）"
+        : "公開筆記（可編輯）";
 
   const title =
     card.title.length === 0
-      ? 'Untitled'
+      ? "Untitled"
       : card.title.length > 24
-        ? card.title.slice(0, 24) + '...'
+        ? card.title.slice(0, 24) + "..."
         : card.title;
 
   return (

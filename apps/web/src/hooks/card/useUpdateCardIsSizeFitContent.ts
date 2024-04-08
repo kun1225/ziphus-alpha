@@ -1,13 +1,13 @@
-import axiosInstance from '@/utils/axios';
+import { useEffect } from "react";
+import useSocket from "../useSocket";
+import { AxiosResponse } from "axios";
+import { toast } from "sonner";
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
-} from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-import useSocket from '../useSocket';
+} from "@tanstack/react-query";
+import axiosInstance from "@/utils/axios";
 
 interface UpdateCardIsSizeFitContentData {
   isSizeFitContent: boolean;
@@ -15,14 +15,14 @@ interface UpdateCardIsSizeFitContentData {
 
 async function fetchIsSizeFitContent(
   cardId: string,
-  data: UpdateCardIsSizeFitContentData,
+  data: UpdateCardIsSizeFitContentData
 ) {
   return await axiosInstance.put(`/card/${cardId}/is-size-fit-content`, data);
 }
 
 function useUpdateCardIsSizeFitContent(
   cardId: string,
-  onCardSizeChange: (isSizeFitContent: boolean) => void,
+  onCardSizeChange: (isSizeFitContent: boolean) => void
 ): UseMutationResult<
   AxiosResponse<void>,
   unknown,
@@ -49,9 +49,9 @@ function useUpdateCardIsSizeFitContent(
       `card:${cardId}:is-size-fit-content`,
       (data: UpdateCardIsSizeFitContentData) => {
         onCardSizeChange(data.isSizeFitContent);
-        queryClient.invalidateQueries({ queryKey: ['cards', cardId] });
-        queryClient.invalidateQueries({ queryKey: ['cards'] });
-      },
+        queryClient.invalidateQueries({ queryKey: ["cards", cardId] });
+        queryClient.invalidateQueries({ queryKey: ["cards"] });
+      }
     );
 
     return () => {

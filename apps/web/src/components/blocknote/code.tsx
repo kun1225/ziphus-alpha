@@ -1,33 +1,33 @@
-import { createReactBlockSpec } from '@blocknote/react';
-import { insertOrUpdateBlock } from '@blocknote/core';
-import { schema } from './block-note-setting';
-import { MdCode } from 'react-icons/md';
+import { MdCode } from "react-icons/md";
+import { insertOrUpdateBlock } from "@blocknote/core";
+import { createReactBlockSpec } from "@blocknote/react";
+import { schema } from "./block-note-setting";
 
 export const insertCode = (editor: typeof schema.BlockNoteEditor) => ({
-  title: 'Code (開發中)',
+  title: "Code (開發中)",
   onItemClick: () => {
     insertOrUpdateBlock(editor, {
-      type: 'codeblock',
+      type: "codeblock",
     });
   },
-  aliases: ['codeblock'],
-  group: 'Other',
+  aliases: ["codeblock"],
+  group: "Other",
   icon: <MdCode />,
 });
 
 export const Code = createReactBlockSpec(
   {
-    type: 'codeblock',
+    type: "codeblock",
     propSchema: {},
-    content: 'inline',
+    content: "inline",
   },
   {
     render: (props) => {
       return (
-        <pre className=" relative p-2 bg-gray-900 border border-gray-200 text-white rounded">
+        <pre className=" relative rounded border border-gray-200 bg-gray-900 p-2 text-white">
           <code ref={props.contentRef}></code>
         </pre>
       );
     },
-  },
+  }
 );

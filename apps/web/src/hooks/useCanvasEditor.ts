@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   EditMode,
   EraserInfo,
   PencilInfo,
   SketchMode,
-} from '@/components/card/card-editor-sketch-panel';
+} from "@/components/card/card-editor-sketch-panel";
 
 const useCanvasEditor = () => {
-  const [editMode, setEditMode] = useState<EditMode>('text');
-  const [sketchMode, setSketchMode] = useState<SketchMode>('pencil');
+  const [editMode, setEditMode] = useState<EditMode>("text");
+  const [sketchMode, setSketchMode] = useState<SketchMode>("pencil");
   const [pencilInfo, setPencilInfo] = useState<PencilInfo>({
-    pencilColor: 'white',
+    pencilColor: "white",
     pencilSize: 8,
   });
   const [eraserInfo, setEraserInfo] = useState<EraserInfo>({

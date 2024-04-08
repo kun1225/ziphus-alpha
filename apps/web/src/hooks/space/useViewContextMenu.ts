@@ -1,12 +1,13 @@
-'use client';
-import React, { useEffect, useRef } from 'react';
-import { ContextMenuInfo } from '@/components/space/space-editor-context-menu';
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import { ContextMenuInfo } from "@/components/space/space-editor-context-menu";
 
 // 右鍵單點招喚選單
 const useViewContextMenu = (
   editorRef: React.RefObject<HTMLDivElement>,
   setContextMenuInfo: (contextMenuInfo: ContextMenuInfo | null) => void,
-  contextMenuComponentRef: React.RefObject<HTMLDivElement>,
+  contextMenuComponentRef: React.RefObject<HTMLDivElement>
 ) => {
   const mouseDownTimeRef = useRef(0);
   useEffect(() => {
@@ -22,7 +23,7 @@ const useViewContextMenu = (
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       const targetSpaceCardId = (event.target as HTMLElement).closest(
-        '.space-card',
+        ".space-card"
       )?.id;
 
       setContextMenuInfo({
@@ -46,12 +47,12 @@ const useViewContextMenu = (
       }
     };
 
-    editor.addEventListener('contextmenu', onContextMenu);
-    editor.addEventListener('mousedown', handleMouseDown);
+    editor.addEventListener("contextmenu", onContextMenu);
+    editor.addEventListener("mousedown", handleMouseDown);
 
     return () => {
-      editor.removeEventListener('contextmenu', onContextMenu);
-      editor.removeEventListener('mousedown', handleMouseDown);
+      editor.removeEventListener("contextmenu", onContextMenu);
+      editor.removeEventListener("mousedown", handleMouseDown);
     };
   }, []);
 };

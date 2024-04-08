@@ -1,12 +1,12 @@
-import CardHeaderBar from '@/components/card/card-header-bar';
-import Sidebar from '@/components/sidebar';
-import { fetchCardById } from '@/hooks/card/useQueryCardById';
-import axiosInstance from '@/utils/axios';
-import { CardGetByIdResponseDTO } from '@repo/shared-types';
-import { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { IndependentCardEditor } from '@/components/card/card-editor';
+import { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { CardGetByIdResponseDTO } from "@repo/shared-types";
+import { IndependentCardEditor } from "@/components/card/card-editor";
+import CardHeaderBar from "@/components/card/card-header-bar";
+import Sidebar from "@/components/sidebar";
+import { fetchCardById } from "@/hooks/card/useQueryCardById";
+import axiosInstance from "@/utils/axios";
 
 export const metadata: Metadata = {};
 
@@ -16,19 +16,19 @@ export default async function Page({
   params: { id: string };
 }): Promise<JSX.Element> {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('authorization');
-  axiosInstance.defaults.headers.authorization = authorization?.value ?? '';
+  const authorization = cookieStore.get("authorization");
+  axiosInstance.defaults.headers.authorization = authorization?.value ?? "";
 
   let data: CardGetByIdResponseDTO | null = null;
   try {
     data = (await fetchCardById(id)).data;
   } catch (error) {
     console.error(error);
-    redirect('/login');
+    redirect("/login");
   }
 
-  const title = data?.card?.title ?? 'Ziphus Card Editor';
-  const description = data?.card?.content.substring(0, 157) ?? 'Ziphus';
+  const title = data?.card?.title ?? "Ziphus Card Editor";
+  const description = data?.card?.content.substring(0, 157) ?? "Ziphus";
 
   metadata.title = `Ziphus - ${title}`;
   metadata.description = description;
@@ -36,13 +36,13 @@ export default async function Page({
   metadata.openGraph = {
     title,
     description,
-    type: 'website',
+    type: "website",
     url: `https://ziphus.com/space/${id}`,
   };
 
   metadata.twitter = {
-    card: 'summary',
-    site: '@ziphus',
+    card: "summary",
+    site: "@ziphus",
     title,
     description,
   };

@@ -1,8 +1,8 @@
-import { cn } from '@/utils/cn';
-import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
+import { PencilInfo } from "@/components/card/card-editor-sketch-panel";
+import { cn } from "@/utils/cn";
 
 const pencilWidths = [4, 8, 12, 16];
-const pencilColors = ['white', 'red', 'blue', 'green', 'yellow'];
+const pencilColors = ["white", "red", "blue", "green", "yellow"];
 
 interface SpaceToolbarLayerPencilProps {
   pencilInfo: PencilInfo;
@@ -18,16 +18,16 @@ function SpaceToolbarLayerPencil({
         <button
           key={width}
           className={cn(
-            'h-6 rounded-full border',
+            "h-6 rounded-full border",
             pencilInfo.pencilSize === width
-              ? 'border-gray-200'
-              : 'border-transparent',
+              ? "border-gray-200"
+              : "border-transparent"
           )}
           style={{
             width: `${16 + 4 * index}px`,
             height: `${16 + 4 * index}px`,
             backgroundColor:
-              pencilInfo.pencilSize === width ? pencilInfo.pencilColor : 'gray',
+              pencilInfo.pencilSize === width ? pencilInfo.pencilColor : "gray",
           }}
           onClick={(event) => {
             event.stopPropagation();
@@ -38,14 +38,15 @@ function SpaceToolbarLayerPencil({
           }}
         />
       ))}
-      <div className='my-4'></div>
+      <div className="my-4"></div>
       {pencilColors.map((color) => (
         <button
           key={color}
-          className={`h-6 w-6 rounded-full border border-solid border-gray-200 ${pencilInfo.pencilColor === color
-            ? 'border-gray-600'
-            : 'border-transparent'
-            }`}
+          className={`h-6 w-6 rounded-full border border-solid border-gray-200 ${
+            pencilInfo.pencilColor === color
+              ? "border-gray-600"
+              : "border-transparent"
+          }`}
           style={{
             backgroundColor: color,
           }}

@@ -1,7 +1,12 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  extends: ["standard", "@repo/eslint-config/next.js"],
+  extends: [
+    "standard",
+    "@repo/eslint-config/next.js",
+    "plugin:prettier/recommended",
+  ],
+  plugins: ["prettier"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,
@@ -12,9 +17,8 @@ module.exports = {
       {
         paths: [
           {
-            name: "@material-tailwind/react",
-            message:
-              "Please import from '@/components/material-tailwind' instead.",
+            name: "@nextui-org/react",
+            message: "Please import from '@/components/nextui' instead.",
           },
           {
             name: "clsx",
@@ -24,19 +28,6 @@ module.exports = {
         ],
       },
     ],
-    "no-useless-constructor": "off",
-    quotes: [2, "single"],
-    "comma-dangle": [
-      "error",
-      {
-        arrays: "always-multiline",
-        objects: "always-multiline",
-        imports: "always-multiline",
-        exports: "always-multiline",
-        functions: "only-multiline",
-      },
-    ],
-    semi: ["error", "always"],
   },
   overrides: [
     {

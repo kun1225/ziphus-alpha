@@ -1,15 +1,16 @@
-'use client';
-import useUpdateSpaceCardPosition from '@/hooks/space/useUpdateSpaceCardPosition';
-import { SpaceCardDTO } from '@repo/shared-types';
-import { View } from '@/models/view';
-import { useEffect, useRef } from 'react';
-import { cn } from '@/utils/cn';
-import useDraggable from '@/hooks/useDraggable';
+"use client";
+
+import { useEffect, useRef } from "react";
+import { SpaceCardDTO } from "@repo/shared-types";
+import useUpdateSpaceCardPosition from "@/hooks/space/useUpdateSpaceCardPosition";
+import useDraggable from "@/hooks/useDraggable";
+import { View } from "@/models/view";
+import { cn } from "@/utils/cn";
 
 // 隨時更新位置
 const useTransformUpdate = (
   spaceCardHTMLElementRef: React.RefObject<HTMLDivElement>,
-  spaceCardDataRef: React.MutableRefObject<SpaceCardDTO>,
+  spaceCardDataRef: React.MutableRefObject<SpaceCardDTO>
 ) => {
   const lastPositionRef = useRef<{
     x: number;
@@ -83,10 +84,10 @@ function SpaceCardEditor({
   return (
     <div
       className={cn(
-        'space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md',
+        "space-card absolute h-fit w-fit rounded-lg  bg-gray-900 shadow-md",
         isFocus
-          ? 'outline outline-4 outline-white '
-          : 'cursor-pointer outline outline-1 outline-white ',
+          ? "outline outline-4 outline-white "
+          : "cursor-pointer outline outline-1 outline-white "
       )}
       {...props}
       ref={spaceCardHTMLElementRef}

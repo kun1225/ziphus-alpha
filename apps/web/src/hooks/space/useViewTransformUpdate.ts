@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import { View } from '@/models/view';
+import React, { useEffect, useRef } from "react";
+import { View } from "@/models/view";
 
 // 隨時更新視差效果
 const useViewTransformUpdate = (
   parallaxBoardRef: React.RefObject<HTMLDivElement>,
-  viewRef: React.MutableRefObject<View>,
+  viewRef: React.MutableRefObject<View>
 ) => {
   const lastViewRef = useRef<View>({
     x: 0,

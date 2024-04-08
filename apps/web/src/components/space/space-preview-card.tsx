@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { cn } from '@/utils/cn';
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   SpaceGetWithAllResponseDTO,
   SpacePermissionDTO,
-} from '@repo/shared-types';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+} from "@repo/shared-types";
+import { cn } from "@/utils/cn";
 
 /**
  * SpacePreviewCardContainer is a container component that wraps the card preview card to provide a 3D hover effect.
@@ -44,17 +44,17 @@ function SpacePreviewCardContainer({
   return (
     <div
       className={cn(
-        'relative h-fit w-fit overflow-hidden border border-solid border-white',
-        !isHovering && 'shadow-2xl transition-all duration-500',
-        fadingIn && 'shadow-2xl transition-all duration-150',
-        className,
+        "relative h-fit w-fit overflow-hidden border border-solid border-white",
+        !isHovering && "shadow-2xl transition-all duration-500",
+        fadingIn && "shadow-2xl transition-all duration-150",
+        className
       )}
       style={{
         transform: isHovering
           ? `perspective(1000px) rotateX(${
               (mousePosition.y - 150) / 10
             }deg) rotateY(${(150 - mousePosition.x) / 10}deg)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg)',
+          : "perspective(1000px) rotateX(0deg) rotateY(0deg)",
       }}
       ref={cardRef}
       onMouseMove={handleMouseMove}
@@ -78,21 +78,21 @@ function SpacePreviewCardContainer({
 }
 
 interface SpacePreviewCardProps {
-  space: SpaceGetWithAllResponseDTO['spaces'][0];
+  space: SpaceGetWithAllResponseDTO["spaces"][0];
 }
 function SpacePreviewCard({ space }: SpacePreviewCardProps) {
   const permissionText =
     space.permission === SpacePermissionDTO.Private
-      ? '私人空間'
+      ? "私人空間"
       : space.permission === SpacePermissionDTO.PublicReadOnly
-        ? '公開空間（唯讀）'
-        : '公開空間（可編輯）';
+        ? "公開空間（唯讀）"
+        : "公開空間（可編輯）";
 
   const title =
     space.title.length === 0
-      ? '無名空間'
+      ? "無名空間"
       : space.title.length > 24
-        ? space.title.slice(0, 24) + '...'
+        ? space.title.slice(0, 24) + "..."
         : space.title;
 
   return (

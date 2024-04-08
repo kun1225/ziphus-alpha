@@ -1,12 +1,13 @@
-'use client';
-import React, { useEffect, useRef } from 'react';
-import { View } from '@/models/view';
-import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
+"use client";
+
+import React, { useEffect, useRef } from "react";
+import { View } from "@/models/view";
+import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
 // 滑動移動視圖
 const useViewTouch = (
   editorRef: React.RefObject<HTMLDivElement>,
-  viewRef: React.MutableRefObject<View>,
+  viewRef: React.MutableRefObject<View>
 ) => {
   const lastTouchPosition = useRef({ x: 0, y: 0 });
   const lastTwoPointDeltaDistance = useRef(0);
@@ -19,7 +20,7 @@ const useViewTouch = (
     const onScale = (
       touchCenterX: number,
       touchCenterY: number,
-      touchScale: number,
+      touchScale: number
     ) => {
       const view = viewRef.current!;
 
@@ -30,7 +31,7 @@ const useViewTouch = (
         transformMouseClientPositionToViewPosition(
           view,
           touchCenterX,
-          touchCenterY,
+          touchCenterY
         );
       const { x: newCenterX, y: newCenterY } =
         transformMouseClientPositionToViewPosition(
@@ -40,7 +41,7 @@ const useViewTouch = (
             scale: newScale,
           },
           touchCenterX,
-          touchCenterY,
+          touchCenterY
         );
       const deltaX = (newCenterX - centerX) * newScale;
       const deltaY = (newCenterY - centerY) * newScale;
@@ -78,7 +79,7 @@ const useViewTouch = (
       const centerY = (touch1y + touch2y) / 2;
 
       const twoPointDeltaDistance = Math.sqrt(
-        (touch1x - touch2x) ** 2 + (touch1y - touch2y) ** 2,
+        (touch1x - touch2x) ** 2 + (touch1y - touch2y) ** 2
       );
 
       const deltaScale =
@@ -88,19 +89,19 @@ const useViewTouch = (
         transformMouseClientPositionToViewPosition(
           viewRef.current,
           centerX,
-          centerY,
+          centerY
         );
 
       const { x: lastViewCenterX, y: lastViewCenterY } =
         transformMouseClientPositionToViewPosition(
           viewRef.current,
           lastTouchPosition.current.x,
-          lastTouchPosition.current.y,
+          lastTouchPosition.current.y
         );
 
       onMove(
         (viewCenterX - lastViewCenterX) * viewRef.current.scale,
-        (viewCenterY - lastViewCenterY) * viewRef.current.scale,
+        (viewCenterY - lastViewCenterY) * viewRef.current.scale
       );
       onScale(centerX, centerY, viewRef.current.scale + deltaScale * 0.002);
 
@@ -126,16 +127,16 @@ const useViewTouch = (
       lastTouchPosition.current.x = centerX;
       lastTouchPosition.current.y = centerY;
       lastTwoPointDeltaDistance.current = Math.sqrt(
-        (touch1x - touch2x) ** 2 + (touch1y - touch2y) ** 2,
+        (touch1x - touch2x) ** 2 + (touch1y - touch2y) ** 2
       );
     };
 
-    editor.addEventListener('touchmove', onTouchMove, { passive: false });
-    editor.addEventListener('touchstart', onTouchStart, { passive: false });
+    editor.addEventListener("touchmove", onTouchMove, { passive: false });
+    editor.addEventListener("touchstart", onTouchStart, { passive: false });
 
     return () => {
-      editor.removeEventListener('touchmove', onTouchMove);
-      editor.removeEventListener('touchstart', onTouchStart);
+      editor.removeEventListener("touchmove", onTouchMove);
+      editor.removeEventListener("touchstart", onTouchStart);
     };
   }, []);
 };

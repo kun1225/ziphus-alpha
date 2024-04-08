@@ -1,12 +1,13 @@
-'use client';
-import React from 'react';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useQueryCardList from '@/hooks/card/useQueryCardList';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
-import { SpaceDto } from '@repo/shared-types';
-import { View } from '@/models/view';
-import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
+"use client";
+
+import React from "react";
+import { SpaceDto } from "@repo/shared-types";
+import useCreateCard from "@/hooks/card/useCreateCard";
+import useQueryCardList from "@/hooks/card/useQueryCardList";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import { View } from "@/models/view";
+import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
 export interface ContextMenuInfo {
   x: number;
@@ -47,7 +48,7 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
         onClick={() => {
           mutateCreateCard.mutate(undefined, {
             onSuccess: (data) => {
-              console.log('新增卡片成功', data.data);
+              console.log("新增卡片成功", data.data);
               const view = viewRef.current;
               mutateCreateSpaceCard.mutate(
                 {
@@ -56,22 +57,22 @@ function GlobalSpaceContextMenu(props: ContextMenuComponentProps) {
                   ...transformMouseClientPositionToViewPosition(
                     view,
                     contextMenuInfo?.x || 0,
-                    contextMenuInfo?.y || 0,
+                    contextMenuInfo?.y || 0
                   ),
                 },
                 {
                   onSuccess: (data: any) => {
-                    console.log('新增卡片成功', data.data);
+                    console.log("新增卡片成功", data.data);
                     setSpace({
                       ...space!,
                       spaceCards: [...space!.spaceCards, data.data.spaceCard],
                     });
                   },
-                },
+                }
               );
             },
             onError: (error) => {
-              console.error('新增卡片失敗', error);
+              console.error("新增卡片失敗", error);
             },
           });
           setContextMenuInfo(null);
@@ -104,8 +105,8 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
         onClick={() => {
           const event = new CustomEvent("space-card-fit-content", {
             detail: {
-              spaceCardId: contextMenuInfo?.targetSpaceCardId
-            }
+              spaceCardId: contextMenuInfo?.targetSpaceCardId,
+            },
           });
           window.dispatchEvent(event);
         }}
@@ -124,7 +125,7 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
           setSpace({
             ...space!,
             spaceCards: space!.spaceCards.filter(
-              (spaceCard) => spaceCard.id !== contextMenuInfo.targetSpaceCardId,
+              (spaceCard) => spaceCard.id !== contextMenuInfo.targetSpaceCardId
             ),
           });
         }}
@@ -142,8 +143,9 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${contextMenuInfo ? '' : 'hidden'
-          }`}
+        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${
+          contextMenuInfo ? "" : "hidden"
+        }`}
         style={{
           left: contextMenuInfo ? contextMenuInfo.x : 0,
           top: contextMenuInfo ? contextMenuInfo.y : 0,
@@ -158,7 +160,7 @@ const ContextMenuComponent = React.forwardRef(
         )}
       </div>
     );
-  },
+  }
 );
 
 export default ContextMenuComponent;

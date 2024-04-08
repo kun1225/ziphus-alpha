@@ -1,14 +1,15 @@
-'use client';
-import { cn } from '@/utils/cn';
-import ToolbarItemButton from './space-toolbar-item-button';
-import { useRef, useState } from 'react';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import { SpaceDto } from '@repo/shared-types';
-import { View } from '@/models/view';
-import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
-import { MdLibraryAdd } from 'react-icons/md';
-import useDraggable from '@/hooks/useDraggable';
+"use client";
+
+import { useRef, useState } from "react";
+import { MdLibraryAdd } from "react-icons/md";
+import { SpaceDto } from "@repo/shared-types";
+import useCreateCard from "@/hooks/card/useCreateCard";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useDraggable from "@/hooks/useDraggable";
+import { View } from "@/models/view";
+import { cn } from "@/utils/cn";
+import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
+import ToolbarItemButton from "./space-toolbar-item-button";
 
 interface ToolbarItemAddCardButtonProps {
   mutateCreateSpaceCard: ReturnType<typeof useCreateSpaceCard>;
@@ -53,7 +54,7 @@ export default function ToolbarItemAddCardButton({
       }
       mutateCreateCard.mutate(undefined, {
         onSuccess: (data) => {
-          console.log('新增卡片成功', data.data);
+          console.log("新增卡片成功", data.data);
           const view = viewRef.current;
           mutateCreateSpaceCard.mutate(
             {
@@ -63,17 +64,17 @@ export default function ToolbarItemAddCardButton({
             },
             {
               onSuccess: (data: any) => {
-                console.log('新增卡片成功', data.data);
+                console.log("新增卡片成功", data.data);
                 setSpace({
                   ...space!,
                   spaceCards: [...space!.spaceCards, data.data.spaceCard],
                 });
               },
-            },
+            }
           );
         },
         onError: (error) => {
-          console.error('新增卡片失敗', error);
+          console.error("新增卡片失敗", error);
         },
       });
     },
@@ -84,11 +85,11 @@ export default function ToolbarItemAddCardButton({
         Math.abs(x - draggingStartPosition.x) < 32 &&
         Math.abs(y - draggingStartPosition.y) < 32
       ) {
-        draggingShadowRef.current!.style.opacity = '0.2';
+        draggingShadowRef.current!.style.opacity = "0.2";
         setAvailableAddCard(false);
         return;
       }
-      draggingShadowRef.current!.style.opacity = '0.8';
+      draggingShadowRef.current!.style.opacity = "0.8";
       setAvailableAddCard(true);
     },
   });
@@ -102,8 +103,8 @@ export default function ToolbarItemAddCardButton({
         <div
           ref={draggingShadowRef}
           className={cn(
-            'absolute left-0 top-0 flex h-0 w-0 items-center justify-center rounded bg-gray-800 text-white',
-            draggingStartPosition ? 'h-12 w-12' : 'hidden h-0 w-0',
+            "absolute left-0 top-0 flex h-0 w-0 items-center justify-center rounded bg-gray-800 text-white",
+            draggingStartPosition ? "h-12 w-12" : "hidden h-0 w-0"
           )}
         >
           <MdLibraryAdd />

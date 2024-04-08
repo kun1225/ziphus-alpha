@@ -1,18 +1,18 @@
-import './globals.css';
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 // eslint-disable-next-line camelcase
-import { Noto_Sans_TC } from 'next/font/google';
-import { ThemeProvider } from '@/components/material-tailwind';
-import { Toaster } from 'sonner';
-import ReactQueryProvider from '@/providers/react-query';
+import { Noto_Sans_TC } from "next/font/google";
+import { Toaster } from "sonner";
+import { NextUIProvider } from "@/components/nextui";
+import ReactQueryProvider from "@/providers/react-query";
+import "./globals.css";
 
 const notoSansTC = Noto_Sans_TC({
-  subsets: ['latin'],
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: 'Ziphus Alpha 1.0',
-  description: 'Ziphus',
+  title: "Ziphus Alpha 1.0",
+  description: "Ziphus",
 };
 
 export default function RootLayout({
@@ -23,12 +23,12 @@ export default function RootLayout({
   return (
     <html lang="zh-Hant">
       <body className={notoSansTC.className}>
-        <ThemeProvider>
+        <NextUIProvider>
           <ReactQueryProvider>
             <Toaster position="top-right" richColors closeButton />
             <>{children}</>
           </ReactQueryProvider>
-        </ThemeProvider>
+        </NextUIProvider>
       </body>
     </html>
   );

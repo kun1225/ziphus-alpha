@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { View } from '@/models/view';
+import React, { useEffect, useRef } from "react";
+import { View } from "@/models/view";
 
 // 右鍵按住拖曳視野
 const useViewDrag = (
   editorRef: React.RefObject<HTMLDivElement>,
   viewRef: React.MutableRefObject<View>,
-  availableMove: boolean = true,
+  availableMove: boolean = true
 ) => {
   const prevXRef = useRef(0);
   const prevYRef = useRef(0);
@@ -44,14 +44,14 @@ const useViewDrag = (
       isDraggingRef.current = false;
     };
 
-    editor.addEventListener('mousedown', onMouseDown);
-    editor.addEventListener('mousemove', onMouseMove);
-    editor.addEventListener('mouseup', onMouseUp);
+    editor.addEventListener("mousedown", onMouseDown);
+    editor.addEventListener("mousemove", onMouseMove);
+    editor.addEventListener("mouseup", onMouseUp);
 
     return () => {
-      editor.removeEventListener('mousedown', onMouseDown);
-      editor.removeEventListener('mousemove', onMouseMove);
-      editor.removeEventListener('mouseup', onMouseUp);
+      editor.removeEventListener("mousedown", onMouseDown);
+      editor.removeEventListener("mousemove", onMouseMove);
+      editor.removeEventListener("mouseup", onMouseUp);
     };
   }, []);
 

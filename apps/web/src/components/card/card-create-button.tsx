@@ -1,7 +1,8 @@
-'use client';
-import { Button, ButtonProps } from '@/components/material-tailwind';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import { useRouter } from 'next/navigation';
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Button, ButtonProps } from "@/components/nextui";
+import useCreateCard from "@/hooks/card/useCreateCard";
 
 interface CardCreateButtonProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>;
@@ -15,7 +16,7 @@ export function CardCreateButton({
 
   return (
     <Button
-      variant="outlined"
+      variant="bordered"
       {...props}
       onClick={() =>
         mutate.mutate(undefined, {
@@ -25,7 +26,7 @@ export function CardCreateButton({
         })
       }
     >
-      {children || 'Create'}
+      {children || "Create"}
     </Button>
   );
 }

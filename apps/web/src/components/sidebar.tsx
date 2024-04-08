@@ -1,27 +1,28 @@
-'use client';
-import { MdTipsAndUpdates, MdHomeFilled } from 'react-icons/md';
-import { Button } from './material-tailwind';
-import SidebarContainer from './sidebar-container';
-import { useState } from 'react';
+"use client";
+
+import { useState } from "react";
+import { FaMap } from "react-icons/fa";
+import { MdTipsAndUpdates, MdHomeFilled } from "react-icons/md";
 import {
   TbLayoutSidebarLeftExpand,
   TbLayoutSidebarLeftCollapse,
-} from 'react-icons/tb';
-import { useRouter } from 'next/navigation';
-import { FaMap } from 'react-icons/fa';
+} from "react-icons/tb";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/nextui";
+import SidebarContainer from "./sidebar-container";
 
 function Sidebar() {
-  const [display, setDisplay] = useState<'static' | 'float'>('static');
+  const [display, setDisplay] = useState<"static" | "float">("static");
   const router = useRouter();
   return (
     <>
-      {display === 'float' && (
+      {display === "float" && (
         <div className=" fixed left-2 top-10 z-50">
           <Button
-            variant="text"
+            variant="light"
             className="flex h-12 w-12 justify-start"
             size="sm"
-            onClick={() => setDisplay('static')}
+            onClick={() => setDisplay("static")}
           >
             <span className="text-white">
               <TbLayoutSidebarLeftExpand />
@@ -33,7 +34,7 @@ function Sidebar() {
       <SidebarContainer display={display}>
         <div className="flex justify-between">
           <Button
-            variant="text"
+            variant="light"
             className="flex flex-1 justify-start"
             size="sm"
           >
@@ -45,14 +46,14 @@ function Sidebar() {
             </h1>
           </Button>
           <Button
-            variant="text"
+            variant="light"
             className="flex h-12 w-12 items-center justify-center"
             size="sm"
             onClick={() =>
-              setDisplay(display === 'static' ? 'float' : 'static')
+              setDisplay(display === "static" ? "float" : "static")
             }
           >
-            {display === 'static' ? (
+            {display === "static" ? (
               <span className="text-white">
                 <TbLayoutSidebarLeftCollapse />
               </span>
@@ -64,11 +65,11 @@ function Sidebar() {
           </Button>
         </div>
         <Button
-          variant="text"
+          variant="light"
           className="flex w-full justify-start"
           size="sm"
           onClick={() => {
-            router.push('/');
+            router.push("/");
           }}
         >
           <h1 className="text-md font-bold text-gray-400">
@@ -79,11 +80,11 @@ function Sidebar() {
           </h1>
         </Button>
         <Button
-          variant="text"
+          variant="light"
           className="flex w-full justify-start"
           size="sm"
           onAbort={() => {
-            router.push('/spaces');
+            router.push("/spaces");
           }}
         >
           <h1 className="text-md font-bold text-gray-400">

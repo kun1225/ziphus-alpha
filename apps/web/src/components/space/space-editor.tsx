@@ -1,30 +1,31 @@
-'use client';
-import React, { useRef, useState } from 'react';
-import SpaceCardEditor from './space-card-editor';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
+"use client";
+
+import React, { useRef, useState } from "react";
+import { CardEditorSEO } from "../card/card-editor";
 import {
   SpaceDto,
   type SpaceGetByIdWithCardResponseDTO,
-} from '@repo/shared-types';
-import useCanvasEditor from '@/hooks/useCanvasEditor';
-import SpaceToolbar from './space-toolbar';
-import { View } from '@/models/view';
+} from "@repo/shared-types";
+import useCreateCard from "@/hooks/card/useCreateCard";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import useViewContextMenu from "@/hooks/space/useViewContextMenu";
+import useViewDrag from "@/hooks/space/useViewDrag";
+import useViewScroll from "@/hooks/space/useViewScroll";
+import useViewTouch from "@/hooks/space/useViewTouch";
+import useViewTransformUpdate from "@/hooks/space/useViewTransformUpdate";
+import useCanvasEditor from "@/hooks/useCanvasEditor";
+import { View } from "@/models/view";
+import SpaceCardEditor from "./space-card-editor";
 import ContextMenuComponent, {
   ContextMenuInfo,
-} from './space-editor-context-menu';
-import useViewScroll from '@/hooks/space/useViewScroll';
-import useViewTouch from '@/hooks/space/useViewTouch';
-import useViewContextMenu from '@/hooks/space/useViewContextMenu';
-import useViewDrag from '@/hooks/space/useViewDrag';
-import useViewTransformUpdate from '@/hooks/space/useViewTransformUpdate';
-import { CardEditorSEO } from '../card/card-editor';
+} from "./space-editor-context-menu";
+import SpaceToolbar from "./space-toolbar";
 
 export default function SpaceEditor({
   initialSpace,
 }: {
-  initialSpace: SpaceGetByIdWithCardResponseDTO['space'];
+  initialSpace: SpaceGetByIdWithCardResponseDTO["space"];
 }) {
   const [space, setSpace] = useState<SpaceDto>(initialSpace as SpaceDto);
 
@@ -64,7 +65,7 @@ export default function SpaceEditor({
   useViewContextMenu(
     whiteBoardRef,
     setContextMenuInfo,
-    contextMenuComponentRef,
+    contextMenuComponentRef
   );
   useViewTransformUpdate(parallaxBoardRef, viewRef);
 
@@ -103,7 +104,7 @@ export default function SpaceEditor({
                 initialSpace?.spaceCards?.find(
                   (initialSpaceSpaceCard) =>
                     initialSpaceSpaceCard.targetCardId ===
-                    spaceCard.targetCardId,
+                    spaceCard.targetCardId
                 )?.card || null
               }
               cardId={spaceCard.targetCardId}
@@ -113,6 +114,7 @@ export default function SpaceEditor({
               sketchMode={sketchMode}
               pencilInfo={pencilInfo}
               eraserInfo={eraserInfo}
+              spaceCardId={spaceCard.id}
             />
           </SpaceCardEditor>
         ))}

@@ -1,6 +1,6 @@
-import axiosInstance from '@/utils/axios';
-import { SpaceGetByIdResponseDTO } from '@repo/shared-types';
-import { useQuery } from '@tanstack/react-query';
+import { SpaceGetByIdResponseDTO } from "@repo/shared-types";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/utils/axios";
 
 export async function fetchSpaceById(spaceId: string) {
   return await axiosInstance.get<SpaceGetByIdResponseDTO>(`/space/${spaceId}`);
@@ -8,7 +8,7 @@ export async function fetchSpaceById(spaceId: string) {
 
 function useQuerySpaceById(spaceId: string) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['space', spaceId],
+    queryKey: ["space", spaceId],
     queryFn: () => fetchSpaceById(spaceId),
   });
   const space = data?.data.space ?? null;

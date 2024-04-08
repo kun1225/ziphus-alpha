@@ -1,7 +1,8 @@
-'use client';
-import { Button, ButtonProps } from '@/components/material-tailwind';
-import useCreateSpace from '@/hooks/space/useCreateSpace';
-import { useRouter } from 'next/navigation';
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Button, ButtonProps } from "@/components/nextui";
+import useCreateSpace from "@/hooks/space/useCreateSpace";
 
 interface SpaceCreateButtonProps extends ButtonProps {
   ref?: React.Ref<HTMLButtonElement>;
@@ -14,7 +15,7 @@ export function SpaceCreateButton({
   const router = useRouter();
   return (
     <Button
-      variant="outlined"
+      variant="bordered"
       {...props}
       onClick={() =>
         mutate.mutate(undefined, {
@@ -24,7 +25,7 @@ export function SpaceCreateButton({
         })
       }
     >
-      {children || 'Create'}
+      {children || "Create"}
     </Button>
   );
 }

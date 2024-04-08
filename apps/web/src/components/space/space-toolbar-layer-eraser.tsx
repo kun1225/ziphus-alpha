@@ -1,5 +1,5 @@
-import { cn } from '@/utils/cn';
-import { EraserInfo } from '@/components/card/card-editor-sketch-panel';
+import { EraserInfo } from "@/components/card/card-editor-sketch-panel";
+import { cn } from "@/utils/cn";
 
 const eraserWidths = [4, 16, 32, 64];
 
@@ -17,15 +17,15 @@ function SpaceToolbarLayerEraser({
         <button
           key={width}
           className={cn(
-            'rounded-full border',
+            "rounded-full border",
             eraserInfo.eraserSize === width
-              ? 'border-gray-200'
-              : 'border-transparent',
+              ? "border-gray-200"
+              : "border-transparent"
           )}
           style={{
             width: `${16 + 4 * index}px`,
             height: `${16 + 4 * index}px`,
-            backgroundColor: eraserInfo.eraserSize === width ? 'gray' : 'white',
+            backgroundColor: eraserInfo.eraserSize === width ? "gray" : "white",
           }}
           onClick={(event) => {
             event.stopPropagation();

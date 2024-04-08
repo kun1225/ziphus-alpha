@@ -6,6 +6,6 @@ export default class Line {
     public startX: number,
     public startY: number,
     public endX: number,
-    public endY: number,
-  ) { }
+    public endY: number
+  ) {}
 }

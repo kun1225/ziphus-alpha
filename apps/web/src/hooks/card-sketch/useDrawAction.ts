@@ -1,9 +1,9 @@
-import { useRef, useCallback } from 'react';
-import Line from '@/models/line';
-import Stroke from '@/models/stroke';
-import * as Y from 'yjs';
-import { v4 } from 'uuid';
-import { PencilInfo } from '@/components/card/card-editor-sketch-panel';
+import { useRef, useCallback } from "react";
+import { v4 } from "uuid";
+import * as Y from "yjs";
+import { PencilInfo } from "@/components/card/card-editor-sketch-panel";
+import Line from "@/models/line";
+import Stroke from "@/models/stroke";
 
 // 判斷線條是否可以合併：基於端點距離
 function isMergeAble(line1: Line, line2: Line): boolean {
@@ -28,7 +28,7 @@ function mergeLines(line1: Line, line2: Line): Line {
     line1.startX,
     line1.startY,
     line2.endX,
-    line2.endY,
+    line2.endY
   );
 }
 
@@ -44,7 +44,7 @@ function optimizeLines(lines: Line[]): Line[] {
         // 如果可以合併，更新最後一條優化過的線條的結束點
         optimizedLines[optimizedLines.length - 1] = mergeLines(
           lastOptimizedLine,
-          currentLine,
+          currentLine
         );
       } else {
         // 如果不可以合併，將當前線條添加到優化過的線條陣列中
@@ -86,7 +86,7 @@ const useDrawAction = ({
         x,
         y,
         x,
-        y,
+        y
       ),
     ]);
     originalStrokesRef.current.push(currentStrokeRef.current);
@@ -110,13 +110,13 @@ const useDrawAction = ({
         lastLine ? lastLine.endX : x,
         lastLine ? lastLine.endY : y,
         x,
-        y,
+        y
       );
 
       currentStrokeRef.current.lines.push(newLine);
       refresh();
     },
-    [isDrawingRef.current, pencilInfo.pencilColor, pencilInfo.pencilSize],
+    [isDrawingRef.current, pencilInfo.pencilColor, pencilInfo.pencilSize]
   );
 
   // 結束筆跡
@@ -124,15 +124,15 @@ const useDrawAction = ({
     // 優化筆跡
     if (currentStrokeRef.current) {
       currentStrokeRef.current.lines = optimizeLines(
-        currentStrokeRef.current.lines,
+        currentStrokeRef.current.lines
       );
     }
 
     // 將筆跡送入遠端
     if (!currentStrokeRef.current) return;
     currentYStrokeRef.current = new Y.Map();
-    currentYStrokeRef.current.set('id', currentStrokeRef.current.id);
-    currentYStrokeRef.current.set('lines', currentStrokeRef.current.lines);
+    currentYStrokeRef.current.set("id", currentStrokeRef.current.id);
+    currentYStrokeRef.current.set("lines", currentStrokeRef.current.lines);
     remoteYArray.push([currentYStrokeRef.current]);
     isDrawingRef.current = false;
   };

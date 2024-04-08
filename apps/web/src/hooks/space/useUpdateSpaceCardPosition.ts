@@ -1,27 +1,27 @@
+import { useEffect, useRef } from "react";
 import {
   SpaceCardDTO,
   SpaceCardImmediateUpdatePositionRequestDTO,
-} from '@repo/shared-types';
-import useSocket from '@/hooks/useSocket';
-import { useEffect, useRef } from 'react';
+} from "@repo/shared-types";
+import useSocket from "@/hooks/useSocket";
 
 function useUpdateSpaceCardPosition(
-  spaceCardRef: React.MutableRefObject<SpaceCardDTO>,
+  spaceCardRef: React.MutableRefObject<SpaceCardDTO>
 ) {
   const lastUpdateTimestamp = useRef<number>(0);
   const targetSpaceCardPosition = useRef({ x: 0, y: 0 });
   const transitionFrameIdRef = useRef<number>(0);
   const { socketEmitWithAuth, socket } = useSocket(
-    spaceCardRef.current.targetSpaceId,
+    spaceCardRef.current.targetSpaceId
   );
 
   function handleUpdatePosition(
-    data: SpaceCardImmediateUpdatePositionRequestDTO,
+    data: SpaceCardImmediateUpdatePositionRequestDTO
   ) {
     if (Date.now() - lastUpdateTimestamp.current < 100) {
       return;
     }
-    socketEmitWithAuth('space:card:update-position', data);
+    socketEmitWithAuth("space:card:update-position", data);
     lastUpdateTimestamp.current = Date.now();
   }
 
@@ -42,7 +42,7 @@ function useUpdateSpaceCardPosition(
           spaceCardRef.current.y = targetSpaceCardPosition.current.y;
         } else {
           transitionFrameIdRef.current = requestAnimationFrame(
-            updatePositionAnimation,
+            updatePositionAnimation
           );
         }
       }
@@ -53,9 +53,9 @@ function useUpdateSpaceCardPosition(
       (data: SpaceCardImmediateUpdatePositionRequestDTO) => {
         targetSpaceCardPosition.current = { x: data.x, y: data.y };
         transitionFrameIdRef.current = requestAnimationFrame(
-          updatePositionAnimation,
+          updatePositionAnimation
         );
-      },
+      }
     );
 
     return () => {

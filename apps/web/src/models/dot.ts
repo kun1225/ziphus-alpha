@@ -5,6 +5,6 @@ export default class Dot {
     public size: number,
     public color: string,
     public borderColor: string,
-    public borderWidth: number,
-  ) { }
+    public borderWidth: number
+  ) {}
 }

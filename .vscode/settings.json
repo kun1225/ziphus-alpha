@@ -15,5 +15,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
-  "cSpell.words": ["fastify", "socketio", "sonner", "tanstack", "Ziphus"]
+  "cSpell.words": [
+    "fastify",
+    "nextui",
+    "socketio",
+    "sonner",
+    "tanstack",
+    "Ziphus"
+  ]
 }

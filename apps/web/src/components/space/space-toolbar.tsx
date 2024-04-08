@@ -1,23 +1,24 @@
-'use client';
+"use client";
+
+import { useEffect, useState } from "react";
+import { FaEraser, FaPencil } from "react-icons/fa6";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { SpaceDto } from "@repo/shared-types";
 import {
   EditMode,
   SketchMode,
   PencilInfo,
   EraserInfo,
-} from '@/components/card/card-editor-sketch-panel';
-import SpaceToolbarLayerEraser from './space-toolbar-layer-eraser';
-import SpaceToolbarLayerPencil from './space-toolbar-layer-pencil';
-import { FaEraser, FaPencil } from 'react-icons/fa6';
-import { IoDocumentTextOutline } from 'react-icons/io5';
-import { useEffect, useState } from 'react';
-import useCreateSpaceCard from '@/hooks/space/useCreateSpaceCard';
-import useCreateCard from '@/hooks/card/useCreateCard';
-import { SpaceDto } from '@repo/shared-types';
-import ToolbarItemButton from './space-toolbar-item-button';
-import { View } from '@/models/view';
-import ToolbarItemAddCardButton from './space-toolbar-add-card-button';
-import ToolbarItemDeleteCardButton from './space-toolbar-delete-card-button';
-import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
+} from "@/components/card/card-editor-sketch-panel";
+import useCreateCard from "@/hooks/card/useCreateCard";
+import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
+import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import { View } from "@/models/view";
+import ToolbarItemAddCardButton from "./space-toolbar-add-card-button";
+import ToolbarItemDeleteCardButton from "./space-toolbar-delete-card-button";
+import ToolbarItemButton from "./space-toolbar-item-button";
+import SpaceToolbarLayerEraser from "./space-toolbar-layer-eraser";
+import SpaceToolbarLayerPencil from "./space-toolbar-layer-pencil";
 
 interface SpaceToolbarProps {
   focusSpaceCardId: string | null;
@@ -59,14 +60,14 @@ function SpaceToolbar({
 
   useEffect(() => {
     if (!focusSpaceCardId) {
-      setEditMode('text');
+      setEditMode("text");
       setSelectedId(0);
     }
-    if (editMode === 'text') {
+    if (editMode === "text") {
       setSelectedId(0);
-    } else if (editMode === 'sketch' && sketchMode === 'pencil') {
+    } else if (editMode === "sketch" && sketchMode === "pencil") {
       setSelectedId(1);
-    } else if (editMode === 'sketch' && sketchMode === 'eraser') {
+    } else if (editMode === "sketch" && sketchMode === "eraser") {
       setSelectedId(2);
     }
   }, [focusSpaceCardId, editMode, sketchMode]);
@@ -81,7 +82,7 @@ function SpaceToolbar({
             isFocused={selectedId === 0}
             onClick={(event) => {
               event.stopPropagation();
-              setEditMode('text');
+              setEditMode("text");
             }}
           >
             <IoDocumentTextOutline />
@@ -93,8 +94,8 @@ function SpaceToolbar({
             isFocused={selectedId === 1}
             onClick={(event) => {
               event.stopPropagation();
-              setEditMode('sketch');
-              setSketchMode('pencil');
+              setEditMode("sketch");
+              setSketchMode("pencil");
             }}
           >
             <FaPencil />
@@ -106,8 +107,8 @@ function SpaceToolbar({
             isFocused={selectedId === 2}
             onClick={(event) => {
               event.stopPropagation();
-              setEditMode('sketch');
-              setSketchMode('eraser');
+              setEditMode("sketch");
+              setSketchMode("eraser");
             }}
           >
             <FaEraser />
@@ -140,13 +141,13 @@ function SpaceToolbar({
         className="absolute right-16 top-1/2 z-50 flex h-fit w-fit -translate-y-1/2 flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        {editMode === 'sketch' && sketchMode === 'pencil' && (
+        {editMode === "sketch" && sketchMode === "pencil" && (
           <SpaceToolbarLayerPencil
             pencilInfo={pencilInfo}
             setPencilInfo={setPencilInfo}
           />
         )}
-        {editMode === 'sketch' && sketchMode === 'eraser' && (
+        {editMode === "sketch" && sketchMode === "eraser" && (
           <SpaceToolbarLayerEraser
             eraserInfo={eraserInfo}
             setEraserInfo={setEraserInfo}

@@ -1,9 +1,10 @@
-'use client';
-import ToolbarItemButton from './space-toolbar-item-button';
-import { SpaceDto } from '@repo/shared-types';
-import { IoTrashBinOutline } from 'react-icons/io5';
-import useDeleteSpaceCard from '@/hooks/space/useDeleteSpaceCard';
-import { useState } from 'react';
+"use client";
+
+import { useState } from "react";
+import { IoTrashBinOutline } from "react-icons/io5";
+import { SpaceDto } from "@repo/shared-types";
+import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
+import ToolbarItemButton from "./space-toolbar-item-button";
 
 interface ToolbarItemDeleteCardButtonProps {
   focusSpaceCardId: string | null;
@@ -22,7 +23,9 @@ export default function ToolbarItemDeleteCardButton({
   return (
     <>
       <div className=" relative">
-        <ToolbarItemButton className='bg-red-700' isFocused={true}
+        <ToolbarItemButton
+          className="bg-red-700"
+          isFocused={true}
           onClick={(event) => {
             event.stopPropagation();
             if (!tryDeleteCard) {
@@ -35,7 +38,7 @@ export default function ToolbarItemDeleteCardButton({
               setSpace({
                 ...space!,
                 spaceCards: space!.spaceCards.filter(
-                  (spaceCard) => spaceCard.id !== focusSpaceCardId!,
+                  (spaceCard) => spaceCard.id !== focusSpaceCardId!
                 ),
               });
             }
@@ -44,7 +47,7 @@ export default function ToolbarItemDeleteCardButton({
           <IoTrashBinOutline />
         </ToolbarItemButton>
         {tryDeleteCard && (
-          <div className=" pointer-events-none bg-red-700 absolute right-14 top-0 h-fit w-64 rounded text-white px-2 py-1 text-white">
+          <div className=" pointer-events-none absolute right-14 top-0 h-fit w-64 rounded bg-red-700 px-2 py-1 text-white text-white">
             <p>再點一次以確定刪除該卡片</p>
           </div>
         )}

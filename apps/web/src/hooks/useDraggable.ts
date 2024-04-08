@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from "react";
 
 interface DragProps {
   x: number;
@@ -51,7 +51,7 @@ function useDraggable({
         });
       }
     },
-    [onDragStart],
+    [onDragStart]
   );
 
   const handleDrag = useCallback(
@@ -74,7 +74,7 @@ function useDraggable({
       lastClientXRef.current = x;
       lastClientYRef.current = y;
     },
-    [onDrag],
+    [onDrag]
   );
 
   const handleDragEnd = useCallback(
@@ -98,7 +98,7 @@ function useDraggable({
       lastClientXRef.current = x;
       lastClientYRef.current = y;
     },
-    [onDragEnd],
+    [onDragEnd]
   );
 
   useEffect(() => {
@@ -182,24 +182,24 @@ function useDraggable({
       }
       handleDragEnd(
         event.changedTouches[0]!.clientX,
-        event.changedTouches[0]!.clientY,
+        event.changedTouches[0]!.clientY
       );
     };
 
-    draggableItem.addEventListener('mousedown', handleMouseStart as any);
-    draggableItem.addEventListener('touchstart', handleTouchStart as any);
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('touchend', handleTouchEnd);
+    draggableItem.addEventListener("mousedown", handleMouseStart as any);
+    draggableItem.addEventListener("touchstart", handleTouchStart as any);
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("touchmove", handleTouchMove);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("touchend", handleTouchEnd);
 
     return () => {
-      draggableItem.removeEventListener('mousedown', handleMouseStart as any);
-      draggableItem.removeEventListener('touchstart', handleTouchStart as any);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchend', handleTouchEnd);
+      draggableItem.removeEventListener("mousedown", handleMouseStart as any);
+      draggableItem.removeEventListener("touchstart", handleTouchStart as any);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("touchend", handleTouchEnd);
     };
   }, [draggableItemRef, handleDragStart, handleDrag, handleDragEnd, available]);
 
@@ -209,7 +209,7 @@ function useDraggable({
       return;
     }
 
-    container.addEventListener('dragover', (event) => {
+    container.addEventListener("dragover", (event) => {
       event.preventDefault();
     });
   }, [containerRef]);

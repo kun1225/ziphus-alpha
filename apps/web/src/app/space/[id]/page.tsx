@@ -1,12 +1,12 @@
-import Sidebar from '@/components/sidebar';
-import SpaceHeaderBar from '@/components/space/space-header-bar';
-import { cookies } from 'next/headers';
-import { fetchSpaceByIdWithCard } from '@/hooks/space/useQuerySpaceByIdWithCard';
-import axiosInstance from '@/utils/axios';
-import { Metadata } from 'next';
-import { SpaceGetByIdWithCardResponseDTO } from '@repo/shared-types';
-import { redirect } from 'next/navigation';
-import SpaceEditor from '@/components/space/space-editor';
+import { Metadata } from "next";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { SpaceGetByIdWithCardResponseDTO } from "@repo/shared-types";
+import Sidebar from "@/components/sidebar";
+import SpaceEditor from "@/components/space/space-editor";
+import SpaceHeaderBar from "@/components/space/space-header-bar";
+import { fetchSpaceByIdWithCard } from "@/hooks/space/useQuerySpaceByIdWithCard";
+import axiosInstance from "@/utils/axios";
 
 export const metadata: Metadata = {};
 
@@ -16,23 +16,23 @@ export default async function Page({
   params: { id: string };
 }): Promise<JSX.Element> {
   const cookieStore = cookies();
-  const authorization = cookieStore.get('authorization');
-  axiosInstance.defaults.headers.authorization = authorization?.value ?? '';
+  const authorization = cookieStore.get("authorization");
+  axiosInstance.defaults.headers.authorization = authorization?.value ?? "";
 
   let data: SpaceGetByIdWithCardResponseDTO | null = null;
   try {
     data = (await fetchSpaceByIdWithCard(id)).data;
   } catch (error) {
     console.error(error);
-    redirect('/login');
+    redirect("/login");
   }
 
-  const title = data?.space?.title ?? 'Ziphus Space Editor';
+  const title = data?.space?.title ?? "Ziphus Space Editor";
   const description =
     data?.space?.spaceCards
-      .map((card) => card?.card?.content ?? '')
-      .join('')
-      .substring(0, 157) ?? 'Ziphus';
+      .map((card) => card?.card?.content ?? "")
+      .join("")
+      .substring(0, 157) ?? "Ziphus";
 
   metadata.title = `Ziphus - ${title}`;
   metadata.description = description;
@@ -40,13 +40,13 @@ export default async function Page({
   metadata.openGraph = {
     title,
     description,
-    type: 'website',
+    type: "website",
     url: `https://ziphus.com/space/${id}`,
   };
 
   metadata.twitter = {
-    card: 'summary',
-    site: '@ziphus',
+    card: "summary",
+    site: "@ziphus",
     title,
     description,
   };

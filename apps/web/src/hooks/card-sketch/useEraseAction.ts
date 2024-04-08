@@ -1,9 +1,9 @@
-import Stroke from '@/models/stroke';
-import * as Y from 'yjs';
-import { EraserInfo } from '@/components/card/card-editor-sketch-panel';
-import { useRef } from 'react';
-import isCircleTouchingWideLine from '@/utils/is-circle-touching-wide-line';
-import { Circle, ShapeType } from '@repo/sketch-canvas';
+import { useRef } from "react";
+import * as Y from "yjs";
+import { Circle, ShapeType } from "@repo/sketch-canvas";
+import { EraserInfo } from "@/components/card/card-editor-sketch-panel";
+import Stroke from "@/models/stroke";
+import isCircleTouchingWideLine from "@/utils/is-circle-touching-wide-line";
 
 interface UseActionProps {
   remoteYArray: Y.Array<any>;
@@ -32,29 +32,29 @@ const useEraseAction = ({
     const needDeleteStrokeIdList: string[] = [];
 
     for (let i = 0; i < remoteYArray.length; i++) {
-      const lines = remoteYArray.get(i).get('lines');
+      const lines = remoteYArray.get(i).get("lines");
       const isTouching = lines.some((line: any) =>
-        isCircleTouchingWideLine({ x, y, size }, line),
+        isCircleTouchingWideLine({ x, y, size }, line)
       );
 
       if (isTouching) {
-        needDeleteStrokeIdList.push(remoteYArray.get(i).get('id'));
+        needDeleteStrokeIdList.push(remoteYArray.get(i).get("id"));
         remoteYArray.delete(i);
         i--;
       }
     }
 
     originalStrokesRef.current = originalStrokesRef.current.filter(
-      (stroke) => !needDeleteStrokeIdList.includes(stroke.id),
+      (stroke) => !needDeleteStrokeIdList.includes(stroke.id)
     );
     eraserRef.current = {
-      id: 'eraser',
+      id: "eraser",
       x,
       y,
       radius: size / 2,
       type: ShapeType.Circle,
-      fillStyle: '#ffffff22',
-      strokeStyle: '#ffffff88',
+      fillStyle: "#ffffff22",
+      strokeStyle: "#ffffff88",
       lineWidth: 1,
     };
     refresh();

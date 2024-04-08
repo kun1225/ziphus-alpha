@@ -1,12 +1,13 @@
-'use client';
-import React, { useEffect } from 'react';
-import { View } from '@/models/view';
-import transformMouseClientPositionToViewPosition from '@/utils/space/transformMouseClientPositionToViewPosition';
+"use client";
+
+import React, { useEffect } from "react";
+import { View } from "@/models/view";
+import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
 // 滾動移動視圖
 const useViewScroll = (
   editorRef: React.RefObject<HTMLDivElement>,
-  viewRef: React.MutableRefObject<View>,
+  viewRef: React.MutableRefObject<View>
 ) => {
   useEffect(() => {
     const editor = editorRef.current;
@@ -20,10 +21,8 @@ const useViewScroll = (
 
       const newScale = Math.max(
         0.01,
-        Math.min(2, view.scale - event.deltaY * 0.0003),
+        Math.min(2, view.scale - event.deltaY * 0.0003)
       );
-
-      console.log(newScale);
 
       // 計算縮放中心點到視圖左上角的距離在縮放前後的變化量
       const { x: centerX, y: centerY } =
@@ -36,7 +35,7 @@ const useViewScroll = (
             scale: newScale,
           },
           mouseX,
-          mouseY,
+          mouseY
         );
       const deltaX = (newCenterX - centerX) * newScale;
       const deltaY = (newCenterY - centerY) * newScale;
@@ -77,10 +76,10 @@ const useViewScroll = (
       }
     };
 
-    editor.addEventListener('wheel', onWheel, { passive: false });
+    editor.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      editor.removeEventListener('wheel', onWheel);
+      editor.removeEventListener("wheel", onWheel);
     };
   }, []);
 };

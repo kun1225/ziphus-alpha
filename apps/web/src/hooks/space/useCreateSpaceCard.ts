@@ -1,17 +1,17 @@
-import axiosInstance from '@/utils/axios';
+import { useEffect } from "react";
+import useSocket from "../useSocket";
+import { AxiosResponse } from "axios";
 import {
   SpaceCardCreateResponseDTO,
   SpaceCardCreateRequestDTO,
   SpaceDto,
-} from '@repo/shared-types';
+} from "@repo/shared-types";
 import {
   UseMutationResult,
   useMutation,
   useQueryClient,
-} from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
-import useSocket from '../useSocket';
-import { useEffect } from 'react';
+} from "@tanstack/react-query";
+import axiosInstance from "@/utils/axios";
 
 async function fetchCreateSpaceCard(
   spaceId: string,
@@ -19,17 +19,17 @@ async function fetchCreateSpaceCard(
     targetCardId: string;
     x: number;
     y: number;
-  },
+  }
 ) {
   return await axiosInstance.post<SpaceCardCreateResponseDTO>(
     `/space/${spaceId}/space-card`,
-    data,
+    data
   );
 }
 
 function useCreateSpaceCard(
   setLocalSpace: React.Dispatch<React.SetStateAction<SpaceDto>>,
-  localSpace: SpaceDto,
+  localSpace: SpaceDto
 ): UseMutationResult<
   AxiosResponse<SpaceCardCreateResponseDTO>,
   unknown,
@@ -42,10 +42,10 @@ function useCreateSpaceCard(
   const queryClient = useQueryClient();
   const createSpaceCard = async (data: SpaceCardCreateResponseDTO) => {
     queryClient.invalidateQueries({
-      queryKey: ['space', localSpace?.id],
+      queryKey: ["space", localSpace?.id],
     });
     queryClient.invalidateQueries({
-      queryKey: ['spaces'],
+      queryKey: ["spaces"],
     });
     if (!localSpace) {
       return;
@@ -60,18 +60,18 @@ function useCreateSpaceCard(
     mutationFn: (
       data: SpaceCardCreateRequestDTO & {
         spaceId: string;
-      },
+      }
     ) => fetchCreateSpaceCard(data.spaceId, data),
     onSuccess: (data) => {},
   });
 
   useEffect(() => {
-    socket?.on('space:card:create', (data: SpaceCardCreateResponseDTO) => {
+    socket?.on("space:card:create", (data: SpaceCardCreateResponseDTO) => {
       createSpaceCard(data);
     });
 
     return () => {
-      socket?.off('space:card:create');
+      socket?.off("space:card:create");
     };
   }, [localSpace?.id, localSpace?.spaceCards]);
   return mutate;

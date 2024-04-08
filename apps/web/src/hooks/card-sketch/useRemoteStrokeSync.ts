@@ -1,6 +1,6 @@
-import Stroke from '@/models/stroke';
-import * as Y from 'yjs';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import * as Y from "yjs";
+import Stroke from "@/models/stroke";
 
 interface UseRemoteStrokeSyncProps {
   remoteYArray: Y.Array<any>;
@@ -20,8 +20,8 @@ function useRemoteStrokeSync({
       remoteRenderStrokesRef.current = remoteStrokes.filter(
         (stroke: any) =>
           !originalStrokesRef.current.some(
-            (originalStroke: any) => originalStroke.id === stroke.id,
-          ),
+            (originalStroke: any) => originalStroke.id === stroke.id
+          )
       );
       refresh();
     }
