@@ -2,7 +2,7 @@
 import useMe from "@/hooks/useMe";
 import CardEditorMarkdownEditor from "./card-editor-markdown-editor";
 import useYJSProvide from "@/hooks/useYJSProvider";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { CardDto, CardGetByIdResponseDTO } from "@repo/shared-types";
 import useUpdateCardSize from "@/hooks/card/useUpdateCardSize";
 import CardEditorSketchPanel, {
@@ -15,9 +15,11 @@ import useQueryCardById from "@/hooks/card/useQueryCardById";
 import useCanvasEditor from "@/hooks/useCanvasEditor";
 import useCardResize from "@/hooks/card/useCardResize";
 import useUpdateCardIsSizeFitContent from "@/hooks/card/useUpdateCardIsSizeFitContent";
+import useViewScaleUpdate from "@/hooks/card/useViewScaleUpdate";
+import useFitContentEvent from "@/hooks/card/useFitContentEvent";
 
-export const MIN_CARD_HEIGHT = 800;
-export const MIN_CARD_WIDTH = 600;
+export const MIN_CONTENT_CARD_HEIGHT = 800;
+export const MIN_CONTENT_CARD_WIDTH = 600;
 
 interface IndependentCardEditor {
   initialCard: CardGetByIdResponseDTO["card"];
@@ -49,6 +51,7 @@ interface CardEditorProps {
   sketchMode: SketchMode;
   pencilInfo: PencilInfo;
   eraserInfo: EraserInfo;
+  spaceCardId?: string;
 }
 
 export function CardEditorSEO(props: CardEditorProps) {
@@ -69,33 +72,6 @@ export function CardEditorSEO(props: CardEditorProps) {
   return <CardEditor {...props} initialCard={initialCard || fetchedCard} />;
 }
 
-// 隨時更新大小
-const useViewScaleUpdate = (
-  cardHTMLElementRef: React.RefObject<HTMLDivElement>,
-  cardDataRef: React.MutableRefObject<CardDto>,
-) => {
-  const [refresh, setRefresh] = useState(0);
-
-  useEffect(() => {
-    if (!cardHTMLElementRef.current) {
-      return;
-    }
-    cardHTMLElementRef.current.style.width = `${cardDataRef.current.width}px`;
-    cardHTMLElementRef.current.style.height = `${cardDataRef.current.height}px`;
-  }, [refresh]);
-
-  const needRefresh = useCallback(() => {
-    setRefresh((prev) => prev + 1);
-  }, []);
-
-  useEffect(() => {
-    needRefresh();
-  }, []);
-
-  return {
-    needRefresh,
-  };
-};
 
 function CardEditor({
   initialCard,
@@ -105,11 +81,13 @@ function CardEditor({
   sketchMode,
   pencilInfo,
   eraserInfo,
+  spaceCardId
 }: CardEditorProps) {
   if (!initialCard) throw new Error("Card not found");
 
   const cardDataRef = useRef<CardDto>(initialCard);
   const cardHTMLElementRef = useRef<HTMLDivElement>(null);
+  const contentHeightRef = useRef<number>(0);
   const { account } = useMe();
   const { doc, provider, status } = useYJSProvide(`card:${initialCard?.id}`);
 
@@ -131,12 +109,13 @@ function CardEditor({
   );
 
   const onContentSizeChange = useCallback((height: number) => {
+    contentHeightRef.current = height;
     if (!cardDataRef.current.isSizeFitContent) {
       return;
     }
 
     mutateUpdateCardSize.mutate({
-      height: height < MIN_CARD_HEIGHT ? MIN_CARD_HEIGHT : height,
+      height: height < MIN_CONTENT_CARD_HEIGHT ? MIN_CONTENT_CARD_HEIGHT : height,
       width: cardDataRef.current.width,
     });
   }, []);
@@ -157,6 +136,7 @@ function CardEditor({
 
   const onCardSizeChangeFinish = useCallback(
     (width: number, height: number) => {
+
       mutateUpdateCardSize.mutate({
         width,
         height,
@@ -173,26 +153,43 @@ function CardEditor({
       onCardSizeChangeFinish,
     );
 
-  if (!account || status !== "connected" || !provider) return null;
+  useFitContentEvent(spaceCardId, () => {
+    mutateUpdateCardIsSizeFitContent.mutate({
+      isSizeFitContent: true,
+    });
+    onCardSizeChange(MIN_CONTENT_CARD_WIDTH, contentHeightRef.current);
+    onCardSizeChangeFinish(MIN_CONTENT_CARD_WIDTH, contentHeightRef.current);
+  });
+
 
   return (
     <div className="relative overflow-hidden" ref={cardHTMLElementRef}>
-      <CardEditorSketchPanel
-        isSketching={editMode === "sketch"}
-        cardId={cardDataRef.current.id}
-        accountName={account.name}
-        doc={doc}
-        sketchMode={sketchMode}
-        pencilInfo={pencilInfo}
-        eraserInfo={eraserInfo}
-      />
-      <CardEditorMarkdownEditor
-        cardId={cardDataRef.current.id}
-        onContentSizeChange={onContentSizeChange}
-        accountName={account.name}
-        provider={provider}
-        doc={doc}
-      />
+      {
+        account && status === "connected" && provider ? (
+          <>
+            <CardEditorSketchPanel
+              isSketching={editMode === "sketch"}
+              cardId={cardDataRef.current.id}
+              accountName={account.name}
+              doc={doc}
+              sketchMode={sketchMode}
+              pencilInfo={pencilInfo}
+              eraserInfo={eraserInfo}
+            />
+            <CardEditorMarkdownEditor
+              cardId={cardDataRef.current.id}
+              onContentSizeChange={onContentSizeChange}
+              accountName={account.name}
+              provider={provider}
+              doc={doc}
+            />
+          </>
+        ) : (
+          <div className=" text-white p-8">
+            與伺服器連線中...
+          </div>
+        )
+      }
       {isFocus && (
         <>
           <div

@@ -1,6 +1,8 @@
-import { MIN_CARD_HEIGHT, MIN_CARD_WIDTH } from '@/components/card/card-editor';
 import { CardDto } from '@repo/shared-types';
 import { useEffect, useRef } from 'react';
+
+export const MIN_DRAG_CARD_HEIGHT = 100;
+export const MIN_DRAG_CARD_WIDTH = 100;
 
 // 拉動卡片邊框
 type ResizeBorderType = 'width' | 'height' | 'all';
@@ -37,11 +39,11 @@ const useCardResize = (
       const deltaWidth = (clientX - initialPosition.current.x) / ratio;
       const deltaHeight = (clientY - initialPosition.current.y) / ratio;
       const width = Math.max(
-        MIN_CARD_WIDTH,
+        MIN_DRAG_CARD_WIDTH,
         cardRef.current!.width + deltaWidth,
       );
       const height = Math.max(
-        MIN_CARD_HEIGHT,
+        MIN_DRAG_CARD_HEIGHT,
         cardRef.current!.height + deltaHeight,
       );
       initialPosition.current = {

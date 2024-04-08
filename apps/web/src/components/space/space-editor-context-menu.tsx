@@ -101,7 +101,14 @@ function SpaceCardContextMenu(props: ContextMenuComponentProps) {
     <>
       <button
         className="h-fit w-full cursor-pointer rounded px-2 py-1 text-left transition-all duration-300 hover:bg-gray-700"
-        onClick={() => {}}
+        onClick={() => {
+          const event = new CustomEvent("space-card-fit-content", {
+            detail: {
+              spaceCardId: contextMenuInfo?.targetSpaceCardId
+            }
+          });
+          window.dispatchEvent(event);
+        }}
       >
         Fit to content
       </button>
@@ -135,9 +142,8 @@ const ContextMenuComponent = React.forwardRef(
 
     return (
       <div
-        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${
-          contextMenuInfo ? '' : 'hidden'
-        }`}
+        className={`absolute flex h-fit w-fit min-w-48 flex-col gap-2 rounded-md bg-gray-800 p-1 text-gray-100 ${contextMenuInfo ? '' : 'hidden'
+          }`}
         style={{
           left: contextMenuInfo ? contextMenuInfo.x : 0,
           top: contextMenuInfo ? contextMenuInfo.y : 0,
