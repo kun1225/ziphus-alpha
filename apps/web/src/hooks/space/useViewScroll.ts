@@ -50,8 +50,8 @@ const useViewScroll = (
     const onMove = (deltaX: number, deltaY: number) => {
       const view = viewRef.current!;
       viewRef.current = {
-        x: view.x + deltaX,
-        y: view.y + deltaY,
+        x: view.x - deltaX,
+        y: view.y - deltaY,
         scale: view.scale,
       };
     };

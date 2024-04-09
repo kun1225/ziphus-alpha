@@ -24,7 +24,7 @@ export default function Page(): JSX.Element {
         </p>
         <p className="text-md z-10 mt-2 text-zinc-300">同步編輯、即時協作</p>
         <div className="z-10">
-          <Link href={"/login"}>
+          <Link href={"/spaces"}>
             <Button
               className="mt-12 border-white text-white"
               color="default"
