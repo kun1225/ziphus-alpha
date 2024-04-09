@@ -23,6 +23,21 @@ export default function Page(): JSX.Element {
           卡片盒式筆記，組織你的思維
         </p>
         <p className="text-md z-10 mt-2 text-zinc-300">同步編輯、即時協作</p>
+        <p className="text-md z-10 mt-2 text-zinc-400">
+          請注意，這是最初期的測試版
+        </p>
+        <p className="text-md z-10 mt-2 text-zinc-400">
+          目前只支援電腦、平板操作
+        </p>
+        <p className="text-md z-10 mt-2 text-zinc-400">
+          且可能存在各種未知的問題，歡迎回報至
+          <Link
+            href="https://discord.gg/sDcyDYjr"
+            className="text-blue-400 underline"
+          >
+            Discord
+          </Link>
+        </p>
         <div className="z-10">
           <Link href={"/spaces"}>
             <Button
