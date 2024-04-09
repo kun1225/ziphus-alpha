@@ -93,11 +93,12 @@ export default function SpaceEditor({
             viewRef={viewRef}
             isFocus={focusSpaceCardId === spaceCard.id}
             onMouseDown={(e) => {
+              if (e.button !== 2) return;
               mouseDownTimeRef.current = Date.now();
             }}
             onClick={(e) => {
               e.stopPropagation();
-              if (Date.now() - mouseDownTimeRef.current > 200) {
+              if (Date.now() - mouseDownTimeRef.current > 300) {
                 return;
               }
               setSelectedSpaceCardIdList([spaceCard.id]);
