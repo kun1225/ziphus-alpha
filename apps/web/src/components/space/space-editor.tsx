@@ -56,7 +56,10 @@ export default function SpaceEditor({
   const parallaxBoardRef = useRef<HTMLDivElement | null>(null);
   const contextMenuComponentRef = useRef<HTMLDivElement | null>(null);
   const [focusSpaceCardId, setFocusSpaceCardId] = useState<string | null>(null);
-  const mouseDownTimeRef = useRef<number>(0);
+  const mouseClickPositionRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [selectedSpaceCardIdList, setSelectedSpaceCardIdList] = useState<
     string[]
   >([]);
@@ -93,12 +96,22 @@ export default function SpaceEditor({
             viewRef={viewRef}
             isFocus={focusSpaceCardId === spaceCard.id}
             onMouseDown={(e) => {
-              if (e.button !== 2) return;
-              mouseDownTimeRef.current = Date.now();
+              if (e.button !== 0) return;
+              mouseClickPositionRef.current = {
+                x: e.clientX,
+                y: e.clientY,
+              };
             }}
             onClick={(e) => {
               e.stopPropagation();
-              if (Date.now() - mouseDownTimeRef.current > 300) {
+              if (e.button !== 0) return;
+              const x = e.clientX;
+              const y = e.clientY;
+              if (
+                mouseClickPositionRef.current &&
+                Math.abs(x - mouseClickPositionRef.current.x) > 5 &&
+                Math.abs(y - mouseClickPositionRef.current.y) > 5
+              ) {
                 return;
               }
               setSelectedSpaceCardIdList([spaceCard.id]);
