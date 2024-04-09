@@ -4,10 +4,12 @@ import React, { useEffect } from "react";
 import { View } from "@/models/view";
 import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
+
 // 滾動移動視圖
 const useViewScroll = (
   editorRef: React.RefObject<HTMLDivElement>,
-  viewRef: React.MutableRefObject<View>
+  viewRef: React.MutableRefObject<View>,
+  onChange?: (view: View) => void
 ) => {
   useEffect(() => {
     const editor = editorRef.current;
@@ -45,6 +47,7 @@ const useViewScroll = (
         y: view.y + deltaY,
         scale: newScale,
       };
+      onChange && onChange(viewRef.current);
     };
 
     const onMove = (deltaX: number, deltaY: number) => {
@@ -54,6 +57,7 @@ const useViewScroll = (
         y: view.y - deltaY,
         scale: view.scale,
       };
+      onChange && onChange(viewRef.current);
     };
 
     const onWheel = (event: WheelEvent) => {

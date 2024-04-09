@@ -68,7 +68,7 @@ function Header() {
           </NavbarItem>
           <NavbarItem
             onClick={() => {
-              toast.error("正在撰寫中");
+              toast.error("正在開發中，目前你可以在 Discord 中，找到教學文件");
             }}
           >
             <Link color="foreground " href="#">

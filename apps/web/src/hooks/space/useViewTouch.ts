@@ -4,10 +4,12 @@ import React, { useEffect, useRef } from "react";
 import { View } from "@/models/view";
 import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
+
 // 滑動移動視圖
 const useViewTouch = (
   editorRef: React.RefObject<HTMLDivElement>,
-  viewRef: React.MutableRefObject<View>
+  viewRef: React.MutableRefObject<View>,
+  onChange?: (view: View) => void
 ) => {
   const lastTouchPosition = useRef({ x: 0, y: 0 });
   const lastTwoPointDeltaDistance = useRef(0);
@@ -51,6 +53,7 @@ const useViewTouch = (
         y: view.y + deltaY,
         scale: newScale,
       };
+      onChange && onChange(viewRef.current);
     };
 
     const onMove = (deltaX: number, deltaY: number) => {
@@ -61,6 +64,7 @@ const useViewTouch = (
         y: view.y + deltaY,
         scale: view.scale,
       };
+      onChange && onChange(viewRef.current);
     };
 
     const onTouchMove = (event: TouchEvent) => {

@@ -65,9 +65,15 @@ export default function SpaceEditor({
   >([]);
   const [contextMenuInfo, setContextMenuInfo] =
     useState<ContextMenuInfo | null>(null);
-  useViewScroll(whiteBoardRef, viewRef);
-  useViewTouch(whiteBoardRef, viewRef);
-  useViewDrag(whiteBoardRef, viewRef, !focusSpaceCardId);
+  useViewScroll(whiteBoardRef, viewRef, () => {
+    setContextMenuInfo(null);
+  });
+  useViewTouch(whiteBoardRef, viewRef, () => {
+    setContextMenuInfo(null);
+  });
+  useViewDrag(whiteBoardRef, viewRef, !focusSpaceCardId, () => {
+    setContextMenuInfo(null);
+  });
   useViewContextMenu(
     whiteBoardRef,
     setContextMenuInfo,

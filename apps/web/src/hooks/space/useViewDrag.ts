@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { View } from "@/models/view";
 
+
 // 右鍵按住拖曳視野
 const useViewDrag = (
   editorRef: React.RefObject<HTMLDivElement>,
   viewRef: React.MutableRefObject<View>,
-  availableMove: boolean = true
+  availableMove: boolean = true,
+  onChange?: (view: View) => void
 ) => {
   const prevXRef = useRef(0);
   const prevYRef = useRef(0);
@@ -36,6 +38,7 @@ const useViewDrag = (
           y: view.y + deltaY,
           scale: view.scale,
         };
+        onChange && onChange(viewRef.current);
       }
     };
 
