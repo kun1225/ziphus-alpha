@@ -3,6 +3,7 @@
 import { FaDiscord } from "react-icons/fa";
 import { FaThreads } from "react-icons/fa6";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   Navbar,
   NavbarBrand,
@@ -65,12 +66,20 @@ function Header() {
               </DropdownMenu>
             </Dropdown>
           </NavbarItem>
-          <NavbarItem>
+          <NavbarItem
+            onClick={() => {
+              toast.error("正在撰寫中");
+            }}
+          >
             <Link color="foreground " href="#">
               wiki
             </Link>
           </NavbarItem>
-          <NavbarItem>
+          <NavbarItem
+            onClick={() => {
+              toast.info("目前完全免費喔～");
+            }}
+          >
             <Link color="foreground " href="#">
               Price
             </Link>
