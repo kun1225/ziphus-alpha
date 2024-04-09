@@ -71,9 +71,7 @@ function AccountLoginForm() {
           })}
         />
         {errors.email?.message && (
-          <p color="red" className="text-sm">
-            {errors.email.message}
-          </p>
+          <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
         <h6 className="-mb-3 text-zinc-100">Password</h6>
         <Input
@@ -90,9 +88,7 @@ function AccountLoginForm() {
           })}
         />
         {errors.password?.message && (
-          <p color="red" className="text-sm">
-            {errors.password.message}
-          </p>
+          <p className="text-sm text-red-500">{errors.password.message}</p>
         )}
       </div>
       <Button className="mt-6" fullWidth size="lg" type="submit">

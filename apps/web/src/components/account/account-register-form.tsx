@@ -69,9 +69,7 @@ function AccountRegisterForm() {
           })}
         />
         {errors.email?.message && (
-          <p color="red" className="text-sm">
-            {errors.email.message}
-          </p>
+          <p className="text-sm text-red-500">{errors.email.message}</p>
         )}
         <h6 className="-mb-3 text-zinc-100">Name</h6>
         <Input
@@ -102,7 +100,7 @@ function AccountRegisterForm() {
           })}
         />
         {errors.password?.message && (
-          <p color="red" className="text-sm">
+          <p color="red" className="text-sm text-red-500">
             {errors.password.message}
           </p>
         )}
