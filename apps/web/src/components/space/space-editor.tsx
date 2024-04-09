@@ -103,8 +103,8 @@ export default function SpaceEditor({
               };
             }}
             onClick={(e) => {
-              e.stopPropagation();
               if (e.button !== 0) return;
+              e.stopPropagation();
               const x = e.clientX;
               const y = e.clientY;
               if (
@@ -115,10 +115,6 @@ export default function SpaceEditor({
                 return;
               }
               setSelectedSpaceCardIdList([spaceCard.id]);
-              setFocusSpaceCardId(spaceCard.id);
-            }}
-            onDoubleClick={(e) => {
-              e.stopPropagation();
               setFocusSpaceCardId(spaceCard.id);
             }}
             layers={space.layers}
