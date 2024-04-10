@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { FaCheck } from "react-icons/fa";
 import { Metadata } from "next";
 import Footer from "@/components/footer";
@@ -82,24 +83,24 @@ export default function Page(): JSX.Element {
               <CardBody className="overflow-visible py-2">
                 <p className="mb-4">
                   {price.description.split("\n").map((line) => (
-                    <>
+                    <Fragment key={line}>
                       {line}
                       <br />
-                    </>
+                    </Fragment>
                   ))}
                 </p>
                 <ul className="text-default-500">
                   {price.features.map((feature) => (
-                    <li className="my-2 flex items-center gap-2">
+                    <li className="my-2 flex items-center gap-2" key={feature}>
                       <span className="rounded-full border border-white/20 bg-white/20 p-1">
                         <FaCheck />
                       </span>
                       <span>
                         {feature.split("\n").map((line) => (
-                          <>
+                          <Fragment key={line}>
                             {line}
                             <br />
-                          </>
+                          </Fragment>
                         ))}
                       </span>
                     </li>
