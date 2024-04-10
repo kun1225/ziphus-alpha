@@ -10,8 +10,12 @@ import {
   type AccountRegisterResponseDTO,
 } from "@repo/shared-types";
 import { useMutation } from "@tanstack/react-query";
-import { Input, Button } from "@/components/nextui";
+import { Input, Button, Checkbox } from "@/components/nextui";
 import axiosInstance from "@/utils/axios";
+
+interface AccountRegisterFormData extends AccountRegisterRequestDTO {
+  confirmTermsAndPrivacy: boolean;
+}
 
 async function fetchAccountRegister(data: AccountRegisterRequestDTO) {
   return await axiosInstance.post<AccountRegisterResponseDTO>(
@@ -26,7 +30,7 @@ function AccountRegisterForm() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AccountRegisterRequestDTO>();
+  } = useForm<AccountRegisterFormData>();
   const mutation = useMutation({
     mutationKey: ["account", "register"],
     mutationFn: fetchAccountRegister,
@@ -81,7 +85,7 @@ function AccountRegisterForm() {
           })}
         />
         {errors.name?.message && (
-          <p color="red" className="text-sm">
+          <p color="red" className="text-sm text-red-500">
             {errors.name.message}
           </p>
         )}
@@ -105,6 +109,28 @@ function AccountRegisterForm() {
           </p>
         )}
       </div>
+      <div className="mt-4">
+        <Checkbox
+          {...register("confirmTermsAndPrivacy", {
+            required: "請同意服務條款與隱私政策",
+          })}
+        >
+          註冊即表示您同意我們的{" "}
+          <Link href="/terms" className="text-blue-500">
+            服務條款
+          </Link>{" "}
+          與{" "}
+          <Link href="/privacy" className="text-blue-500">
+            隱私政策
+          </Link>
+        </Checkbox>
+      </div>
+      {errors.confirmTermsAndPrivacy?.message && (
+        <p className="text-sm text-red-500">
+          {errors.confirmTermsAndPrivacy.message}
+        </p>
+      )}
+
       <Button className="mt-6" fullWidth size="lg" type="submit">
         sign up
       </Button>

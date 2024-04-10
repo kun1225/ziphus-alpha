@@ -2,6 +2,7 @@
 
 import { FaDiscord } from "react-icons/fa";
 import { FaThreads } from "react-icons/fa6";
+import { IoMail } from "react-icons/io5";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -61,7 +62,15 @@ function Header() {
                   href="https://www.threads.net/@ray.realms"
                   target="_blank"
                 >
-                  My threads
+                  threads
+                </DropdownItem>
+                <DropdownItem
+                  key="email"
+                  startContent={<IoMail />}
+                  href="mailto:ray948787@gmail.com"
+                  target="_blank"
+                >
+                  Email
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -75,12 +84,8 @@ function Header() {
               wiki
             </Link>
           </NavbarItem>
-          <NavbarItem
-            onClick={() => {
-              toast.info("目前完全免費喔～");
-            }}
-          >
-            <Link color="foreground " href="#">
+          <NavbarItem>
+            <Link color="foreground " href="/pricing">
               Price
             </Link>
           </NavbarItem>

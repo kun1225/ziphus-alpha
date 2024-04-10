@@ -1,12 +1,7 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 import { Button } from "@/components/nextui";
-
-const SpaceEditor = dynamic(() => import("@/components/space/space-editor"), {
-  loading: () => <p>Loading...</p>,
-  ssr: false,
-});
 
 export default function Page(): JSX.Element {
   return (
@@ -50,10 +45,9 @@ export default function Page(): JSX.Element {
             </Button>
           </Link>
         </div>
-        <main className="mt-12 h-[720px] w-full overflow-hidden rounded-xl">
-          {/*<SpaceEditor initialSpace={exampleSpace as any} />*/}
-        </main>
+        <main className="mt-12 h-[720px] w-full"></main>
       </main>
+      <Footer />
     </div>
   );
 }
