@@ -29,6 +29,8 @@ function AccountRegisterForm() {
   const {
     register,
     handleSubmit,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm<AccountRegisterFormData>();
   const mutation = useMutation({
@@ -112,8 +114,16 @@ function AccountRegisterForm() {
       <div className="mt-4">
         <Checkbox
           {...register("confirmTermsAndPrivacy", {
-            required: "請同意服務條款與隱私政策",
+            required: "請確認服務條款與隱私政策",
           })}
+          onClick={() => {
+            setValue(
+              "confirmTermsAndPrivacy",
+              !getValues("confirmTermsAndPrivacy")
+            );
+            console.log(getValues("confirmTermsAndPrivacy"));
+          }}
+          checked={getValues("confirmTermsAndPrivacy")}
         >
           註冊即表示您同意我們的{" "}
           <Link href="/terms" className="text-blue-500">
