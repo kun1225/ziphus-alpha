@@ -6,7 +6,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Image,
   Divider,
   CardFooter,
   Button,
@@ -40,6 +39,7 @@ const priceList = [
       "無限筆記",
       "社群支援",
       "支援 10 人同時協作",
+      "讓貓貓陪你寫筆記",
       "10 GB 雲端空間",
       "雲端空間 可加購 15NT$/GB",
     ],
@@ -67,7 +67,7 @@ export default function Page(): JSX.Element {
           {priceList.map((price) => (
             <Card
               key={price.name}
-              className="min-h-[36rem] w-full min-w-[24rem] p-8"
+              className="min-h-[48rem] w-full min-w-[24rem] p-8"
             >
               <CardHeader className="flex-col items-start px-4 pb-0 pt-2">
                 <h1 className="text-lg font-bold uppercase">{price.name}</h1>
@@ -80,6 +80,14 @@ export default function Page(): JSX.Element {
               </CardHeader>
               <Divider className="my-4" />
               <CardBody className="overflow-visible py-2">
+                <p className="mb-4">
+                  {price.description.split("\n").map((line) => (
+                    <>
+                      {line}
+                      <br />
+                    </>
+                  ))}
+                </p>
                 <ul className="text-default-500">
                   {price.features.map((feature) => (
                     <li className="my-2 flex items-center gap-2">
@@ -99,7 +107,7 @@ export default function Page(): JSX.Element {
                 </ul>
               </CardBody>
               <CardFooter className="flex items-center justify-center">
-                <Button size="lg" className="w-full" isDisabled>
+                <Button size="lg" className="w-full" isDisabled={true}>
                   {price.subscription}
                 </Button>
               </CardFooter>

@@ -25,8 +25,7 @@ const accountMeController: FastifyControllerInterface<AccountGetInfoUseCase> = (
       try {
         const accountToken = getAccountTokenInterfaceFromAuth(request.headers);
         if (!accountToken) {
-          reply.code(401);
-          throw new Error("Unauthorized");
+          return reply.code(401).send();
         }
         const account = await accountGetInfoUseCase({
           accountId: accountToken.accountId,

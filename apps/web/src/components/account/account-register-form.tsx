@@ -121,7 +121,6 @@ function AccountRegisterForm() {
               "confirmTermsAndPrivacy",
               !getValues("confirmTermsAndPrivacy")
             );
-            console.log(getValues("confirmTermsAndPrivacy"));
           }}
           checked={getValues("confirmTermsAndPrivacy")}
         >

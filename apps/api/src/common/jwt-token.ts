@@ -8,7 +8,10 @@ function signToken<T extends object | string | Buffer>(payload: T) {
   return jwt.sign(payload, privateKey);
 }
 
-function decodeToken<T extends JwtPayload | string>(token: string): T {
+function decodeToken<T extends JwtPayload | string>(token?: string): T {
+  if (!token) {
+    throw new Error("Token is not provided");
+  }
   return jwt.verify(token, privateKey) as T;
 }
 

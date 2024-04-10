@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { View } from "@/models/view";
 import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
-
 // 滾動移動視圖
 const useViewScroll = (
   editorRef: React.RefObject<HTMLDivElement>,

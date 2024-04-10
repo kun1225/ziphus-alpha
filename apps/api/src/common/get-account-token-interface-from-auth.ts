@@ -4,14 +4,16 @@ import { decodeToken } from "./jwt-token";
 function getAccountTokenInterfaceFromAuth({
   authorization,
 }: {
-  authorization: string;
+  authorization?: string;
 }): AccountTokenInterface | null {
   try {
+    if (!authorization) {
+      return null;
+    }
     const accountTokenInterface =
       decodeToken<AccountTokenInterface>(authorization);
     return accountTokenInterface;
   } catch (error) {
-    console.error(error);
     return null;
   }
 }

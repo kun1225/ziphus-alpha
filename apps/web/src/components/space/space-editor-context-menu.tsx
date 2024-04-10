@@ -14,11 +14,12 @@ import { SlSizeActual } from "react-icons/sl";
 import { SpaceCardUpdateLayerRequestDTO, SpaceDto } from "@repo/shared-types";
 import { Listbox, ListboxSection, ListboxItem } from "@/components/nextui";
 import useCreateCard from "@/hooks/card/useCreateCard";
-import useQueryCardList from "@/hooks/card/useQueryCardList";
 import useCreateSpaceCard from "@/hooks/space/useCreateSpaceCard";
 import useDeleteSpaceCard from "@/hooks/space/useDeleteSpaceCard";
 import useUpdateSpaceCardLayer from "@/hooks/space/useUpdateSpaceCardLayer";
+import useMe from "@/hooks/useMe";
 import { View } from "@/models/view";
+import { cn } from "@/utils/cn";
 import transformMouseClientPositionToViewPosition from "@/utils/space/transformMouseClientPositionToViewPosition";
 
 export interface ContextMenuInfo {
@@ -54,8 +55,6 @@ function GlobalSpaceContextMenu(
     space,
     setSpace,
   } = props;
-  const [isAddOriginalCard, setIsAddOriginalCard] = useState(false);
-  const { cards } = useQueryCardList();
 
   const handleAddCard = useCallback(() => {
     mutateCreateCard.mutate(undefined, {
@@ -109,60 +108,8 @@ function GlobalSpaceContextMenu(
           >
             新增卡片
           </ListboxItem>
-          <ListboxItem
-            key="add-original-card"
-            description="新增一張現有卡片"
-            startContent={<MdOutlineDriveFileMoveRtl />}
-            onClick={() => setIsAddOriginalCard(!isAddOriginalCard)}
-          >
-            將現有卡片加入
-          </ListboxItem>
         </ListboxSection>
       </Listbox>
-      {isAddOriginalCard && (
-        <Listbox className=" absolute max-h-96 w-48 translate-x-full translate-y-0 overflow-y-auto rounded-md bg-gray-800 p-1 text-gray-100 ">
-          <ListboxSection title="選擇卡片">
-            {cards.map((card) => (
-              <ListboxItem
-                key={card.id}
-                aria-label="card"
-                onClick={() => {
-                  mutateCreateSpaceCard.mutate(
-                    {
-                      spaceId,
-                      targetCardId: card.id,
-                      ...transformMouseClientPositionToViewPosition(
-                        viewRef.current,
-                        contextMenuInfo?.x || 0,
-                        contextMenuInfo?.y || 0
-                      ),
-                    },
-                    {
-                      onSuccess: (data: any) => {
-                        console.log("新增卡片成功", data.data);
-                        setSpace({
-                          ...space!,
-                          spaceCards: [
-                            ...space!.spaceCards,
-                            data.data.spaceCard,
-                          ],
-                        });
-                      },
-                    }
-                  );
-                  setIsAddOriginalCard(false);
-                  setContextMenuInfo(null);
-                }}
-              >
-                <div
-                  className="h-36 w-full overflow-hidden rounded-md p-2"
-                  dangerouslySetInnerHTML={{ __html: card.content }}
-                ></div>
-              </ListboxItem>
-            ))}
-          </ListboxSection>
-        </Listbox>
-      )}
     </>
   );
 }

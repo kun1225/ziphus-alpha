@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { View } from "@/models/view";
 
-
 // 右鍵按住拖曳視野
 const useViewDrag = (
   editorRef: React.RefObject<HTMLDivElement>,

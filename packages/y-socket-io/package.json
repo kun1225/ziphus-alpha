@@ -63,7 +63,9 @@
     "lib0": "^0.2.52",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
-    "y-protocols": "^1.0.5"
+    "y-protocols": "^1.0.5",
+    "mongodb": "^6.5.0",
+    "y-mongodb-provider": "^0.1.9"
   },
   "devDependencies": {
     "ts-standard": "^11.0.0",

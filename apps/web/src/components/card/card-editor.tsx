@@ -167,12 +167,12 @@ function CardEditor({
 
   return (
     <div className="relative overflow-hidden" ref={cardHTMLElementRef}>
-      {account && status === "connected" && provider ? (
+      {status === "connected" && provider ? (
         <>
           <CardEditorSketchPanel
             isSketching={editMode === "sketch"}
             cardId={cardDataRef.current.id}
-            accountName={account.name}
+            accountName={account?.name ?? "匿名貓貓"}
             doc={doc}
             sketchMode={sketchMode}
             pencilInfo={pencilInfo}
@@ -181,7 +181,7 @@ function CardEditor({
           <CardEditorMarkdownEditor
             cardId={cardDataRef.current.id}
             onContentSizeChange={onContentSizeChange}
-            accountName={account.name}
+            accountName={account?.name ?? "匿名貓貓"}
             provider={provider}
             doc={doc}
           />

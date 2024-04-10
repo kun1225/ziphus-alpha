@@ -6,111 +6,32 @@ import { io, ManagerOptions, Socket, SocketOptions } from "socket.io-client";
 import { AwarenessChange } from "../types";
 
 export interface ProviderConfiguration {
-  /**
-   * (Optional) An existent awareness, by default is a new AwarenessProtocol.Awareness instance
-   */
   awareness?: AwarenessProtocol.Awareness;
-  /**
-   * (optional) Specify the number of milliseconds to synchronize, by default is -1 (this disable resync interval)
-   */
-  resyncInterval?: number;
-  /**
-   * (Optional) This boolean disable the broadcast channel functionality, by default is false (broadcast channel enabled)
-   */
   disableBc?: boolean;
-  /**
-   * (Optional) Add the authentication data
-   */
   auth?: { [key: string]: any };
 }
-
-/**
- * The socket io provider class to sync a document
- */
 export class SocketIOProvider extends Observable<string> {
-  /**
-   * The room name
-   * @type {string}
-   * @private
-   */
   private readonly roomName: string;
-  /**
-   * The broadcast channel room
-   * @type {string}
-   * @private
-   */
   private readonly _broadcastChannel: string;
-  /**
-   * The socket connection
-   * @type {Socket}
-   */
   public socket: Socket;
-  /**
-   * The yjs document
-   * @type {Y.Doc}
-   */
   public doc: Y.Doc;
-  /**
-   * The awareness
-   * @type {AwarenessProtocol.Awareness}
-   */
   public awareness: AwarenessProtocol.Awareness;
-  /**
-   * Disable broadcast channel, by default is false
-   * @type {boolean}
-   */
   public disableBc: boolean;
-  /**
-   * The broadcast channel connection status indicator
-   * @type {boolean}
-   */
-  public bcconnected: boolean = false;
-  /**
-   * The document's sync status indicator
-   * @type {boolean}
-   * @private
-   */
-  private _synced: boolean = false;
-  /**
-   * Interval to emit `sync-step-1` to sync changes
-   * @type {ReturnType<typeof setTimeout> | null}
-   * @private
-   */
-  private resyncInterval: ReturnType<typeof setTimeout> | null = null;
-  /**
-   * Optional overrides for socket.io
-   * @type {Partial<ManagerOptions & SocketOptions> | undefined}
-   * @private
-   */
-  private readonly _socketIoOptions:
-    | Partial<ManagerOptions & SocketOptions>
-    | undefined;
+  public bcConnected: boolean = false;
+  public socketConnected: boolean = false;
 
-  /**
-   * SocketIOProvider constructor
-   * @constructor
-   * @param {string} url The connection url from server
-   * @param {string} roomName The document's room name
-   * @param {Y.Doc} doc The yjs document
-   * @param {ProviderConfiguration} options Configuration options to the SocketIOProvider
-   * @param {Partial<ManagerOptions & SocketOptions> | undefined} socketIoOptions optional overrides for socket.io
-   */
   constructor(
     socket: Socket,
     roomName: string,
     doc: Y.Doc = new Y.Doc(),
     {
       awareness = new AwarenessProtocol.Awareness(doc),
-      resyncInterval = -1,
       disableBc = false,
-      auth = {},
-    }: ProviderConfiguration,
-    socketIoOptions:
-      | Partial<ManagerOptions & SocketOptions>
-      | undefined = undefined
+    }: ProviderConfiguration
   ) {
     super();
 
+    // 綁定 doc 和 awareness
     this.doc = doc;
     this.awareness = awareness;
     this.roomName = roomName;
@@ -118,19 +39,10 @@ export class SocketIOProvider extends Observable<string> {
     this._broadcastChannel = `yjs-${roomName}`;
 
     this.disableBc = disableBc;
-    this._socketIoOptions = socketIoOptions;
 
     this.socket = socket;
 
-    this.doc.on("update", this.onUpdateDoc);
-
-    this.socket.on("disconnect", (event) => this.onSocketDisconnection(event));
-
-    this.socket.on("connect_error", (error) =>
-      this.onSocketConnectionError(error)
-    );
-
-    this.onSocketConnection(resyncInterval);
+    this.onSocketConnection();
 
     this.initSyncListeners();
 
@@ -139,33 +51,16 @@ export class SocketIOProvider extends Observable<string> {
     this.initSystemListeners();
 
     awareness.on("update", this.awarenessUpdate);
+
+    this.socket.on("disconnect", (event) => this.onSocketDisconnection(event));
+
+    this.socket.on("connect_error", (error) =>
+      this.onSocketConnectionError(error)
+    );
   }
 
-  /**
-   * Broadcast channel room getter
-   * @type {string}
-   */
   public get broadcastChannel(): string {
     return this._broadcastChannel;
-  }
-
-  /**
-   * Synchronized state flag getter
-   * @type {boolean}
-   */
-  public get synced(): boolean {
-    return this._synced;
-  }
-
-  /**
-   * Synchronized state flag setter
-   */
-  public set synced(state) {
-    if (this._synced !== state) {
-      this._synced = state;
-      this.emit("synced", [state]);
-      this.emit("sync", [state]);
-    }
   }
 
   private readonly initSyncListeners = (): void => {
@@ -173,7 +68,6 @@ export class SocketIOProvider extends Observable<string> {
       `${this.roomName}-sync-step-1`,
       (stateVector: ArrayBuffer, syncStep2: (update: Uint8Array) => void) => {
         syncStep2(Y.encodeStateAsUpdate(this.doc, new Uint8Array(stateVector)));
-        this.synced = true;
       }
     );
 
@@ -205,17 +99,15 @@ export class SocketIOProvider extends Observable<string> {
       this.emit("status", [{ status: "connecting" }]);
       this.socket.connect();
       if (!this.disableBc) this.connectBc();
-      this.synced = false;
     }
   }
 
-  private readonly onSocketConnection = (
-    resyncInterval: ProviderConfiguration["resyncInterval"] = -1
-  ): void => {
+  private readonly onSocketConnection = (): void => {
     this.socket.emit("yjs-connect", this.roomName);
 
     this.socket.on(`yjs-${this.roomName}-connected`, () => {
       this.emit("status", [{ status: "connected" }]);
+      // 將本地的 doc 狀態同步到 server
       this.socket.emit(
         `${this.roomName}-sync-step-1`,
         Y.encodeStateVector(this.doc),
@@ -223,6 +115,9 @@ export class SocketIOProvider extends Observable<string> {
           Y.applyUpdate(this.doc, new Uint8Array(update), this);
         }
       );
+
+      this.doc.on("update", this.onUpdateDoc);
+
       if (this.awareness.getLocalState() !== null)
         this.socket.emit(
           `${this.roomName}-awareness-update`,
@@ -230,19 +125,9 @@ export class SocketIOProvider extends Observable<string> {
             this.doc.clientID,
           ])
         );
-      if (resyncInterval > 0) {
-        this.resyncInterval = setInterval(() => {
-          if (this.socket.disconnected) return;
-          this.socket.emit(
-            `${this.roomName}-sync-step-1`,
-            Y.encodeStateVector(this.doc),
-            (update: Uint8Array) => {
-              Y.applyUpdate(this.doc, new Uint8Array(update), this);
-            }
-          );
-        }, resyncInterval);
-      }
+
       this.socket.off(`yjs-${this.roomName}-connected`);
+      this.socketConnected = true;
     });
   };
 
@@ -256,7 +141,7 @@ export class SocketIOProvider extends Observable<string> {
     event: Socket.DisconnectReason
   ): void => {
     this.emit("connection-close", [event, this]);
-    this.synced = false;
+    this.socketConnected = false;
     AwarenessProtocol.removeAwarenessStates(
       this.awareness,
       Array.from(this.awareness.getStates().keys()).filter(
@@ -272,7 +157,6 @@ export class SocketIOProvider extends Observable<string> {
   };
 
   public destroy(): void {
-    if (this.resyncInterval != null) clearInterval(this.resyncInterval);
     this.disconnect();
     if (typeof window !== "undefined")
       window.removeEventListener("beforeunload", this.beforeUnloadHandler);
@@ -290,7 +174,7 @@ export class SocketIOProvider extends Observable<string> {
   ): void => {
     if (origin !== this) {
       this.socket.emit(`${this.roomName}-sync-update`, update);
-      if (this.bcconnected) {
+      if (this.bcConnected) {
         bc.publish(
           this._broadcastChannel,
           {
@@ -316,7 +200,7 @@ export class SocketIOProvider extends Observable<string> {
       `${this.roomName}-awareness-update`,
       AwarenessProtocol.encodeAwarenessUpdate(this.awareness, changedClients)
     );
-    if (this.bcconnected) {
+    if (this.bcConnected) {
       bc.publish(
         this._broadcastChannel,
         {
@@ -340,9 +224,9 @@ export class SocketIOProvider extends Observable<string> {
   };
 
   private readonly connectBc = (): void => {
-    if (!this.bcconnected) {
+    if (!this.bcConnected) {
       bc.subscribe(this._broadcastChannel, this.onBroadcastChannelMessage);
-      this.bcconnected = true;
+      this.bcConnected = true;
     }
     bc.publish(
       this._broadcastChannel,
@@ -384,9 +268,9 @@ export class SocketIOProvider extends Observable<string> {
       },
       this
     );
-    if (this.bcconnected) {
+    if (this.bcConnected) {
       bc.unsubscribe(this._broadcastChannel, this.onBroadcastChannelMessage);
-      this.bcconnected = false;
+      this.bcConnected = false;
     }
   };
 
