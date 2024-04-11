@@ -14,7 +14,7 @@ export const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
     // alert: Alert,
-    codeblock: Code,
+    code: Code,
   },
 });
 

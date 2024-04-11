@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { MdCode } from "react-icons/md";
 import { insertOrUpdateBlock } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
@@ -7,25 +8,43 @@ export const insertCode = (editor: typeof schema.BlockNoteEditor) => ({
   title: "Code (開發中)",
   onItemClick: () => {
     insertOrUpdateBlock(editor, {
-      type: "codeblock",
+      type: "code",
     });
   },
-  aliases: ["codeblock"],
+  aliases: ["code"],
   group: "Other",
   icon: <MdCode />,
 });
 
 export const Code = createReactBlockSpec(
   {
-    type: "codeblock",
+    type: "code",
     propSchema: {},
     content: "inline",
   },
   {
     render: (props) => {
+      const inputRef = useRef<HTMLElement>(null);
+
+      useEffect(() => {
+        if (inputRef.current) {
+          props.contentRef(inputRef.current);
+        }
+
+        function test(event: KeyboardEvent) {
+          console.log(event);
+        }
+
+        inputRef.current?.addEventListener("keydown", test);
+
+        return () => {
+          inputRef.current?.removeEventListener("keydown", test);
+        };
+      }, [inputRef.current]);
+
       return (
         <pre className=" relative rounded border border-gray-200 bg-gray-900 p-2 text-white">
-          <code ref={props.contentRef}></code>
+          <code ref={inputRef}></code>
         </pre>
       );
     },

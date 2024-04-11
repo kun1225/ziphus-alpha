@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BlockNoteSuggestionMenu,
   schema,
@@ -13,7 +13,7 @@ import {
   useCreateBlockNote,
 } from "@blocknote/react";
 import "@blocknote/react/style.css";
-import { SocketIOProvider } from "@repo/y-socket-io/";
+import { SocketIOProvider } from "@repo/y-socket-io";
 import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
 
 interface CardEditorMarkdownEditorProps {
@@ -45,6 +45,29 @@ function CardEditorMarkdownEditor({
       },
     },
   });
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      const pos = editor.getTextCursorPosition();
+      if (pos?.block?.type === "code") {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const keyEvent = new KeyboardEvent("keydown", {
+          code: "Enter",
+          key: "Enter",
+          shiftKey: true,
+          view: window,
+          bubbles: false,
+        });
+        editor.domElement.dispatchEvent(keyEvent);
+      }
+    }
+  };
+
+  useEffect(() => {
+    editor.domElement.addEventListener("keydown", handleKeyDown, true);
+  }, []);
 
   const onChange = async () => {
     const html = await editor.blocksToHTMLLossy(editor.document);

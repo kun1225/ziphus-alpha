@@ -21,6 +21,7 @@
     "@repo/y-socket-io": "workspace:*",
     "@tanstack/react-query": "^5.28.2",
     "@tanstack/react-query-devtools": "^5.28.4",
+    "@uiw/react-textarea-code-editor": "^3.0.2",
     "axios": "^1.6.7",
     "clsx": "^2.1.0",
     "cookies-next": "^4.1.1",
