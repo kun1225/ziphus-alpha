@@ -1,10 +1,14 @@
+import { useEffect, useState } from "react";
 import {
   BlockNoteSchema,
   defaultBlockSpecs,
   filterSuggestionItems,
 } from "@blocknote/core";
 import {
+  FormattingToolbar,
+  FormattingToolbarController,
   SuggestionMenuController,
+  blockTypeSelectItems,
   getDefaultReactSlashMenuItems,
 } from "@blocknote/react";
 // import { Alert, insertAlert } from './alert';
@@ -40,3 +44,24 @@ export function BlockNoteSuggestionMenu({
     />
   );
 }
+
+export function BlockNoteFormattingToolbarController({
+  selectedBlocksType,
+}: {
+  selectedBlocksType: string[];
+}) {
+  const isSelectedCodeBlock = selectedBlocksType.includes("codeblock");
+  return (
+    <FormattingToolbarController
+      formattingToolbar={() =>
+        isSelectedCodeBlock ? (
+          <></>
+        ) : (
+          <FormattingToolbar blockTypeSelectItems={[...blockTypeSelectItems]} />
+        )
+      }
+    />
+  );
+}
+
+console.log(blockTypeSelectItems);

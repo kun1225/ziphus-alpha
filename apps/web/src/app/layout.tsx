@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }): JSX.Element {
   return (
-    <html lang="zh-Hant">
+    <html lang="zh-Hant" data-color-mode="dark">
       <body className={cn(notoSansTC.className, "dark")}>
         <NextUIProvider>
           <ReactQueryProvider>

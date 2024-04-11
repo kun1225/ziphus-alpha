@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  BlockNoteFormattingToolbarController,
   BlockNoteSuggestionMenu,
   schema,
 } from "../blocknote/block-note-setting";
@@ -33,6 +34,8 @@ function CardEditorMarkdownEditor({
   const tryUpdateCardContent = useUpdateCardContent(cardId);
   const containerRef = useRef<HTMLDivElement>(null);
   const [fragment] = useState(doc.getXmlFragment("card-content"));
+  const [selectedBlocksType, setSelectedBlockType] = useState<string[]>([]);
+  const plainCopyEventRef = useRef<ClipboardEvent | null>(null);
 
   const editor = useCreateBlockNote({
     schema,
@@ -49,7 +52,7 @@ function CardEditorMarkdownEditor({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
       const pos = editor.getTextCursorPosition();
-      if (pos?.block?.type === "codeblock") {
+      if (pos.block.type === "codeblock") {
         event.preventDefault();
         event.stopPropagation();
 
@@ -64,6 +67,30 @@ function CardEditorMarkdownEditor({
       }
     }
   };
+
+  const handlePaste = (event: ClipboardEvent) => {
+    const pasteCode = event.clipboardData?.getData("text/plain") ?? "";
+    const pos = editor.getTextCursorPosition();
+    if (
+      pos.block.type === "codeblock" &&
+      pasteCode !== "" &&
+      plainCopyEventRef.current !== event
+    ) {
+      event.preventDefault();
+      event.stopPropagation();
+      editor.updateBlock(editor.getTextCursorPosition().block, {
+        type: "codeblock",
+        content: pasteCode,
+      });
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      editor.domElement.addEventListener("keydown", handleKeyDown, true);
+      editor.domElement.addEventListener("paste", handlePaste, true);
+    }, 0);
+  }, []);
 
   const onChange = async () => {
     const html = await editor.blocksToHTMLLossy(editor.document);
@@ -84,7 +111,19 @@ function CardEditorMarkdownEditor({
         editor={editor}
         onChange={onChange}
         slashMenu={false}
+        formattingToolbar={false}
+        onSelectionChange={() => {
+          const selection = editor.getSelection();
+          if (selection !== undefined) {
+            setSelectedBlockType(selection.blocks.map((block) => block.type));
+          } else {
+            setSelectedBlockType([editor.getTextCursorPosition().block.type]);
+          }
+        }}
       >
+        <BlockNoteFormattingToolbarController
+          selectedBlocksType={selectedBlocksType}
+        />
         <BlockNoteSuggestionMenu editor={editor} />
       </BlockNoteView>
     </div>

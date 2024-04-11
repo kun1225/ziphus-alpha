@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
 import { CardDto, CardGetByIdResponseDTO } from "@repo/shared-types";
 import useCardResize from "@/hooks/card/useCardResize";
 import useFitContentEvent from "@/hooks/card/useFitContentEvent";
@@ -11,13 +12,16 @@ import useViewScaleUpdate from "@/hooks/card/useViewScaleUpdate";
 import useCanvasEditor from "@/hooks/useCanvasEditor";
 import useMe from "@/hooks/useMe";
 import useYJSProvide from "@/hooks/useYJSProvider";
-import CardEditorMarkdownEditor from "./card-editor-markdown-editor";
 import CardEditorSketchPanel, {
   EditMode,
   EraserInfo,
   PencilInfo,
   SketchMode,
 } from "./card-editor-sketch-panel";
+
+const CardEditorMarkdownEditor = dynamic(
+  () => import("./card-editor-markdown-editor"),
+);
 
 export const MIN_CONTENT_CARD_HEIGHT = 800;
 export const MIN_CONTENT_CARD_WIDTH = 600;
