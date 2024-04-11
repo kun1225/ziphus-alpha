@@ -49,7 +49,7 @@ function CardEditorMarkdownEditor({
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter" && !event.shiftKey) {
       const pos = editor.getTextCursorPosition();
-      if (pos?.block?.type === "code") {
+      if (pos?.block?.type === "codeblock") {
         event.preventDefault();
         event.stopPropagation();
 
@@ -64,10 +64,6 @@ function CardEditorMarkdownEditor({
       }
     }
   };
-
-  useEffect(() => {
-    editor.domElement.addEventListener("keydown", handleKeyDown, true);
-  }, []);
 
   const onChange = async () => {
     const html = await editor.blocksToHTMLLossy(editor.document);

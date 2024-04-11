@@ -8,13 +8,13 @@ import {
   getDefaultReactSlashMenuItems,
 } from "@blocknote/react";
 // import { Alert, insertAlert } from './alert';
-import { Code, insertCode } from "./code";
+import { Codeblock, insertCodeblock } from "./codeblock";
 
 export const schema = BlockNoteSchema.create({
   blockSpecs: {
     ...defaultBlockSpecs,
     // alert: Alert,
-    code: Code,
+    codeblock: Codeblock,
   },
 });
 
@@ -32,7 +32,7 @@ export function BlockNoteSuggestionMenu({
           [
             ...getDefaultReactSlashMenuItems(editor),
             // insertAlert(editor),
-            insertCode(editor),
+            insertCodeblock(editor),
           ],
           query
         )

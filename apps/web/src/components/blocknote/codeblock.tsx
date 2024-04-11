@@ -4,21 +4,21 @@ import { insertOrUpdateBlock } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
 import { schema } from "./block-note-setting";
 
-export const insertCode = (editor: typeof schema.BlockNoteEditor) => ({
+export const insertCodeblock = (editor: typeof schema.BlockNoteEditor) => ({
   title: "Code (開發中)",
   onItemClick: () => {
     insertOrUpdateBlock(editor, {
-      type: "code",
+      type: "codeblock",
     });
   },
-  aliases: ["code"],
+  aliases: ["codeblock"],
   group: "Other",
   icon: <MdCode />,
 });
 
-export const Code = createReactBlockSpec(
+export const Codeblock = createReactBlockSpec(
   {
-    type: "code",
+    type: "codeblock",
     propSchema: {},
     content: "inline",
   },
