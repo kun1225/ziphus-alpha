@@ -1,6 +1,6 @@
 import React from "react";
 import NextImage from "next/image";
-import { Image } from "@nextui-org/react";
+import { Image } from "@/components/nextui";
 
 export default function ZiphusIcon() {
   return (

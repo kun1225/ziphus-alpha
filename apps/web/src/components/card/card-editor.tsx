@@ -20,7 +20,7 @@ import CardEditorSketchPanel, {
 } from "./card-editor-sketch-panel";
 
 const CardEditorMarkdownEditor = dynamic(
-  () => import("./card-editor-markdown-editor"),
+  () => import("./card-editor-markdown-editor")
 );
 
 export const MIN_CONTENT_CARD_HEIGHT = 800;

@@ -99,7 +99,7 @@ export const Codeblock = createReactBlockSpec(
                   onClick={() =>
                     props.editor.updateBlock(props.block, {
                       type: "codeblock",
-                      props: { language: language },
+                      props: { language },
                     })
                   }
                 >
