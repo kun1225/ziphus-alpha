@@ -85,7 +85,7 @@ export async function POST(request: Request) {
       })
       .promise();
 
-    axiosInstance.defaults.headers["authorization"] = authorization;
+    axiosInstance.defaults.headers.authorization = authorization;
     const response = await axiosInstance.post(`/card/${cardId}/image`, {
       key: data.Key,
       url: data.Location,

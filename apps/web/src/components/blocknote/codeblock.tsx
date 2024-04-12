@@ -3,9 +3,14 @@ import { MdCode } from "react-icons/md";
 import { insertOrUpdateBlock } from "@blocknote/core";
 import { createReactBlockSpec } from "@blocknote/react";
 import CodeTextareaEditor from "@uiw/react-textarea-code-editor";
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@/components/nextui";
+import {
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@/components/nextui";
 import { schema } from "./block-note-setting";
-
 
 const languages = [
   "plaintext",
