@@ -17,6 +17,23 @@ import "@blocknote/react/style.css";
 import { SocketIOProvider } from "@repo/y-socket-io";
 import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
 
+async function uploadFile(file: File) {
+  const body = new FormData();
+  body.append("image", file);
+
+  const response = await fetch("/api/object", {
+    method: "POST",
+    body,
+    headers: {
+      contentType: "multipart/form-data",
+    },
+  });
+
+  const data = await response.json();
+
+  return `${window.location.origin}/api/object/${data.key}`;
+}
+
 interface CardEditorMarkdownEditorProps {
   cardId: string;
   accountName: string;
@@ -39,14 +56,8 @@ function CardEditorMarkdownEditor({
 
   const editor = useCreateBlockNote({
     schema,
-    collaboration: {
-      provider,
-      fragment,
-      user: {
-        name: accountName,
-        color: "#0066ff",
-      },
-    },
+
+    uploadFile,
   });
 
   const handleKeyDown = (event: KeyboardEvent) => {
@@ -101,17 +112,12 @@ function CardEditorMarkdownEditor({
   };
 
   return (
-    <div
-      className=" h-fit w-full text-white"
-      ref={containerRef}
-      onClick={() => editor.focus()}
-    >
+    <div className=" h-fit w-full text-white" ref={containerRef}>
       <BlockNoteView
         theme={darkDefaultTheme}
         editor={editor}
         onChange={onChange}
         slashMenu={false}
-        formattingToolbar={false}
         onSelectionChange={() => {
           const selection = editor.getSelection();
           if (selection !== undefined) {

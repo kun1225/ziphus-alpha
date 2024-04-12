@@ -40,6 +40,7 @@ export default function Page(): JSX.Element {
               color="default"
               size="md"
               variant="bordered"
+              aria-label="立即開始，完全免費"
             >
               立即開始，完全免費
             </Button>

@@ -51,15 +51,12 @@ export function BlockNoteFormattingToolbarController({
   selectedBlocksType: string[];
 }) {
   const isSelectedCodeBlock = selectedBlocksType.includes("codeblock");
+
   return (
     <FormattingToolbarController
-      formattingToolbar={() =>
-        isSelectedCodeBlock ? (
-          <></>
-        ) : (
-          <FormattingToolbar blockTypeSelectItems={[...blockTypeSelectItems]} />
-        )
-      }
+      formattingToolbar={() => (
+        <FormattingToolbar blockTypeSelectItems={[...blockTypeSelectItems]} />
+      )}
     />
   );
 }
