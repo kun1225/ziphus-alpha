@@ -56,7 +56,14 @@ function CardEditorMarkdownEditor({
 
   const editor = useCreateBlockNote({
     schema,
-
+    collaboration: {
+      provider,
+      fragment,
+      user: {
+        name: accountName,
+        color: "#0066ff",
+      },
+    },
     uploadFile,
   });
 
