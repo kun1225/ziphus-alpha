@@ -6,6 +6,7 @@ import {
   BlockNoteSuggestionMenu,
   schema,
 } from "../blocknote/block-note-setting";
+import { getCookie } from "cookies-next";
 import * as Y from "yjs";
 import "@blocknote/core/fonts/inter.css";
 import {
@@ -17,22 +18,24 @@ import "@blocknote/react/style.css";
 import { SocketIOProvider } from "@repo/y-socket-io";
 import useUpdateCardContent from "@/hooks/card/useUpdateCardContent";
 
-async function uploadFile(file: File) {
+const uploadFile = (cardId: string) => async (file: File) => {
   const body = new FormData();
   body.append("image", file);
+  body.append("cardId", cardId);
 
   const response = await fetch("/api/object", {
     method: "POST",
     body,
     headers: {
       contentType: "multipart/form-data",
+      authorization: getCookie("authorization") ?? "",
     },
   });
 
   const data = await response.json();
 
   return `${window.location.origin}/api/object/${data.key}`;
-}
+};
 
 interface CardEditorMarkdownEditorProps {
   cardId: string;
@@ -64,7 +67,7 @@ function CardEditorMarkdownEditor({
         color: "#0066ff",
       },
     },
-    uploadFile,
+    uploadFile: uploadFile(cardId),
   });
 
   const handleKeyDown = (event: KeyboardEvent) => {

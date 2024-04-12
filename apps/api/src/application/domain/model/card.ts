@@ -23,14 +23,14 @@ export class Line {
   ) {}
 }
 
-export class Illustration {
+export class Image {
   constructor(
     readonly id: string,
-    readonly image: string,
-    readonly width: number,
-    readonly height: number,
-    readonly positionX: string,
-    readonly positionY: string
+    readonly url: string,
+    readonly key: string,
+    readonly createdAt: string,
+    readonly updatedAt: string,
+    readonly deletedAt: string | null
   ) {}
 }
 
@@ -44,8 +44,8 @@ class Card {
     readonly width: number,
     readonly height: number,
     readonly isSizeFitContent: boolean,
-    readonly illustrations: Illustration[],
     readonly drawings: Stroke[],
+    readonly images: Image[],
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null

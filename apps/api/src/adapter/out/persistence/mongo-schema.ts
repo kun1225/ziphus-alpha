@@ -46,7 +46,16 @@ export class Illustration {
     readonly positionY: string
   ) {}
 }
-
+export class Image {
+  constructor(
+    readonly id: string,
+    readonly url: string,
+    readonly key: string,
+    readonly createdAt: string,
+    readonly updatedAt: string,
+    readonly deletedAt: string | null
+  ) {}
+}
 export class Card {
   constructor(
     readonly id: string,
@@ -57,7 +66,7 @@ export class Card {
     readonly width: number,
     readonly height: number,
     readonly isSizeFitContent: boolean,
-    readonly illustrations: Illustration[],
+    readonly images: Image[],
     readonly drawings: Stroke[],
     readonly createdAt: string,
     readonly updatedAt: string,

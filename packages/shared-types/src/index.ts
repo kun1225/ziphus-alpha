@@ -8,6 +8,7 @@ export * from "./card/card.dto";
 export * from "./card/card-create-response.dto";
 export * from "./card/card-get-with-all-response.dto";
 export * from "./card/card-get-by-id-response.dto";
+export * from "./card/card-add-image-request.dto";
 export * from "./card/card-modify-content-request.dto";
 export * from "./card/card-modify-title-request.dto";
 export * from "./card/card-modify-permission-request.dto";

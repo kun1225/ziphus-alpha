@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import axiosInstance from "@/utils/axios";
 import { bucketName, s3 } from "./s3";
 
 const MAX_IMAGE_WIDTH = 3840;
@@ -38,11 +39,17 @@ const allowedImageType = [
 export async function POST(request: Request) {
   const formData = await request.formData();
   const image = formData.get("image") as File;
-  if (!image) {
-    return new Response(JSON.stringify({ error: "No image uploaded." }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
+  const cardId = formData.get("cardId") as string;
+  const authorization = request.headers.get("authorization");
+
+  if (!image || !cardId) {
+    return new Response(
+      JSON.stringify({ error: "No image uploaded or No Card Id provider" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   const imageType = allowedImageType.find((type) => type.type === image.type);
@@ -77,6 +84,14 @@ export async function POST(request: Request) {
         ContentType: imageType.type,
       })
       .promise();
+
+    axiosInstance.defaults.headers["authorization"] = authorization;
+    const response = await axiosInstance.post(`/card/${cardId}/image`, {
+      key: data.Key,
+      url: data.Location,
+    });
+
+    console.log(response.data);
 
     return new Response(
       JSON.stringify({

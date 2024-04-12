@@ -21,14 +21,14 @@ export const cardDtoSchema = z.object({
   width: z.number(),
   height: z.number(),
   isSizeFitContent: z.boolean(),
-  illustrations: z.array(
+  images: z.array(
     z.object({
       id: z.string(),
-      image: z.string(),
-      width: z.number(),
-      height: z.number(),
-      positionX: z.string(),
-      positionY: z.string(),
+      url: z.string(),
+      key: z.string(),
+      createdAt: z.string(),
+      updatedAt: z.string(),
+      deletedAt: z.string().nullable().optional(),
     })
   ),
   drawings: z.array(

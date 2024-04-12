@@ -60,6 +60,7 @@ import spaceModifyTitleUseCaseConstructor from "@/application/domain/service/spa
 import spaceCardUpdatePositionUseCaseConstructor from "@/application/domain/service/space-card-update-position-service";
 import spaceGetByIdWithCardUseCaseConstructor from "@/application/domain/service/space-get-by-id-with-card-service";
 import spaceCardUpdateLayerUseCaseConstructor from "@/application/domain/service/space-card-update-layer-service";
+import cardAddImageCaseConstructor from "@/application/domain/service/card-add-image-service";
 
 // 路由
 import accountRegisterController from "@/adapter/in/fastify/account-register-controller";
@@ -68,6 +69,7 @@ import accountMeController from "@/adapter/in/fastify/account-me-controller";
 import cardCreateController from "@/adapter/in/fastify/card-create-controller";
 import cardGetWithAllController from "@/adapter/in/fastify/card-get-with-all-controller";
 import cardGetByIdController from "@/adapter/in/fastify/card-get-by-id-controller";
+import cardAddImageController from "@/adapter/in/fastify/card-add-image-controller";
 import cardModifyContentController from "@/adapter/in/fastify/card-modify-content-controller";
 import cardModifyTitleController from "@/adapter/in/fastify/card-modify-title-controller";
 import cardModifyPermissionController from "@/adapter/in/fastify/card-modify-permission-controller";
@@ -131,6 +133,7 @@ async function init() {
   const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
   const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
   const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
+  const cardAddImageUseCase = cardAddImageCaseConstructor(loadCard, saveCard);
   const cardModifyContentUseCase = cardModifyContentUseCaseConstructor(
     loadCard,
     saveCard
@@ -207,6 +210,7 @@ async function init() {
     cardCreateController(fastify, cardCreateUseCase);
     cardGetWithAllController(fastify, cardGetWithAllUseCase);
     cardGetByIdController(fastify, cardGetByIdUseCase);
+    cardAddImageController(fastify, cardAddImageUseCase);
     cardModifyContentController(fastify, cardModifyContentUseCase);
     cardModifyTitleController(fastify, cardModifyTitleUseCase);
     cardModifyPermissionController(fastify, cardModifyPermissionUseCase);
