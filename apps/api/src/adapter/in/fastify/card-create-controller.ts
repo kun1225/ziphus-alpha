@@ -1,7 +1,6 @@
 import {
   AuthorizationHeaderSchema,
   CardCreateResponseDTOSchema,
-  CardDto,
   CardPermissionDTO,
 } from "@repo/shared-types";
 import type { CardCreateUseCase } from "@/application/port/in/card-create-use-case";

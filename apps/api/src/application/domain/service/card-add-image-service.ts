@@ -3,7 +3,7 @@ import { CardPermission, Image } from "../model/card";
 import { randomUUID } from "node:crypto";
 
 const cardAddImageCaseConstructor: CardAddImageUseCaseConstructor =
-  (loadCard, saveCard) =>
+  (loadCard, pushCardImage) =>
   async ({ data, cardId, accountId }) => {
     const card = await loadCard({
       id: cardId,
@@ -23,16 +23,14 @@ const cardAddImageCaseConstructor: CardAddImageUseCaseConstructor =
       `${randomUUID()}-${data.key}`,
       data.url,
       data.key,
+      data.bytes,
       new Date().toISOString(),
       new Date().toISOString(),
       null
     );
 
     // 儲存更新後的卡片
-    await saveCard({
-      ...card,
-      images: [...card.images, newImage],
-    });
+    await pushCardImage(card, newImage);
 
     return true;
   };

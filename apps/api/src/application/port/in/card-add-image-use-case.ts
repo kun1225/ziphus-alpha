@@ -1,9 +1,9 @@
 import { type LoadCardPort } from "../out/load-card-port";
-import { type SaveCardPort } from "../out/save-card-port";
+import { type PushCardImagePort } from "../out/push-card-image-port";
 
 export type CardAddImageUseCaseConstructor = (
   loadCard: LoadCardPort,
-  saveCard: SaveCardPort
+  pushCardImage: PushCardImagePort
 ) => CardAddImageUseCase;
 
 export type CardAddImageUseCase = (props: {
@@ -12,5 +12,6 @@ export type CardAddImageUseCase = (props: {
   data: {
     url: string;
     key: string;
+    bytes: number;
   };
 }) => Promise<boolean>;

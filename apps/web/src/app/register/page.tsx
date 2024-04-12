@@ -1,4 +1,9 @@
+import { Metadata } from "next";
 import AccountRegisterForm from "@/components/account/account-register-form";
+
+export const metadata: Metadata = {
+  title: "Register | Ziphus",
+};
 
 export default function Page(): JSX.Element {
   return (

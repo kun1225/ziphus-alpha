@@ -8,6 +8,7 @@ import Sidebar from "@/components/sidebar";
 import { fetchCardById } from "@/hooks/card/useQueryCardById";
 import axiosInstance from "@/utils/axios";
 
+
 export const metadata: Metadata = {};
 
 export default async function Page({
@@ -30,7 +31,7 @@ export default async function Page({
   const title = data?.card?.title ?? "Ziphus Card Editor";
   const description = data?.card?.content.substring(0, 157) ?? "Ziphus";
 
-  metadata.title = `Ziphus - ${title}`;
+  metadata.title = `${title} | Ziphus`;
   metadata.description = description;
 
   metadata.openGraph = {

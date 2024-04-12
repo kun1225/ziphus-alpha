@@ -50,7 +50,7 @@ const priceList = [
 ];
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Ziphus",
+  title: "Pricing | Ziphus",
 };
 
 export default function Page(): JSX.Element {

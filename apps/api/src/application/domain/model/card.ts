@@ -28,6 +28,7 @@ export class Image {
     readonly id: string,
     readonly url: string,
     readonly key: string,
+    readonly bytes: number,
     readonly createdAt: string,
     readonly updatedAt: string,
     readonly deletedAt: string | null

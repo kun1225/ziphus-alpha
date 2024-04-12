@@ -89,9 +89,8 @@ export async function POST(request: Request) {
     const response = await axiosInstance.post(`/card/${cardId}/image`, {
       key: data.Key,
       url: data.Location,
+      bytes: Buffer.byteLength(compressedBuffer),
     });
-
-    console.log(response.data);
 
     return new Response(
       JSON.stringify({

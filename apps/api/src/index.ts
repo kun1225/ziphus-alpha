@@ -7,6 +7,7 @@ import { type LoadAccountPort } from "@/application/port/out/load-account-port";
 import { type SaveAccountPort } from "@/application/port/out/save-account-port";
 import { type LoadCardListPort } from "@/application/port/out/load-card-list-port";
 import { type LoadCardPort } from "@/application/port/out/load-card-port";
+import { type PushCardImagePort } from "@/application/port/out/push-card-image-port";
 import { type SaveCardPort } from "@/application/port/out/save-card-port";
 import { type DeleteCardPort } from "@/application/port/out/delete-card-port";
 import { type LoadSpaceListPort } from "@/application/port/out/load-space-list-port";
@@ -24,6 +25,7 @@ import AccountPersistenceSaveAdapter from "@/adapter/out/persistence/account-per
 import AccountPersistenceLoadAdapter from "@/adapter/out/persistence/account-persistence-load-adapter";
 import CardListPersistenceLoadAdapter from "@/adapter/out/persistence/card-list-persistence-load-adapter";
 import CardPersistenceLoadAdapter from "@/adapter/out/persistence/card-persistence-load-adapter";
+import CardPersistencePushImageAdapter from "@/adapter/out/persistence/card-persistence-push-image-adapter";
 import CardPersistenceSaveAdapter from "@/adapter/out/persistence/card-persistence-save-adapter";
 import CardPersistenceDeleteAdapter from "@/adapter/out/persistence/card-persistence-delete-adapter";
 import SpaceCardListPersistenceLoadAdapter from "@/adapter/out/persistence/space-card-list-persistence-load-adapter";
@@ -101,6 +103,8 @@ async function init() {
     CardListPersistenceLoadAdapter(mongoCollections);
   const loadCard: LoadCardPort = CardPersistenceLoadAdapter(mongoCollections);
   const saveCard: SaveCardPort = CardPersistenceSaveAdapter(mongoCollections);
+  const pushCardImage: PushCardImagePort =
+    CardPersistencePushImageAdapter(mongoCollections);
   const deleteCard: DeleteCardPort =
     CardPersistenceDeleteAdapter(mongoCollections);
   const loadSpaceList: LoadSpaceListPort =
@@ -133,7 +137,10 @@ async function init() {
   const cardCreateUseCase = cardCreateUseCaseConstructor(loadAccount, saveCard);
   const cardGetWithAllUseCase = cardGetWithAllUseCaseConstructor(loadCardList);
   const cardGetByIdUseCase = cardGetByIdUseCaseConstructor(loadCard);
-  const cardAddImageUseCase = cardAddImageCaseConstructor(loadCard, saveCard);
+  const cardAddImageUseCase = cardAddImageCaseConstructor(
+    loadCard,
+    pushCardImage
+  );
   const cardModifyContentUseCase = cardModifyContentUseCaseConstructor(
     loadCard,
     saveCard

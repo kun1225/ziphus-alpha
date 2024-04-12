@@ -30,6 +30,7 @@ const cardAddImageController: FastifyControllerInterface<
       const cardId = request.params.id;
       const key = request.body.key;
       const url = request.body.url;
+      const bytes = request.body.bytes;
 
       try {
         return await cardAddImageUseCase({
@@ -38,6 +39,7 @@ const cardAddImageController: FastifyControllerInterface<
           data: {
             key,
             url,
+            bytes,
           },
         });
       } catch (error) {

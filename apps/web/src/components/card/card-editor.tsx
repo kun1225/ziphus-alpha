@@ -68,6 +68,7 @@ export function CardEditorSEO(props: CardEditorProps) {
   if (initialCard && !fetchedCard)
     return (
       <div
+        className="text-white"
         dangerouslySetInnerHTML={{
           __html: initialCard.content as string,
         }}

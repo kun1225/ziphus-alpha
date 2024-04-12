@@ -27,7 +27,7 @@ export default async function Page({
     redirect("/login");
   }
 
-  const title = data?.space?.title ?? "Ziphus Space Editor";
+  const title = `${data?.space?.title} | Ziphus` ?? "Space Editor | Ziphus";
   const description =
     data?.space?.spaceCards
       .map((card) => card?.card?.content ?? "")

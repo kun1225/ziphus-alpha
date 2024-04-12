@@ -57,6 +57,7 @@ function SpaceCardEditor({
   children,
   layers,
   style,
+  className,
   ...props
 }: SpaceCardEditorProps) {
   const spaceCardHTMLElementRef = useRef<HTMLDivElement>(null);
@@ -97,7 +98,8 @@ function SpaceCardEditor({
         "space-card absolute h-fit w-fit rounded-lg bg-dark-card-bg shadow-md",
         isFocus
           ? "outline outline-4 outline-white "
-          : "cursor-pointer outline outline-1 outline-white "
+          : "cursor-pointer outline outline-1 outline-white ",
+        className
       )}
       style={{
         ...style,

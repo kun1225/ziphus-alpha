@@ -1,7 +1,12 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
 import "./style.css";
+
+export const metadata: Metadata = {
+  title: "Terms | Ziphus",
+};
 
 export default function Page(): JSX.Element {
   return (
