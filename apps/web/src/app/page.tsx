@@ -46,7 +46,19 @@ export default function Page(): JSX.Element {
             </Button>
           </Link>
         </div>
-        <main className="mt-12 h-[720px] w-full"></main>
+        <main className="mb-64 mt-16 flex h-fit w-full items-center justify-center">
+          <iframe
+            height="480"
+            width="853"
+            src="https://www.youtube.com/embed/Bn6C3Zk3Lmw?si=YrnfDnn240Scf8W9"
+            title="Ziphus 基本使用｜白板、卡片與無限的創意，視覺化的思維空間"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            loading="lazy"
+          ></iframe>
+        </main>
       </main>
       <Footer />
     </div>
