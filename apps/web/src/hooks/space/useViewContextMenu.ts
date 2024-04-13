@@ -9,14 +9,24 @@ const useViewContextMenu = (
   setContextMenuInfo: (contextMenuInfo: ContextMenuInfo | null) => void,
   contextMenuComponentRef: React.RefObject<HTMLDivElement>
 ) => {
-  const mouseDownTimeRef = useRef(0);
+  const mouseDownPositionRef = useRef<{
+    x: number;
+    y: number;
+  } | null>(null);
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
 
     const onContextMenu = (event: MouseEvent) => {
       event.preventDefault();
-      if (Date.now() - mouseDownTimeRef.current > 100) return;
+      if (
+        mouseDownPositionRef.current &&
+        Math.abs(event.clientX - mouseDownPositionRef.current.x) > 3 &&
+        Math.abs(event.clientY - mouseDownPositionRef.current.y) > 3
+      ) {
+        return;
+      }
+
       const editor = editorRef.current;
       if (!editor) return;
       const rect = editor.getBoundingClientRect();
@@ -35,7 +45,10 @@ const useViewContextMenu = (
 
     const handleMouseDown = (event: MouseEvent) => {
       if (event.button === 2) {
-        mouseDownTimeRef.current = Date.now();
+        mouseDownPositionRef.current = {
+          x: event.clientX,
+          y: event.clientY,
+        };
       }
 
       // 如果點擊到選單以外的地方，就關閉選單

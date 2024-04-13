@@ -115,8 +115,8 @@ export default function SpaceEditor({
               const y = e.clientY;
               if (
                 mouseClickPositionRef.current &&
-                Math.abs(x - mouseClickPositionRef.current.x) > 5 &&
-                Math.abs(y - mouseClickPositionRef.current.y) > 5
+                Math.abs(x - mouseClickPositionRef.current.x) > 3 &&
+                Math.abs(y - mouseClickPositionRef.current.y) > 3
               ) {
                 return;
               }
