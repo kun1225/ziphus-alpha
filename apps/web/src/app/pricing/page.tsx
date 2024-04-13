@@ -3,14 +3,8 @@ import { FaCheck } from "react-icons/fa";
 import { Metadata } from "next";
 import Footer from "@/components/footer";
 import Header from "@/components/header";
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Divider,
-  CardFooter,
-  Button,
-} from "@/components/nextui";
+import { Card, CardHeader, CardBody, Divider, CardFooter, Button } from "@/components/nextui";
+
 
 const priceList = [
   {
@@ -23,7 +17,7 @@ const priceList = [
       "無限空間",
       "無限筆記",
       "社群支援",
-      "支援 5 人同時協作",
+      "支援無限人同時協作",
       "1GB 雲端空間",
     ],
     description: "免費使用",
@@ -39,10 +33,9 @@ const priceList = [
       "無限空間",
       "無限筆記",
       "社群支援",
-      "支援 10 人同時協作",
+      "支援無限人同時協作",
       "讓貓貓陪你寫筆記",
       "10 GB 雲端空間",
-      "雲端空間 可加購 15NT$/GB",
     ],
     description: "每個月一杯咖啡的價格，協助平台走得更遠",
     subscription: "Coming soon",
